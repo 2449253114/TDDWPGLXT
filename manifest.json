@@ -79,8 +79,6 @@
     "h5" : {
         "template" : "template.h5.html",
         "router" : {
-            "mode" : "hash",
-            //"base" : "/xddadmin/",
             "base" : "/xddAdmin"
         },
         "optimization" : {
