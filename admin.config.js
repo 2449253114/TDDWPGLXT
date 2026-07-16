@@ -69,6 +69,13 @@ export default {
 				value: '/pages/other/violation-invitation/violation-invitation'
 			},
 			{
+				menu_id: "cancel-inviter",
+				text: '取消邀请关系',
+				icon: 'uni-icons-person-filled',
+				url: "",
+				value: '/pages/other/cancel-inviter/cancel-inviter'
+			},
+			{
 				menu_id: "kefu-activate-vip",
 				text: '违规注册检测系统',
 				icon: 'uni-icons-flag-filled',

@@ -123,6 +123,12 @@
 			}
 		},
 		{
+			"path": "pages/other/cancel-inviter/cancel-inviter",
+			"style": {
+				"navigationBarTitleText": "取消指定账号的邀请人"
+			}
+		},
+		{
 			"path" : "pages/other/violation-register/violation-register",
 			"style" : 
 			{

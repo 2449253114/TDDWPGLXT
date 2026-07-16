@@ -89,7 +89,7 @@
             }
         },
         "devServer" : {
-            "https" : true
+            "https" : false
         }
     },
     "vueVersion" : "2"
