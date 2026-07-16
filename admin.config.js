@@ -62,11 +62,11 @@ export default {
 				value: '/pages/other/kefu-activate-vip/kefu-activate-vip'
 			},
 			{
-				menu_id: "kefu-activate-vip",
+				menu_id: "violation-invitation-v2",
 				text: '违规邀请检测系统',
 				icon: 'uni-icons-flag-filled',
 				url: "",
-				value: '/pages/other/violation-invitation/violation-invitation'
+				value: '/pages/other/violation-invitation-v2/violation-invitation-v2'
 			},
 			{
 				menu_id: "cancel-inviter",

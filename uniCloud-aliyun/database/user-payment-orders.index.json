@@ -1,0 +1,19 @@
+[
+	{
+		"IndexName": "user_id_total_fee",
+		"MgoKeySchema": {
+			"MgoIndexKeys": [
+				{
+					"Name": "user_id",
+					"Direction": "1"
+				},
+				{
+					"Name": "total_fee",
+					"Direction": "1"
+				}
+			],
+			"MgoIsUnique": false,
+			"MgoIsSparse": false
+		}
+	}
+]

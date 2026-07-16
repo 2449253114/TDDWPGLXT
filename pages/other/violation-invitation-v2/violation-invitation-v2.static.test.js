@@ -1,0 +1,176 @@
+const assert = require('assert')
+const fs = require('fs')
+const path = require('path')
+
+const workspaceRoot = path.resolve(__dirname, '..', '..', '..')
+const pagePath = path.join(__dirname, 'violation-invitation-v2.vue')
+const normalizeNewlines = source => source.replace(/\r\n/g, '\n')
+const pageSource = normalizeNewlines(fs.readFileSync(pagePath, 'utf8'))
+const discoverySource = normalizeNewlines(fs.readFileSync(path.join(__dirname, 'violation-invitation-v2.discovery.js'), 'utf8'))
+const scanSource = normalizeNewlines(fs.readFileSync(path.join(__dirname, 'violation-invitation-v2.scan.js'), 'utf8'))
+const baselineStoreSource = normalizeNewlines(fs.readFileSync(path.join(__dirname, 'violation-invitation-v2.baseline-store.js'), 'utf8'))
+const accountActionSource = normalizeNewlines(fs.readFileSync(path.join(__dirname, 'violation-invitation-v2.account-action.js'), 'utf8'))
+const scriptMatch = pageSource.match(/<script>([\s\S]*?)<\/script>/)
+
+assert(scriptMatch, 'Vue script block is missing')
+assert.doesNotThrow(() => {
+	new Function(scriptMatch[1].replace('export default', 'return'))
+}, 'Vue script contains invalid JavaScript syntax')
+assert.doesNotThrow(() => new Function(discoverySource), 'Discovery mixin contains invalid JavaScript syntax')
+assert.doesNotThrow(() => new Function(baselineStoreSource), 'IndexedDB baseline store contains invalid JavaScript syntax')
+assert.doesNotThrow(() => new Function(accountActionSource), 'Status-only account action helpers contain invalid JavaScript syntax')
+assert(discoverySource.includes("scanScope: 'all'"), 'The default scan scope must discover all invitation relationships')
+assert(discoverySource.includes('async startRiskScan()'), 'The active risk discovery workflow is missing')
+const startRiskScanMethod = discoverySource.match(/async startRiskScan\(\) \{[\s\S]*?\r?\n\t\t\},\r?\n\t\tbuildScanSummary/)
+assert(startRiskScanMethod, 'The complete risk discovery workflow cannot be inspected')
+const baselineReadIndex = startRiskScanMethod[0].indexOf('loadDiscoveryBaseline(inviterIds, true)')
+const finalRelationshipVerificationIndex = startRiskScanMethod[0].indexOf('verifyInvitationSnapshots(riskSnapshots')
+const finalInviterVerificationIndex = startRiskScanMethod[0].indexOf("'正在最终复核邀请人资料'")
+const resultPublishIndex = startRiskScanMethod[0].indexOf('this.publishScanView({')
+const baselineCommitIndex = startRiskScanMethod[0].indexOf('persistDiscoveryBaseline(')
+assert(
+	baselineReadIndex !== -1 &&
+	baselineReadIndex < finalRelationshipVerificationIndex &&
+	finalRelationshipVerificationIndex < finalInviterVerificationIndex &&
+	finalInviterVerificationIndex < resultPublishIndex &&
+	resultPublishIndex < baselineCommitIndex,
+	'Complete relationships and inviters must be verified before results are published, and verified results must be visible before a slow baseline commit'
+)
+assert(startRiskScanMethod[0].includes('const resultPublishedAt = Date.now()'), 'Displayed completion time must be captured when verified results are published')
+assert(startRiskScanMethod[0].includes('this.scanCompletedAt = Date.now()'), 'The final displayed completion time must be refreshed after baseline persistence finishes')
+assert(startRiskScanMethod[0].includes('riskRelationshipCount > 0 && acceptedRiskRelationshipCount === 0'), 'A non-empty relationship pass must never silently publish an empty inviter list')
+assert(discoverySource.includes('async hasIndependentInvitationWitness'), 'All-scope zero results need a witness that does not reuse the primary relationship predicate')
+assert(discoverySource.includes('this.resetScanResultFilters()'), 'Publishing a new scan must clear stale filters that could hide every result')
+assert(pageSource.includes('结果已汇总于'), 'The result card must remain visible while the local baseline is still being saved')
+assert(pageSource.includes('首遍实际读取 {{ scanReadSummary.relationshipCount }} 条关系'), 'A real empty result must expose its actual first-pass relationship count')
+assert(pageSource.includes('被当前筛选条件全部隐藏'), 'A filter-hidden result list must be distinguishable from a genuinely empty scan')
+assert(discoverySource.includes('createBaselineStore'), 'The discovery baseline must use the client-side IndexedDB store')
+assert(baselineStoreSource.includes('INDEXED_DB_REQUEST_BATCH_SIZE = 200'), 'Large IndexedDB baseline operations must use bounded request batches')
+assert(baselineStoreSource.includes('mapRequestsInBatches'), 'IndexedDB reads and writes must share the bounded batch helper')
+assert(discoverySource.includes('baselineStore.replaceAll'), 'All-scope scans must atomically replace the IndexedDB baseline')
+assert(discoverySource.includes('baselineStore.mergeBaseline'), 'Partial scans must merge only their inviter baselines')
+assert(discoverySource.includes('baselineStore.saveReviewed'), 'Reviewing one inviter must update only that IndexedDB record')
+assert(!discoverySource.includes('uni.setStorageSync'), 'The discovery baseline must not be stored in one synchronous cache key')
+assert(pageSource.includes("scanScope === 'code'"), 'Invite-code lookup must remain an optional scan scope')
+assert(!pageSource.includes('scanTimeRange'), 'The time scope must not expose the obsolete timestamp-range model')
+assert(!pageSource.includes('datetimerange'), 'Operators should select dates without entering time-of-day values')
+assert(pageSource.includes(':end="businessToday"'), 'Manual date selection must reject future business dates in the UI')
+assert(discoverySource.includes("{ value: 'today', label: '今天' }"), 'Today shortcut is missing')
+assert(discoverySource.includes("{ value: 'dayBeforeYesterday', label: '前天' }"), 'Day-before-yesterday shortcut is missing')
+assert(discoverySource.includes("{ value: 'days30', label: '30 天内' }"), '30-day shortcut is missing')
+assert(discoverySource.includes("{ value: 'reviewed', label: '已审核' }"), 'Reviewed inviter results need a dedicated review filter')
+assert(discoverySource.includes("this.scanReviewFilter === 'reviewed' && item.pendingReview"), 'The reviewed filter must exclude pending items')
+assert(pageSource.includes('已自动标记已审核'), 'The automatic-review badge must stay accurate after an inviter is later unbanned')
+assert(!pageSource.includes('已封禁，已自动纳入基线'), 'The review badge must not claim an inviter is still banned after unbanning')
+assert(discoverySource.includes('INVITER_QUERY_CONCURRENCY = 4'), 'Inviter profile queries must use bounded batch concurrency')
+assert(discoverySource.includes('LOCAL_RETRY_CONCURRENCY = 3'), 'Local cursor probes must stay within the six-request global ceiling')
+assert(discoverySource.includes('RELATION_QUERY_CONCURRENCY = 6'), 'Relationship scans must use bounded six-way concurrency')
+assert(discoverySource.includes('ID_RANGE_PROBE_CONCURRENCY = 3'), 'Two-request range probes must use at most three concurrent probe tasks')
+assert(discoverySource.includes('RELATION_SHARD_COUNT = 24'), 'Large Aliyun ObjectId scans must be split into enough work-stealing shards')
+assert(discoverySource.includes('SCAN_READ_MAX_ATTEMPTS = 3'), 'Transient ClientDB reads must use a bounded retry count')
+assert(discoverySource.includes('async readClientDbWithRetry'), 'ClientDB scan reads must share the defensive retry helper')
+assert(discoverySource.includes('读取邀请关系分片第 ${page + 1} 页'), 'Relationship page failures must identify the real failed page')
+assert(discoverySource.includes('if (!isRetryableScanReadError(error)) throw error'), 'Deterministic ClientDB errors must not be retried')
+assert(discoverySource.includes('prepareParallelInvitationSnapshots'), 'Relationship scans must use the parallel snapshot planner')
+assert(discoverySource.includes('invitationTimeAsOfCondition(confirmedAt)'), 'Every scan must freeze a business-time cutoff')
+assert(discoverySource.includes('assertNoPostBoundaryMatches'), 'Backfilled relationships beyond the fixed physical boundary must be rejected')
+assert(discoverySource.includes('postBoundaryGuard'), 'Time-risk batches must share one global post-boundary cursor guard')
+assert(startRiskScanMethod[0].includes('candidateSnapshots.fixedUpperBoundary'), 'Time candidate and full-risk stages must share the scan-start physical boundary')
+assert(startRiskScanMethod[0].includes('candidateReverified'), 'Time-scope candidate membership must be checked again after complete-risk verification')
+assert(discoverySource.includes('cancelRiskScan()'), 'Long-running scans must expose an explicit cancellation path')
+assert(pageSource.includes('@click="cancelRiskScan"'), 'The scan UI must expose the cancellation action')
+assert(!discoverySource.includes('.count()'), 'Large relationship scans must not use slow where+count queries')
+assert(!discoverySource.includes('.skip('), 'Relationship scans must not use offset pagination')
+assert(discoverySource.includes('streamInvitationSnapshots'), 'The scan must use the shared snapshot streaming pipeline')
+assert(!discoverySource.includes('verifyAnalyzedRiskProjection'), 'The obsolete repeated risk scan must not return')
+assert(!discoverySource.includes('verifyCandidateProjection'), 'The obsolete repeated candidate scan must not return')
+assert(!/setTask\([^\n]*,\s*(?:3|5|10|30|32|40|86|95|98|100)\b/.test(pageSource + discoverySource), 'Task progress must not use fabricated stage percentages')
+assert(pageSource.includes('taskStatus.metricText'), 'Task feedback must expose real count metrics')
+assert(pageSource.includes('class="inviter-detail-feedback-anchor"'), 'Opening inviter detail must expose in-place loading feedback near the clicked result list')
+assert(pageSource.includes('retryInviterDetailLoad'), 'Failed detail loading must expose an in-place retry action')
+assert(pageSource.includes('scanSummary.highIpGroupCount'), 'The result summary must strongly expose high-risk IP groups')
+assert(pageSource.includes('{{ item.invitedCount }} 人'), 'Each inviter row must explicitly show its invitee count')
+assert(pageSource.includes('IP 风险统计同时包含邀请人本人和当前名下受邀账号'), 'IP risk UI must explain that both inviter and invitees participate')
+assert(!pageSource.includes('>受邀邀请码<'), 'The invitee own code must never be mislabeled as the code used for this invitation')
+assert(pageSource.includes('邀请归属 / 自身邀请码'), 'Invite-code ownership must be explicit in the invitee table')
+assert(pageSource.includes('“账号自身邀请码”是该账号邀请别人时使用的码'), 'Operators must be told that an invitee own code is not relationship evidence')
+assert(pageSource.includes('邀请归属尚未通过校验'), 'Failed or pending ownership checks must be visibly fail-closed')
+assert(pageSource.includes("relationshipVerified ? '归属：邀请人 ID 已匹配' : '归属：尚未验证'"), 'Stale table rows must never claim verified ownership')
+assert(pageSource.includes('this.assertInviteeOwnership(users, inviterId)'), 'Every published detail must validate inviter_uid ownership before enabling actions')
+assert(pageSource.includes('this.validateInviterBanAccount(currentInviter, inviterTarget)'), 'Every invitee-ban chunk must revalidate the inviter identity before writing')
+assert(pageSource.includes('this.queryComplete && this.relationshipVerified && this.inviter && !this.inviter.missing'), 'Invitee actions must fail closed until detail, ownership, and inviter identity are all usable')
+assert(pageSource.includes('inviteeActionsReady()'), 'All invitee action surfaces must share one readiness predicate')
+assert(pageSource.includes('@click="openUnbanPreview(selectedBannedIdList)"'), 'Selected banned invitees must expose a batch-unban preview')
+assert(pageSource.includes('@click="selectFilteredBannedUsers"'), 'Operators must be able to select all banned invitees in the active filter')
+assert(pageSource.includes('await this.processUnbanChunk(chunk, inviterTarget)'), 'Batch unban must use the same bounded account-action pipeline')
+assert(pageSource.includes('}).update({ status: 0 })'), 'Unban must restore status=3 accounts to status=0')
+assert(pageSource.includes("this.openAccountActionPreview(this.accountAction, ids)"), 'Failed unban retries must not fall back to the ban action')
+assert(!pageSource.includes('violation_invitation_ban_'), 'Account actions must not depend on undeployed cloud schema marker fields')
+assert(!discoverySource.includes('violation_invitation_ban_'), 'Account reads must not request undeployed cloud schema marker fields')
+assert(pageSource.includes("analyzeInviterIpAccounts(this.inviter, users)"), 'Detail IP analysis must include the inviter')
+assert(pageSource.includes('@click="handleInviterStatusAction(item)"'), 'Every scan-result row must expose the inviter ban/unban action')
+assert(pageSource.includes('class="mobile-inviter-action"'), 'Mobile operators need an inviter-ban action near the leading invite-code columns')
+assert(pageSource.includes('@click="handleInviterStatusAction(inviter)"'), 'The detail inviter action must reuse the independent target-based workflow')
+assert(pageSource.includes(':disabled="busy || inviter.missing || !canOperateInviterStatus(inviter.status)"'), 'Inviter actions must be independent from invitee loading and limited to exact status=0 or status=3')
+assert(!pageSource.includes(':disabled="busy || !queryComplete'), 'Invitee completeness must not disable the independent inviter-ban action')
+assert(pageSource.includes("my_invite_code: target.inviteCodeExists ? target.inviteCode : dbCmd.exists(false)"), 'Inviter updates must constrain either the exact invite code or its verified absence')
+assert(pageSource.includes("const fromStatus = isBan ? 0 : 3"), 'Inviter status actions must define exact source states')
+assert(pageSource.includes("const toStatus = isBan ? 3 : 0"), 'Inviter status actions must define exact target states')
+assert(pageSource.includes("status: fromStatus\n\t\t\t\t\t\t\t\t}).update({ status: toStatus })"), 'Inviter ban/unban writes must use exact conditional state transitions')
+assert(pageSource.includes('readBackInviterStatusAccount'), 'Inviter writes must retry post-write confirmation')
+assert(pageSource.includes('confirmUnbanInviter'), 'Operators must be able to unban the inviter account itself')
+assert(pageSource.includes("metricText: '结果待确认'"), 'Unconfirmed inviter writes must not be reported as definite failures')
+assert(!pageSource.includes('userCollection.doc(inviterId).update({ status: 3 })'), 'Inviter banning must not use an unconditional document update')
+assert(scanSource.includes('SHARED_IP_GROUP_MIN = 2'), 'Same-IP change statistics must exclude singleton IP evidence')
+assert(scanSource.includes('previousCount >= SHARED_IP_GROUP_MIN'), 'Only an already-shared IP group may be reported as group growth')
+assert(pageSource.includes('新增同 IP 组'), 'The UI must label shared-IP changes explicitly')
+assert(discoverySource.includes("plan.scope === 'time'\n\t\t\t\t\t? Array.from(candidateCounts.keys())"), 'All-scope scans must not duplicate every inviter in candidateCounts')
+assert(scanSource.includes('COMPACT_COUNTER_PROMOTION_PAIRS'), 'Per-inviter scan counters must use compact small-group storage')
+
+if (process.env.VUE_TEMPLATE_COMPILER_PATH) {
+	const compiler = require(process.env.VUE_TEMPLATE_COMPILER_PATH)
+	const descriptor = compiler.parseComponent(pageSource)
+	const compiledTemplate = compiler.compile(descriptor.template.content)
+	assert.deepStrictEqual(compiledTemplate.errors, [], `Vue template errors: ${compiledTemplate.errors.join('; ')}`)
+}
+
+if (process.env.SASS_COMPILER_PATH) {
+	const sass = require(process.env.SASS_COMPILER_PATH)
+	const styleMatch = pageSource.match(/<style lang="scss">([\s\S]*?)<\/style>/)
+	assert(styleMatch, 'Vue SCSS block is missing')
+	assert.doesNotThrow(() => sass.renderSync({ data: styleMatch[1] }), 'Vue SCSS contains invalid syntax')
+}
+
+const pagesSource = fs.readFileSync(path.join(workspaceRoot, 'pages.json'), 'utf8')
+const pages = new Function(`return (${pagesSource})`)()
+const route = 'pages/other/violation-invitation-v2/violation-invitation-v2'
+assert(pages.pages.some(page => page.path === route), 'V2 page route is missing')
+
+const adminConfig = fs.readFileSync(path.join(workspaceRoot, 'admin.config.js'), 'utf8')
+assert(adminConfig.includes(`value: '/${route}'`), 'Admin menu does not point to the V2 page')
+
+const accountIndexes = JSON.parse(fs.readFileSync(
+	path.join(workspaceRoot, 'uniCloud-aliyun', 'database', 'user-accounts.index.json'),
+	'utf8'
+))
+const indexFields = new Map(accountIndexes.map(index => [
+	index.IndexName,
+	index.MgoKeySchema.MgoIndexKeys.map(key => key.Name)
+]))
+assert.deepStrictEqual(indexFields.get('inviter_uid_id'), ['inviter_uid', '_id'], 'Inviter cursor queries need a compound index')
+assert.deepStrictEqual(indexFields.get('invite_time_id'), ['invite_time', '_id'], 'Time-scope cursor queries need a compound index')
+assert.deepStrictEqual(indexFields.get('my_invite_code'), ['my_invite_code'], 'Exact invite-code lookup needs an index')
+
+const accountSchemaSource = fs.readFileSync(
+	path.join(workspaceRoot, 'uniCloud-aliyun', 'database', 'user-accounts.schema.json'),
+	'utf8'
+)
+assert(!accountSchemaSource.includes('violation_invitation_ban_'), 'The existing cloud account schema must not require marker deployment for ban/unban')
+
+const violationRegister = fs.readFileSync(
+	path.join(workspaceRoot, 'pages', 'other', 'violation-register', 'violation-register.vue'),
+	'utf8'
+)
+assert(violationRegister.includes(`/${route}?inviteCode=`), 'Violation register page still points to the old invitation page')
+
+console.log('violation invitation V2 static checks: ok')

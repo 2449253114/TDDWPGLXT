@@ -1,0 +1,49 @@
+[
+	{
+		"IndexName": "inviter_uid_id",
+		"MgoKeySchema": {
+			"MgoIndexKeys": [
+				{
+					"Name": "inviter_uid",
+					"Direction": "1"
+				},
+				{
+					"Name": "_id",
+					"Direction": "1"
+				}
+			],
+			"MgoIsUnique": false,
+			"MgoIsSparse": false
+		}
+	},
+	{
+		"IndexName": "invite_time_id",
+		"MgoKeySchema": {
+			"MgoIndexKeys": [
+				{
+					"Name": "invite_time",
+					"Direction": "1"
+				},
+				{
+					"Name": "_id",
+					"Direction": "1"
+				}
+			],
+			"MgoIsUnique": false,
+			"MgoIsSparse": false
+		}
+	},
+	{
+		"IndexName": "my_invite_code",
+		"MgoKeySchema": {
+			"MgoIndexKeys": [
+				{
+					"Name": "my_invite_code",
+					"Direction": "1"
+				}
+			],
+			"MgoIsUnique": false,
+			"MgoIsSparse": false
+		}
+	}
+]

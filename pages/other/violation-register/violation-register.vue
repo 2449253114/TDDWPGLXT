@@ -854,7 +854,7 @@
 			 */
 			checkViolationInvitation(inviteCode) {
 			  uni.navigateTo({
-			    url: `/pages/other/violation-invitation/violation-invitation?inviteCode=${inviteCode}`
+			    url: `/pages/other/violation-invitation-v2/violation-invitation-v2?inviteCode=${encodeURIComponent(String(inviteCode || ''))}`
 			  });
 			}
 		}
