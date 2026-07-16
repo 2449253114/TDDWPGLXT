@@ -1,0 +1,21 @@
+{
+  "name": "app-photo-baidu",
+  "dependencies": {
+    "auto-update-album-cover": "file:../common/auto-update-album-cover"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 10,
+    "memorySize": 512,
+    "timeout": 600,
+	"triggers": [{
+		"name": "myTrigger",
+		"type": "timer",
+		"config": "0 */50 * * * * *"
+	}],
+    "path": "/api/yike",
+    "runtime": "Nodejs16"
+  }
+}

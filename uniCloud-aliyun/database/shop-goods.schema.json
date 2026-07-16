@@ -1,0 +1,65 @@
+{
+	"bsonType": "object",
+	"description": "商城 - 商品表",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "存储文档 ID（商品 ID），系统自动生成"
+		},
+		"name": {
+			"bsonType": "string",
+			"description": "商品名称（会员名称）",
+			"title": "商品名称",
+			"trim": "both"
+		},
+		"type": {
+			"bsonType": "int",
+			"title": "商品类型",
+			"description": "商品类型：0 金币充值 、1 会员开通",
+			"enum": [
+				{
+					"text": "金币充值",
+					"value": 0
+				},
+				{
+					"text": "会员开通",
+					"value": 1
+				}
+			],
+			"defaultValue": 0
+		},
+		"price": {
+			"bsonType": "int",
+			"title": "价格",
+			"description": "会员每月多少钱 or 一元一金币",
+			"trim": "both",
+			"defaultValue": 25
+		},
+		"day_count": {// 天数
+			"bsonType": "int",
+			"title": "开通天数",
+			"description": "开通天数",
+			"defaultValue": 0
+		},
+		"giveaway_coin": {// 额外赠送的金币
+			"bsonType": "int",
+			"title": "赠送金币",
+			"description": "额外赠送的金币（仅用于充值金币或会员时的赠送金币数）",
+			"defaultValue": 0			
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	},
+	"version": "0.0.1"
+}

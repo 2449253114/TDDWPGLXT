@@ -1,0 +1,23 @@
+{
+  "name": "admin-auto-task",
+  "dependencies": {
+    "admin-auto-task": "file:../common/admin-auto-task"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 10,
+    "memorySize": 512,
+    "timeout": 600,
+    "triggers": [
+      {
+        "name": "myTrigger",
+        "type": "timer",
+        "config": "0 */2 * * * * *"
+      }
+    ],
+    "path": "/admin/auto/task/desc",
+    "runtime": "Nodejs12"
+  }
+}

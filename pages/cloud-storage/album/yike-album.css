@@ -1,0 +1,483 @@
+.yk-album__title .container {
+	height: 40px
+}
+
+.subtitle {
+	margin-left: 20px;
+	font-size: 12px;
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+}
+
+
+.yk-album__list {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	width: 100%;
+	box-sizing: border-box;
+	//padding: 10px 16px 0 24px
+}
+
+.yk-album__item {
+	position: relative;
+	width: 175px;
+	//height: 175px;
+	margin: 0 20px 20px 0;
+	cursor: pointer
+}
+
+.yk-album__item:hover .operation-btn,
+.photo-item:hover .operation-btn {
+	display: inline-block
+}
+
+.yk-album__item .operation-btn,
+.photo-item .operation-btn {
+	display: none;
+	position: absolute;
+	z-index: 1;
+	top: 10px;
+	right: 29px;
+	width: 24px;
+	height: 24px;
+	cursor: pointer
+}
+
+.yk-album__item .operation-btn image,
+.photo-item .operation-btn image {
+	width: 100%;
+	height: 100%
+}
+
+.yk-album__item .albumBg {
+	position: absolute;
+	width: 156px;
+	height: 150px;
+	top: 6px;
+	left: 19px
+}
+
+.yk-album__item .cover-wrap {
+	width: 162px;
+	height: 162px;
+	margin-bottom: 10px;
+	overflow: hidden;
+	position: relative;
+	border-radius: 10px
+}
+
+.yk-album__item .cover-wrap:hover {
+	box-shadow: 0 8px 22px 0 rgba(0, 0, 0, .2)
+}
+
+.yk-album__item--cover {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-position: 50%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	position: absolute;
+	width: 162px;
+	height: 162px;
+	display: flex
+}
+
+.yk-album__item--cover.nocover {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: #e7e7e7
+}
+
+.yk-album__item--cover.nocover image {
+	width: 162px;
+	height: 162px
+}
+
+.yk-album__item--cover .item-img {
+	object-fit: cover;
+	width: inherit
+}
+
+.yk-album__item--name {
+	margin-bottom: 4px;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 20px;
+	color: #333;
+	word-break: break-all
+}
+
+.yk-album__item--date,
+.yk-album__item--share,
+.yk-album__item--text {
+	color: #999;
+	font-size: 12px
+}
+
+.yk-popover {
+	position: absolute;
+	background: #fff;
+	/* min-width: 100px; */
+	min-width: unset !important;
+	border-radius: 10px;
+	border: 1px solid #ebeef5;
+	padding: 12px;
+	z-index: 2000;
+	color: #606266;
+	line-height: 1.4;
+	text-align: justify;
+	font-size: 14px;
+	box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+	word-break: break-all;
+	transform-origin: center top;
+	top: 50px;
+	left: 45px;
+}
+
+.yk-popper .popper__arrow,
+.yk-popper .popper__arrow:after {
+	position: absolute;
+	display: block;
+	width: 0;
+	height: 0;
+	border-color: transparent;
+	border-style: solid
+}
+
+.yk-popper .popper__arrow {
+	border-width: 6px;
+	filter: drop-shadow(0 2px 12px rgba(0, 0, 0, .03));
+}
+
+.yk-popper .popper__arrow:after {
+	content: " ";
+	border-width: 6px
+}
+
+.yk-popper .popper__arrow {
+	top: -6px;
+	left: 50%;
+	margin-right: 3px;
+	border-top-width: 0;
+	border-bottom-color: #ebeef5
+}
+
+.yk-popper .popper__arrow:after {
+	top: 1px;
+	margin-left: -6px;
+	border-top-width: 0;
+	border-bottom-color: #fff
+}
+
+.album-popover {
+	padding: 14px 10px !important;
+	box-sizing: border-box;
+	box-shadow: 0 8px 22px 0 rgba(0, 0, 0, .2);
+	border-radius: 10px !important;
+}
+
+.file-popover {
+	top: 50px!important; 
+	left: 70px!important;
+}
+
+
+
+.album-popover .btn-item,
+.album-popover .type-item {
+	width: 125px;
+	/* width: auto !important; */
+	height: 40px;
+	/* margin-bottom: 6px; */
+	border-radius: 6px;
+	line-height: 40px;
+	box-sizing: border-box;
+	/* padding-left: 12px; */
+	padding: 0 12px !important;
+	font-size: 14px;
+	font-weight: 700;
+	color: #333;
+	cursor: pointer;
+	user-select: none; /* 禁止用户选中元素的文本内容 */
+}
+
+.album-popover .type-list .type-item {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	top: 50px; 
+	left: 70px;
+}
+
+.album-popover .btn-item:hover,
+.album-popover .type-item:hover {
+	background: #f0f3ff
+}
+
+.album-popover .btn-item:last-child,
+.album-popover .type-item:last-child {
+	margin-bottom: 0
+}
+
+.type-list .current-type-item {
+	background: #f0f3ff;
+	color: #3b75ff;
+}
+
+.album-popover-hidden {
+	display: none
+}
+
+.btn-list,
+.type-list {
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+	align-items: flex-start;
+	justify-content: center;
+	/* padding-top: 15px; */
+	/* padding-bottom: 15px */
+}
+
+.btn-list .btn-item {
+	width: auto!important;
+}
+
+.btn-list .btn {
+	border-radius: 20px;
+	width: 98px;
+	height: 36px;
+	line-height: 34px;
+	text-align: center;
+	color: #333;
+	font-size: 14px;
+	border: 1px solid #e0e0e0;
+	box-sizing: border-box;
+	cursor: pointer
+}
+
+.btn-list .btn.confirm {
+	border: none;
+	background: linear-gradient(64deg, #3974ff, #394bff);
+	color: #fff;
+	line-height: 36px;
+	margin-left: 10px
+}
+
+.btn-list .btn.confirm.canNotConfirm {
+	background: linear-gradient(64deg, rgba(57, 116, 255, .3), rgba(57, 75, 255, .3))
+}
+
+
+
+.uni-empty-text {
+	position: absolute;
+	right: 0;
+	left: 0;
+	text-align: center;
+	font-size: 14px;
+	color: #999;
+}
+
+.uni-table-mask {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: rgba(255, 255, 255, 0.8);
+	z-index: 99;
+	/* #ifndef APP-NVUE */
+	display: flex;
+	margin: auto;
+	transition: all 0.5s;
+	/* #endif */
+	justify-content: center;
+	align-items: center;
+}
+
+.uni-table--loader {
+	width: 30px;
+	height: 30px;
+	border: 2px solid #aaa;
+	// border-bottom-color: transparent;
+	border-radius: 50%;
+	/* #ifndef APP-NVUE */
+	animation: 2s uni-table--loader linear infinite;
+	/* #endif */
+	position: relative;
+}
+
+.album-box .album-title {
+	font-family: PingFangSC-Semibold;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	font-size: 20px;
+	color: #333;
+	line-height: 28px
+}
+
+.album-box .album-arrow {
+	width: 8px;
+	height: 11px;
+	background: url('@/static/yike/icon-arrow.png') no-repeat;
+	background-size: cover;
+	margin: 0 10px
+}
+
+.select-all {
+	cursor: pointer;
+	user-select: none;
+}
+
+.global-top {
+	position: sticky;
+	top: 0;
+	z-index: 99;
+	background: #fff;
+}
+
+.handleBar {
+	justify-content: flex-start !important;
+	box-sizing: border-box;
+}
+
+
+
+.mr-5 {
+	margin-right: 5px;
+}
+
+.album_id {
+	font-size: 12px;
+	color: rgba(33, 33, 33, 0.75);
+}
+
+
+
+
+
+.delete-header {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 99;
+	display: flex;
+	box-sizing: border-box;
+	width: 100%;
+	height: 60px;
+	justify-content: space-between;
+	align-items: center;
+	background-image: linear-gradient(45deg, #5789ff, #5c7bff 100%);
+	color: #fff;
+	box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .06)
+}
+
+
+.delete-header .header-left .close {
+	font-size: 26px;
+	padding: 6px;
+	border-radius: 26px;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.delete-header .header-left .close:hover {
+	background: hsla(0, 0%, 84.7%, .2)
+}
+
+.delete-header .header-left span {
+	font-family: PingFangSC-Semibold;
+	font-size: 16px;
+	letter-spacing: 0
+}
+
+.delete-header .header-left .select-all {
+	color: #fff;
+	height: 22px;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 22px;
+	margin-left: 22px
+}
+
+.delete-header .header-right .right-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 9px 15px;
+	margin-left: 8px;
+	cursor: pointer;
+	position: relative;
+	border-radius: 26px;
+	user-select: none;
+}
+
+.delete-header .header-right .right-btn:hover {
+	background: hsla(0, 0%, 84.7%, .2)
+}
+
+.delete-header .header-right .right-btn div {
+	padding: 8px 10px;
+	border-radius: 6px;
+	top: 62px;
+	position: absolute;
+	font-family: PingFangSC-Medium;
+	font-size: 12px;
+	color: #fff;
+	letter-spacing: 0;
+	text-align: center;
+	line-height: 24px;
+	background: #4a4a4a;
+	box-shadow: 0 2px 8px 0 rgba(0, 0, 0, .2);
+}
+
+.delete-header .header-right .right-btn div p:last-child {
+	font-family: PingFangSC-Regular
+}
+
+.delete-header .header-right .right-btn div:after {
+	content: "";
+	top: -14px;
+	right: 35px;
+	position: absolute;
+	background: url(data:image/png;base64,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);
+	width: 25px;
+	height: 15px;
+	background-size: cover
+}
+
+.delete-header .header-right .right-btn p {
+	font-family: PingFangSC-Semibold;
+	font-size: 14px;
+	letter-spacing: 0;
+	text-align: center
+}
+
+.delete-header .icon {
+    font-size: 25px;
+    margin-right: 3px
+}
+
+.right-btn {
+	position: relative;
+	display: inline-block;
+}
+
+.right-btn div {
+	display: none;
+	position: absolute;
+	top: 100%;
+	left: 0;
+}
+
+.right-btn:hover div {
+	display: block;
+}

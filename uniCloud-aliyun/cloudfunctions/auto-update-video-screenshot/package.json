@@ -1,0 +1,21 @@
+{
+  "name": "auto-update-video-screenshot",
+	"version": "1.0.0",
+	"description": "自动更新视频封面和视频截帧拼图URL的云函数，每1小时触发一次（每小时的23分触发，如08:23:00、09:23:00）",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+	"cloudfunction-config": {
+	  "concurrency": 10,
+	  "memorySize": 512,
+	  "timeout": 600,
+		"triggers": [{
+			"name": "myTrigger",
+			"type": "timer",
+			"config": "0 23 * * * * *"
+		}],
+	  "path": "/admin/auto/update/video/screenshot",
+	  "runtime": "Nodejs12"
+	}
+}

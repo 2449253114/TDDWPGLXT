@@ -1,0 +1,37 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "文件与人物关联表",
+	"required": ["file_id", "person_id"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"file_id": {
+			"bsonType": "int",
+			"description": "文件ID，关联Files表",
+			"foreignKey": "yike-album-files.fsid"
+		},
+		"person_id": {
+			"bsonType": "int",
+			"description": "人物ID，关联Persons表",
+			"foreignKey": "yike-person.person_id"
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"label": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+				"name": "uni-dateformat"
+			}
+		}
+	}
+}

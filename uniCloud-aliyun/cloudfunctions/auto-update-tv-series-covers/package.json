@@ -1,0 +1,21 @@
+{
+  "name": "auto-update-tv-series-covers",
+  "dependencies": {
+    "auto-update-tv-series-covers": "file:../common/auto-update-tv-series-covers"
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 10,
+    "memorySize": 512,
+    "timeout": 600,
+	"triggers": [{
+		"name": "myTrigger",
+		"type": "timer",
+		"config": "0 */59 * * * * *"
+	}],
+    "path": "/api/auto/tv/test",
+    "runtime": "Nodejs12"
+  }
+}

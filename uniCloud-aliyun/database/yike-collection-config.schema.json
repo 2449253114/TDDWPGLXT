@@ -1,0 +1,68 @@
+{
+	"bsonType": "object",
+	"description": "一刻相册 - 采集配置表",
+	"required": [
+		"notes",
+		"uk",
+		"bdstoken",
+		"Cookie"
+	],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"notes": {
+			"bsonType": "string",
+			"title": "备注",
+			"description": "如 “我的一刻相册”, “一刻相册用户名” 等" ,
+			"defaultValue": ""
+		},
+		"uk": {
+			"bsonType": "string",
+			"title": "uk",
+			"description": "一刻相册用户id，https://photo.baidu.com/youai/album/v1/streaming接口参数中找uk字段",
+			"defaultValue": ""
+		},
+		"bdstoken": {
+			"bsonType": "string",
+			"title": "bdstoken",
+			"description": "一刻相册token令牌，https://photo.baidu.com/youai/album/v1/list接口参数中找bdstoken字段",
+			"defaultValue": ""
+		},
+		"clienttype": {
+			"bsonType": "string",
+			"title": "clienttype",
+			"description": "客户端类型 70为Web",
+			"defaultValue": "70"
+		},
+		"Cookie": {
+			"bsonType": "string",
+			"title": "Cookie",
+			"description": "Cookie",
+			"defaultValue": ""
+		},
+		"Host": {
+			"bsonType": "string",
+			"title": "Host",
+			"defaultValue": "photo.baidu.com"
+		},
+		"Origin": {
+			"bsonType": "string",
+			"title": "Origin",
+			"defaultValue": "https://photo.baidu.com"
+		},
+		"Referer": {
+			"bsonType": "string",
+			"title": "Referer",
+			"description": "https://photo.baidu.com/photo/web/album/相册id  变量方法 “Referer/相册id” ，不加相册id代表获取全部相册，加id代表获取指定id相册" ,
+			"defaultValue": "https://photo.baidu.com/photo/web/album"
+		}
+	},
+	"version": "0.0.1"
+}

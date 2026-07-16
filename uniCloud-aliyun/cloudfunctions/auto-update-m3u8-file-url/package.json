@@ -1,0 +1,20 @@
+{
+	"name": "auto-update-m3u8-file-url",
+	"description": "定时任务：每8分钟触发一次",
+	"dependencies": {},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+		"concurrency": 10,
+		"memorySize": 512,
+		"timeout": 600,
+		"triggers": [{
+			"name": "myTrigger",
+			"type": "timer",
+			"config": "0 0,16,31,45 * * * * *"
+		}],
+		"path": "/api/auto/m3u8fileurl/test",
+		"runtime": "Nodejs12"
+	}
+}

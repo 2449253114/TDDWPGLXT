@@ -1,0 +1,200 @@
+{
+	// 用户数据库表
+	"bsonType": "object",
+	"description": "用户 - 用户表",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "存储文档 ID（用户 ID），系统自动生成"
+		},
+		"is_internal_user": {
+			"bsonType": "bool",
+			"title": "内部用户",
+			"description": "是否内部用户",
+			"defaultValue": false
+		},
+		"username": {
+			"bsonType": "string",
+			"title": "用户名",
+			"description": "用户名，不允许重复",
+			"trim": "both",
+			"defaultValue": ""
+		},
+		"password": {
+			"bsonType": "string", // 一种特殊的string。这类字段不会通过clientDB传递给前端，所有用户都不能通过clientDB读写，即使是admin管理员
+			"title": "密码",
+			"description": "密码",
+			"trim": "both",
+			"defaultValue": ""
+		},
+		"nickname": {
+			"bsonType": "string",
+			"title": "昵称",
+			"description": "用户昵称",
+			"trim": "both",
+			"defaultValue": "" 
+		},
+		"introduction": {
+			"bsonType": "string",
+			"title": "个人介绍",
+			"description": "个性签名（个人简介）",
+			"defaultValue": "这个人很懒，什么也没留下",
+			"trim": "both"
+		},
+		"daily_movie_count": {
+			"bsonType": "int",
+			"title": "每日观看次数",
+			"description": "每日观看次数",
+			"defaultValue": 3,
+			"foreignKey": "yuta-app-config.free_video_views_per_day"
+		},
+		"surplus_movie_count": {
+			"bsonType": "int",
+			"title": "当日剩余观看次数",
+			"description": "当日剩余观看次数",
+			"defaultValue": 3
+		},
+		"score": {
+			"bsonType": "int",
+			"title": "积分",
+			"description": "用户积分，积分变更记录可参考：uni-id-scores表定义",
+			"defaultValue": 0
+		},
+		"coin": {
+			"bsonType": "int",
+			"title": "湾币",
+			"description": "我的湾币",
+			"defaultValue": 0
+		},
+		"vip": {
+			"bsonType": "bool",
+			"title": "会员",
+			"description": "是否会员",
+			"defaultValue": false
+		},
+		"vip_expire_date": { // vip_expire_time 会更好，后续版本改名
+			"bsonType": "timestamp",
+			"title": "会员有效期至",
+			"description": "会员有效期至",
+			"defaultValue": 0 // 默认值必须是0，不然每次登录都会被覆盖，如果使用"$env": "now"
+		},
+		"vip_level": {
+			"bsonType": "int",
+			"description": "会员等级：0 会员（VIP） 1 大会员（SVIP）",
+			"title": "会员等级",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "会员（VIP）",
+					"value": 0
+				},
+				{
+					"text": "大会员（SVIP）",
+					"value": 1
+				}
+			]
+		},
+		"inviter_uid": {
+			"bsonType": "string",
+			"description": "邀请人ID",
+			"title": "邀请人",
+			"defaultValue": ""
+		},
+		"invite_time": {
+			"bsonType": "timestamp",
+			"title": "受邀时间",
+			"description": "受邀时间",
+			"defaultValue": 0
+		},
+		"my_invite_code": {
+			"bsonType": "string",
+			"title": "我的邀请码",
+			"description": "用户自身邀请码",
+			"defaultValue": ""
+		},
+		"device_oaid": {
+			"bsonType": "string",
+			"title": "设备oaid",
+			"description": "设备oaid",
+			"defaultValue": ""
+		},
+		"app_platform": {
+			"bsonType": "string",
+			"title": "APP平台",
+			"description": "熊多多、与他...",
+			"defaultValue": ""
+		},
+		"status": {
+			"bsonType": "int",
+			"description": "用户状态：0 正常 1 禁止购买会员 2 审核中 3 已被封禁",
+			"title": "用户状态",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "正常",
+					"value": 0
+				},
+				{
+					"text": "禁止购买会员",
+					"value": 1
+				},
+				// {
+				// 	"text": "审核中",
+				// 	"value": 2
+				// },
+				{
+					"text": "已被封禁",
+					"value": 3
+				}
+			]
+		},
+		"description": {
+			"bsonType": "string",
+			"title": "备注说明",
+			"description": "备注说明，自用，一般封禁用户账号的备注说明"
+		},
+		"avatar": {
+			"bsonType": "string",
+			"title": "头像地址",
+			"description": "头像地址",
+			"defaultValue": "",
+			"trim": "both"
+		},
+		"login_date": {
+			"bsonType": "timestamp",
+			"title": "最后登录时间",
+			"description": "最后登录时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		},
+		"login_ip": {
+			"bsonType": "string",
+			"title": "最后登录时 IP 地址",
+			"description": "最后登录时 IP 地址",
+			"defaultValue": {
+				"$env": "clientIP"
+			}
+		},
+		"register_date": {
+			"bsonType": "timestamp",
+			"title": "注册时间",
+			"description": "注册时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		},
+		"register_ip": {
+			"bsonType": "string",
+			"title": "注册时 IP 地址",
+			"description": "注册时 IP 地址",
+			"defaultValue": {
+				"$env": "clientIP"
+			}
+		}
+	}
+}

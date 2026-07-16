@@ -1,0 +1,56 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "过滤相册（将不需要的同步的相册 添加到 过滤相册 中，这样会在 采集相册列表时 自动排除掉 已过滤的相册）",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "album_id",
+			"description": "一刻相册_相册id",
+			"defaultValue": ""
+		},
+		"cover_info": {
+			"bsonType": "object",// object类型，不能加默认值:{}
+			"title": "cover_info",
+			"description": "一刻相册_相册封面"
+			/* "defaultValue": {
+				"uk": 1815907562,
+				"fsid": 511843860017785,
+				"category": 1,
+				"md5": "293d0510df79b806b59e7475307a1249",
+				"server_md5": "a30799d2ej55f3faddf0ff65ee62db6a",
+				"path": "/youa/web/转码VID_20230814_205310_274.mp4",
+				"thumburl": [
+					"https://pcsdata.baidu.com/thumbnail/a30799d2ej55f3faddf0ff65ee62db6a?fid=1815907562-16051585-511843860017785&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-ExlUX%2F1WcR3qJul0QUsqrJxfGSY%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=368242517301816081&dp-callid=0&time=1703937600&bus_no=26&size=c800_u800&quality=100&vuk=-&ft=video",
+					"https://pcsdata.baidu.com/thumbnail/a30799d2ej55f3faddf0ff65ee62db6a?fid=1815907562-16051585-511843860017785&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-ExlUX%2F1WcR3qJul0QUsqrJxfGSY%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=368242517301816081&dp-callid=0&time=1703937600&bus_no=26&size=c1600_u1600&quality=100&vuk=-&ft=video"
+				],
+				"dlink": "https://photo.baidu.com/youai/album/v1/download?album_id=4064158634569417858&uk=1815907562&tid=0&fsid=511843860017785"
+			} */
+		},
+		"notice": {
+			"bsonType": "string",
+			"title": "相册描述",
+			"description": "一刻相册 相册描述"
+		},
+		"tid": {
+			"bsonType": "string",
+			"title": "tid",
+			"description": "一刻相册 tid"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "相册名称",
+			"description": "一刻相册 相册名称"
+		}
+	}
+}

@@ -1,0 +1,179 @@
+{
+	"bsonType": "object",
+	"description": "统一支付订单表",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "存储文档 ID（统一订单 ID），系统自动生成"
+		},
+		"body": {
+			"bsonType": "string",
+			"title": "商品描述",
+			"description": "商品描述"
+		},
+		"payment-platforms": { // TODO 2025-0114-1625新增字段，区分是那个支付平台的订单，暂未对接。
+			"bsonType": "string",
+			"title": "支付平台",
+			"description": "支付平台，蓝兔支付 | 七相支付 | 彩虹易支付"
+		},
+		"pay_type": {
+			"bsonType": "string",
+			"title": "支付渠道",
+			"description": "支付渠道，wxpay | alipay"
+		},
+		"out_trade_no": {
+			"title": "支付订单号",
+			"bsonType": "string",
+			"description": "支付订单号（需控制唯一，不传则由插件自动生成）",
+			"trim": "both"
+		},
+		"total_fee": {
+			"bsonType": "int",
+			"title": "订单总金额",
+			"description": "订单总金额，单位：元。（只支持int整数型，不支持小数，0.9这样不行）"
+		},
+		"timestamp": {
+			"bsonType": "timestamp",
+			"title": "发起订单时间",
+			"description": "（发起订单时间）当前时间戳。示例值：1669518774"
+		},
+		"sign": {
+			"bsonType": "string",
+			"title": "数据签名",
+			"description": "签名，数据签名的算法请参考《签名算法》。示例值：4440B462E792B604BD56A37EA41E5B8F"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"title": "下单用户ID",
+			"description": "下单用户ID，uni-id-users表",
+			"foreignKey": "user-accounts._id",
+			"defaultValue": ""
+		},
+		"client_ip": {
+			"title": "客户端IP",
+			"bsonType": "string",
+			"description": "创建支付的客户端ip",
+			"trim": "both",
+			"defaultValue": {
+				"$env": "clientIP"
+			}
+		},
+		"platform": {
+			"bsonType": "String",
+			"title": "下单平台",
+			"description": "下单平台类型：与他APP 等",
+			"defaultValue": "与他APP"
+		},
+		"order_type": {
+			"bsonType": "int",
+			"title": "订单类型",
+			"enum": [{
+					"text": "金币充值",
+					"value": 0
+				},
+				{
+					"text": "会员开通",
+					"value": 1
+				}
+			],
+			"description": "订单类型 0：金币充值 1：会员开通",
+			"defaultValue": 0
+		},
+		"status": {
+			"title": "订单状态",
+			"bsonType": "int",
+			"enum": [{
+					"text": "未支付",
+					"value": 0
+				},
+				{
+					"text": "已支付",
+					"value": 1
+				},
+				{
+					"text": "已退款",
+					"value": 2
+				}
+			],
+			"description": "订单状态 0：未支付 1：已支付 2：已退款",
+			"defaultValue": 0
+		},
+		// "month": {// 已弃用，改为天数
+		// 	"bsonType": "int",
+		// 	"title": "会员开通月份",
+		// 	"description": "开通几个月会员（用于订单类型是1：会员开通）",
+		// 	"defaultValue": 0
+		// },
+		"day_count": {
+			"bsonType": "int",
+			"title": "开通会员天数",
+			"description": "开通会员天数（仅用于充值会员时的会员天数）",
+			"defaultValue": 0
+		},
+		"giveaway_coin": { // 额外赠送的金币
+			"bsonType": "int",
+			"title": "赠送金币",
+			"description": "额外赠送的金币（仅用于充值金币或会员时的赠送金币数）",
+			"defaultValue": 0
+		},
+		"system_recharge_issuccess": {
+			"bsonType": "bool",
+			"title": "系统充值是否成功",
+			"description": "用来记录当给用户充值金币/会员完成时记录true，防止同订单重复充值，带来的bug",
+			"defaultValue": false
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "订单创建时间",
+			"description": "订单创建时间/发起退款时间"
+		},
+		"pay_success_time": {
+			"title": "支付完成时间",
+			"bsonType": "string",
+			"description": "订单付款时间（支付完成时间，订单查询API返回参数）"
+		},
+		"pay_add_time": {
+			"title": "下单时间",
+			"bsonType": "string",
+			"description": "下单时间（订单查询API返回参数）"
+		},
+		"pay_no": {
+			"title": "微信支付订单号",
+			"bsonType": "string",
+			"description": "微信支付订单号，当支付状态为已支付时返回此参数。（订单查询API返回参数）"
+		},
+		"cancel_date": {
+			"title": "取消时间",
+			"bsonType": "timestamp",
+			"description": "订单取消时间"
+		},
+		"is_payment_status_checked": {
+			"title": "支付状态检查标记（蓝兔支付）",
+			"bsonType": "bool",
+			"description": "此字段用于标识订单的支付状态是否已经在第三方支付平台进行了查询。当用户完成支付操作后，如果由于应用被重启或其他原因导致本地支付状态未及时更新，这个字段会在重启后用来检查并同步第三方支付平台的支付状态。true 表示已检查并确认了第三方支付平台的支付状态，无论是支付完成还是未完成；false 表示本地数据库状态尚未与第三方支付平台同步。这确保了即使在应用重启后，用户的支付状态也能被准确追踪和处理，以便及时更新数据库并发放相应的奖励。",
+			"defaultValue": false
+		},
+		"original_data": {
+			"title": "异步通知原始数据",
+			"bsonType": "object",
+			"description": "异步回调通知返回的原始数据，微信是xml转json后的数据，支付宝是原始json"
+		},
+		"notify_date": {
+			"title": "异步通知时间",
+			"bsonType": "timestamp",
+			"description": "订单通知支付成功时间"
+		},
+		"jump_h5_pay_url": {
+			"title": "支付跳转链接",
+			"bsonType": "string",
+			"description": "支付跳转链接，URL为拉起微信支付的中间页面，可通过访问该URL来拉起微信客户端，完成支付，URL的有效期为5分钟。示例值： https: //api.ltzf.cn/template/html/jump_h5?order_no=WX202305091807051373879911"
+		}
+	},
+	"version": "0.0.1"
+}

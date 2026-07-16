@@ -1,0 +1,7 @@
+{
+  "name": "local-test-method",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -1,0 +1,148 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	// 目前调整成仅用于 "同志漫画"，所以现在这是 "同志漫画 - 漫画表"
+	// 后期单独弄一个 "阅读文"，用来后台可以添加相册文件，用于分享推广APP。
+	"description": "阅读文 | 阅读管理 | 漫画、贴子",
+	"required": ["title", "creator_user", "your_story", "thumburl", "create_time"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "标题",
+			"description": "文章或漫画的标题",
+			"errorMessage": "{title}不能为空"
+		},
+		"excerpt": {
+			"bsonType": "string",
+			"title": "摘要",
+			"trim": "both",
+			"defaultValue": ""
+		},
+		"source_url": {
+			"bsonType": "array",
+			"title": "来源地址",
+			"items": {
+				"bsonType": "string",
+				"trim": "both"
+			},
+			"defaultValue": []
+		},
+		"creator_user": {
+			"bsonType": "object",
+			"title": "创建者信息",
+			"description": "文章或漫画的创建者信息",
+			"required": ["nickname"],
+			"properties": {
+				"user_id": {
+					"bsonType": "string",
+					"title": "用户ID",
+					"description": "创建者的用户ID",
+					"defaultValue": "0" // 0为内部
+				},
+				"nickname": {
+					"bsonType": "string",
+					"title": "昵称",
+					"description": "创建者的昵称",
+					"errorMessage": "{title}不能为空"
+				}
+			}
+		},
+		"your_story": {
+			"bsonType": "array",
+			"title": "内容",
+			"description": "包含故事内容的数组",
+			"items": {
+				"bsonType": "object",
+				"required": ["album_type", "category", "file_type", "thumburl"],
+				"properties": {
+					"category": {
+						"bsonType": "int",
+						"title": "文件类别",
+						"description": "文件类别：1表示视频，3表示图片",
+						"errorMessage": "{title}不能为空"
+					},
+					"file_type": {
+						"bsonType": "string",
+						"title": "文件类型",
+						"description": "文件类型：image/video",
+						"errorMessage": "{title}不能为空"
+					},
+					"description": {
+						"bsonType": "string",
+						"title": "描述",
+						"description": "描述：如“第1页”、“熊1爸爸操小熊0”"
+					},
+					"fsid": {
+						"bsonType": "string",
+						"title": "文件ID",
+						"description": "文件在系统中的唯一标识符",
+						"defaultValue": "0" // 必填，前端只需判断fsid不为0且category为1，则为“一刻相册”的视频（调用视频流api接口来播放视频）
+					},
+					"album_id": {
+						"bsonType": "string",
+						"title": "相册ID",
+						"description": "，所属相册的ID",
+						"defaultValue": "0"
+					},
+					"uk": {
+						"bsonType": "string",
+						"title": "用户密钥",
+						"description": "一刻相册_文件上传者用户id",
+						"defaultValue": "0"
+					},
+					"tid": {
+						"bsonType": "string",
+						"title": "事务ID",
+						"description": "一刻相册_相册tid",
+						"defaultValue": "0"
+					},
+					"thumburl": {
+						"bsonType": "array",
+						"title": "缩略图URL",
+						"description": "内容的缩略图地址",
+						"items": {
+							"bsonType": "string"
+						}
+					},
+					"bytes": {
+						"bsonType": "string",
+						"title": "文件大小",
+						"description": "以GB、MB、KB单位表示的文件大小",
+						"defaultValue": "0MB"
+					},
+					"duration_format": {
+						"bsonType": "string",
+						"title": "持续时间",
+						"description": "格式化后的总时长，如01:30:55",
+						"defaultValue": "00:00"
+					}
+				}
+			}
+		},
+		"thumburl": {
+			"bsonType": "array",
+			"title": "封面大图",
+			"description": "内容的缩略图地址",
+			"items": {
+				"bsonType": "string"
+			}
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "内容创建的时间戳",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

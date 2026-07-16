@@ -1,0 +1,415 @@
+@import '@/uni.scss';
+
+$your_story_items: 500px;
+$editorWidth: $your_story_items + 128px;// 128px等于.edit-box的padding左右边距宽度: 32px 64px(这个x2得来的);
+
+// --- 自己的样式 Strat
+
+.your_story {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.your_story_items {
+	position: relative;
+	width: $your_story_items;
+}
+.video_extra_info {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+.settings {
+	
+}
+.settings-thumburl {
+	width: 165px;
+}
+.settings-thumburl-mask {
+	width: 165px;
+	height: 165px;
+	background-color: rgba(0,0,0,.5);
+}
+
+.ProseMirror {
+	
+}
+.syl-toolbar {
+	display: flex;
+	flex-direction: row;
+	margin-top: 24px;
+}
+.syl-toolbar-tool {
+	display: flex;
+	flex-direction: row;
+	margin-right: 20px;
+}
+.syl-toolbar-tool-text {
+	margin-left: 5px;
+	color: #222222!important;
+}
+
+.proview-textarea-box {
+	position: fixed;
+	position: fixed;
+	left: 25px;
+	top: 60px + 25px;// 60px=.header{height60}、25px=.uni-container{padding-top25}
+	width: 375px * 0.85;// 第一种方式，仅水平方向缩放
+	//width: 375px;
+	//height: 812px;// iPhone 12
+	//height: calc(100vh - 60px - 25px - 25px - 56px);// 56px=.footer{height56}
+	background-color: #fff;
+	//border-radius: 10px;       /* 设置圆角 */
+	//border: 3.5px solid #333333; /* 设置边框样式，宽度，类型和颜色 */
+	padding: 15px;
+}
+.t-h2 {
+	font-size: 16px;
+	font-weight: 600;
+	margin-bottom: 10px;
+}
+
+.composable-proview {
+	position: fixed;
+	right: 25px;
+	top: 60px + 25px;// 60px=.header{height60}、25px=.uni-container{padding-top25}
+	width: 375px * 0.85;// 第一种方式，仅水平方向缩放
+	//width: 375px;
+	//height: 812px;// iPhone 12
+	height: calc(100vh - 60px - 25px - 25px - 56px);// 56px=.footer{height56}
+	background-color: #fff;
+	border-radius: 10px;       /* 设置圆角 */
+	border: 3.5px solid #333333; /* 设置边框样式，宽度，类型和颜色 */
+	//transform: scaleX(0.75); /* 仅水平方向缩放 */
+}
+.composable-proview-content {
+	border-radius: 10px;
+	height: 100%;
+	width: 100%;
+	//background-color: #222222;
+	overflow-y: auto; /* 启用垂直滚动 */
+    //scrollbar-width: none; /* 针对 Firefox 浏览器隐藏滚动条 */
+    //-ms-overflow-style: none; /* 针对 IE 和 Edge 浏览器隐藏滚动条 */
+	scrollbar-width: 5px; /* 设置滚动条宽度为细 */
+	scrollbar-color: #888 #f1f1f1; /* 设置滚动条颜色 (滑块和轨道) */
+}
+.composable-proview-content::-webkit-scrollbar {
+    //display: none; /* 针对 WebKit 浏览器（如 Chrome、Safari）隐藏滚动条 */
+}
+
+/* 自定义滚动条的整体部分 */
+.composable-proview-content::-webkit-scrollbar {
+    width: 5px; /* 滚动条的宽度 */
+	border-radius: 10px; /* 设置圆角 */
+}
+
+/* 自定义滚动条轨道的样式 */
+.composable-proview-content::-webkit-scrollbar-track {
+    background: #f1f1f1; /* 轨道的背景颜色 */
+	border-radius: 10px; /* 设置轨道的圆角 */
+}
+
+/* 自定义滚动条滑块的样式 */
+.composable-proview-content::-webkit-scrollbar-thumb {
+    background: #888; /* 滑块的背景颜色 */
+	border-radius: 10px; /* 设置圆角 */
+}
+
+/* 当鼠标悬停在滚动条滑块上时 */
+.composable-proview-content::-webkit-scrollbar-thumb:hover {
+    background: #555; /* 滑块的背景颜色（鼠标悬停时） */
+}
+
+.reading-title {
+	font-family: CustomSansSerif,'Lucida Grande',Arial,sans-serif;
+	font-weight: 700;
+	font-style: normal;
+	//font-size: 32px;
+	margin: 21px 21px 12px;
+	//line-height: 34px;
+	
+	font-size: 28px;
+	line-height: 30px;
+}
+.reading-extra {
+	font-family: CustomSansSerif,'Lucida Grande',Arial,sans-serif;
+	font-size: 15px;
+	line-height: 18px;
+	color: #79828B;
+	margin: 12px 21px;
+	font-style: normal;
+}
+.reading-extra-author {
+	
+}
+.reading-extra-ctime:before {
+    content: '\2022';
+    padding: 0 7px;
+}
+.reading-excerpt {
+	
+}
+.reading-page-count {
+	font-family: CustomSerif,Georgia,Cambria,'Times New Roman',serif;
+	font-size: 21px;
+	color: rgba(0,0,0,.6);
+	margin: 18px 21px 16px;
+	padding: 0 18px;
+	text-align: center;
+	font-style: italic;
+}
+.reading-content-figure {
+	margin: 0 21px 16px;
+	padding: 0;
+	text-align: center;
+	position: relative;
+}
+.reading-content-figure-image {
+	margin-bottom: 10px;
+}
+.editable-text {
+	font-family: CustomSansSerif,'Lucida Grande',Arial,sans-serif;
+	font-size: 15px;
+	color: #79828B;
+	text-align: center;
+}
+
+
+body, uni-page-body, .uni-page-body, uni-page-wrapper, .uni-page-wrapper {
+	background-color: #f8f8f8!important;
+	height: 100%!important;
+}
+
+
+.scroll-Y, .uni-scroll-view, uni-scroll-view {
+	border-radius: 10px;
+	height: 100%;
+	width: 100%;
+	scrollbar-width: none!important; /* 针对 Firefox 浏览器隐藏滚动条 */
+	-ms-overflow-style: none!important; /* 针对 IE 和 Edge 浏览器隐藏滚动条 */
+}
+.scroll-Y::-webkit-scrollbar, .uni-scroll-view::-webkit-scrollbar {
+    display: none!important; /* 针对 WebKit 浏览器（如 Chrome、Safari）隐藏滚动条 */
+}
+.scroll-view-item {
+	// height: 600rpx;
+	// line-height: 600rpx;
+	// text-align: center;
+	// font-size: 36rpx;
+}
+scroll-view ::-webkit-scrollbar {
+	width: 0;
+	height: 0;
+	background-color: transparent;
+}
+
+.header .right {
+	display: flex;
+	flex: 1;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: flex-end;
+}
+.footer .uni-group {
+	justify-content: flex-start;
+	padding: 0 30px;
+}
+.footer {
+	display: flex;
+	align-items: center;
+}
+
+// --- 自己的样式 End
+
+
+::v-deep {
+  [contenteditable] {
+    outline: none;
+  }
+  .ql-clipboard {
+    position: fixed;
+    top: -1000px;
+    left: -1000px;
+  }
+}
+
+.uni-container {
+	background: #f8f8f8;
+	//padding-bottom: 66px;
+	//margin-top: 54px;
+	padding-bottom: 86px;
+	padding-top: 25px;
+	.header {
+		width: $editorWidth;
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		margin: 0 auto;
+		z-index: 999;
+		height: 60px;
+		display: flex;
+		align-items: center;
+		.back {
+			cursor:pointer;
+			color: #333;
+		}
+	}
+	.footer {
+		background: #fff;
+		height: 56px;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		border-top: #ebebeb solid 1px;
+		z-index: 101;
+		.wrap {
+			width: $editorWidth;
+			margin: 0 auto;
+			display: flex;
+			align-items: center;
+			height: 100%;
+			.left {
+				flex: 1;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				.word-count, .auto-save {
+					font-size: 12px;
+					color: #666;
+				}
+			}
+			.right {
+				display: flex;
+				align-items: center;
+				.uni-button-group {
+					margin: 0;
+				}
+			}
+		}
+	}
+	.edit-box {
+		width: $editorWidth;
+		padding: 32px 64px;
+		box-sizing: border-box;
+		margin: 0 auto;
+		background: #fff;
+		border-radius: $uni-border-radius-sm;
+	}
+
+	.title, .editor {
+		border-bottom: #f2f2f2 solid 1px;
+		padding-bottom: 24px;
+	}
+	.editor {
+		padding-top: 24px;
+	}
+	.title {
+		.uni-input {
+			font-size: 23px;
+			font-weight: bold;
+			width: 100%;
+			min-height: 0;
+		}
+	}
+
+	.settings {
+		margin-top: 24px;
+		.excerpt {
+			border-radius: $uni-border-radius-sm;
+			border: #e5e5e5 solid 1px;
+			width: 100%;
+			padding: 10px;
+			font-size: 14px;
+		}
+	}
+	.thumbnail-list {
+		display: flex;
+		gap: 10px;
+		margin-top: 20px;
+	}
+	.thumbnail {
+		width: 150px;
+		height: 150px;
+		border: #e5e5e5 solid 1px;
+		border-radius: $uni-border-radius-sm;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		position: relative;
+		cursor: pointer;
+		overflow: hidden;
+		.placeholder {
+			position: absolute;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			left: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.remove-thumbnail {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background: rgba(0,0,0,.5);
+			padding: 3px;
+			border-radius: 50%;
+			width: 20px;
+			height: 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 2;
+		}
+	}
+	.thumb-mode {
+		.mode {
+			margin-right: 10px;
+			&:last-child {
+				margin-right: 0;
+			}
+			::v-deep {
+				.uni-radio-input {
+					transform: scale(.7);
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 768px) {
+	.uni-container{
+		margin-top: 0;
+		padding: 0;
+		.header {
+			display: none;
+		}
+		.title, .editor {
+			border-bottom: #f2f2f2 solid 1px;
+			padding-bottom: 12px;
+		}
+		.edit-box {
+			width: 100%;
+			padding: 10px;
+		}
+		.settings {
+			.excerpt {
+				width: auto;
+			}
+		}
+		.footer {
+			display: none;
+		}
+	}
+}
+
+@media (min-width: 768px) {
+	.uni-container{
+		.uni-button-group.m {
+			display: none;
+		}
+	}
+}

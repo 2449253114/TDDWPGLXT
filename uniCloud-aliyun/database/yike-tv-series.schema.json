@@ -1,0 +1,83 @@
+{
+	"bsonType": "object",
+	"title": "电视剧集",
+	"description": "电视剧及其剧集信息的数据库表",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_id": {
+			"bsonType": "string",
+			"description": "关联的相册ID，用于获取文件",
+			"title": "相册ID"
+		},
+		"show_name": {
+			"bsonType": "string",
+			"description": "电视剧剧名",
+			"title": "剧名"
+		},
+		"episodes": {
+			"bsonType": "array",
+			"description": "电视剧剧集信息列表",
+			"title": "剧集信息",
+			"items": {
+				"bsonType": "object",
+				"properties": {
+					"episode_number": {
+						"bsonType": "int",
+						"description": "当前集数",
+						"title": "集数",
+						"minimum": 1
+					},
+					"episode_name": {
+						"bsonType": "string",
+						"description": "当前集名",
+						"title": "集名",
+						"trim": "both",
+						"maxLength": 100
+					},
+					"video_fsid": {
+						"bsonType": "string",
+						"description": "当前集的视频文件fsid",
+						"title": "视频文件fsid"
+					},
+					"cover_fsid": {
+						"bsonType": "string",
+						"description": "当前集的封面文件fsid",
+						"title": "封面文件fsid"
+					}
+				}
+			}
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "电视剧描述信息",
+			"title": "描述",
+			"trim": "both",
+			"maxLength": 500
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "发布状态",
+			"description": "发布状态：0 草稿箱 1 已发布",
+			"defaultValue": 0,
+			"enum": [
+				{
+					"value": 0,
+					"text": "草稿箱"
+				},
+				{
+					"value": 1,
+					"text": "已发布"
+				}
+			]
+		}
+	}
+}

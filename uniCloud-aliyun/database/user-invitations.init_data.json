@@ -1,0 +1,38 @@
+[
+    {
+        "_id": {
+            "$oid": "64f0287309664caf290cd7e4"
+        },
+        "user_id": {
+            "$oid": "64f025f955b3378257854772"
+        },
+        "user_invite_users_id": {
+            "$oid": "64f02873a09a9bd68bd2c5f0"
+        },
+        "user_invite_time": 1693460595076
+    },
+    {
+        "_id": {
+            "$oid": "64f05ff9bd0220bf8cab7e0e"
+        },
+        "user_id": {
+            "$oid": "64f02b426e5d2d8f64e04a43"
+        },
+        "user_invite_users_id": {
+            "$oid": "64f05ff9a09a9bd68bdd3666"
+        },
+        "user_invite_time": 1693474809493
+    },
+    {
+        "_id": {
+            "$oid": "64f062d07ad52ddc64be1e4f"
+        },
+        "user_id": {
+            "$oid": "64f02b426e5d2d8f64e04a43"
+        },
+        "user_invite_users_id": {
+            "$oid": "64f062d086206658e93ae1dd"
+        },
+        "user_invite_time": 1693475536787
+    }
+]

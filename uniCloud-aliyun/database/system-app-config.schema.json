@@ -1,0 +1,202 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "APP设置",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"register_reward": {
+		    "bsonType": "object",
+		    "title": "新用户注册奖励",
+		    "description": "新用户注册平台时自动获得的奖励。管理员可以指定奖励的类型（如金币或VIP天数）和数量，以激励更多新用户的加入。",
+		    "properties": {
+		        "reward_type": {
+		            "bsonType": "int",
+		            "title": "奖励类型",
+		            "description": "用户注册奖励的类型，如：金币、VIP天数等",
+		            "defaultValue": 1,
+		            "enum": [{
+		                    "value": 0,
+		                    "text": "金币"
+		                },
+		                {
+		                    "value": 1,
+		                    "text": "VIP天数"
+		                }
+		            ]
+		        },
+		        "reward_amount": {
+		            "bsonType": "int",
+		            "title": "奖励数量",
+		            "description": "新用户注册平台后所获得的奖励数量",
+		            "defaultValue": 7
+		        }
+		    }
+		},
+		"daily_login_reward": {
+		    "bsonType": "object",
+		    "title": "每日登录奖励",
+		    "description": "用户每日登录App时获得的奖励。管理员可以指定奖励的类型（如金币或VIP天数）和数量，以增加用户的日常活跃度。",
+		    "properties": {
+		        "reward_type": {
+		            "bsonType": "int",
+		            "title": "奖励类型",
+		            "description": "用户每日登录奖励的类型，如：金币、VIP天数等",
+		            "defaultValue": 0,
+		            "enum": [{
+		                    "value": 0,
+		                    "text": "金币"
+		                },
+		                {
+		                    "value": 1,
+		                    "text": "VIP天数"
+		                }
+		            ]
+		        },
+		        "reward_amount": {
+		            "bsonType": "int",
+		            "title": "奖励数量",
+		            "description": "用户每日登录App后获得的奖励数量",
+		            "defaultValue": 1
+		        }
+		    }
+		},
+		"weekly_login_vip_reward": {
+		    "bsonType": "object",
+		    "title": "周登陆VIP奖励",
+		    "description": "用户在指定的周几登录App时，可以获得额外的VIP体验天数。",
+		    "properties": {
+		        "login_day": {
+		            "bsonType": "int",
+		            "title": "登录日",
+		            "description": "用户需要登录的星期几，以数字表示，1代表周一，2代表周二，依此类推至7代表周日。",
+		            "defaultValue": 6,
+		            "enum": [
+		                {"value": 1, "text": "周一"},
+		                {"value": 2, "text": "周二"},
+		                {"value": 3, "text": "周三"},
+		                {"value": 4, "text": "周四"},
+		                {"value": 5, "text": "周五"},
+		                {"value": 6, "text": "周六"},
+		                {"value": 7, "text": "周日"}
+		            ]
+		        },
+		        "reward_vip_days": {
+		            "bsonType": "int",
+		            "title": "奖励VIP天数",
+		            "description": "用户在指定日登录后获得的额外VIP体验天数。",
+		            "defaultValue": 1
+		        }
+		    }
+		},
+		"invite_reward": {
+			"bsonType": "object",
+			"title": "邀请奖励",
+			"description": "设置用户邀请新用户加入平台时获得的奖励。管理员可以指定奖励的类型（如金币或VIP天数）和数量，激励现有用户邀请更多新用户，从而增加平台的用户基数和活跃度。",
+			"properties": {
+				"reward_type": {
+					"bsonType": "int",
+					"title": "奖励类型",
+					"description": "用户邀请奖励的类型，如：积分、金币、VIP天数等",
+					"defaultValue": 1,
+					"enum": [{
+							"value": 0,
+							"text": "金币"
+						},
+						{
+							"value": 1,
+							"text": "VIP天数"
+						}
+					]
+				},
+				"reward_amount": {
+					"bsonType": "int",
+					"title": "奖励数量",
+					"description": "用户邀请每位新用户所获得的奖励数量",
+					"defaultValue": 3
+				}
+			}
+		},
+		"share_reward": {
+		    "bsonType": "object",
+		    "title": "分享奖励",
+		    "description": "用户分享App后获得的奖励。",
+		    "properties": {
+				"reward_type": {
+					"bsonType": "int",
+					"title": "奖励类型",
+					"description": "分享奖励的类型，如金币、VIP天数等",
+					"defaultValue": 0,
+					"enum": [
+						{"value": 0, "text": "金币"},
+						{"value": 1, "text": "VIP天数"}
+					]
+				},
+		        "reward_amount": {
+		            "bsonType": "int",
+		            "title": "奖励数量",
+		            "description": "用户分享App后获得的奖励数量",
+		            "defaultValue": 1
+		        }
+		    }
+		},
+		"free_video_views_per_day": {
+			"bsonType": "int",
+			"title": "每日免费视频观看次数",
+			"description": "用户每日免费观看视频的次数",
+			"defaultValue": 3
+		},
+		"app_file_cover_type": {
+			"bsonType": "int",
+			"title": "文件封面URL",
+			"description": "文件封面URL类型",
+			"defaultValue": 1,
+			"enum": [{
+					"value": 0,
+					"text": "一刻相册"
+				},
+				{
+					"value": 1,
+					"text": "uniCloud"
+				}
+			]
+		},
+		//  还需要公告（弹出层）、通知（走马灯文字）
+		"app_download_link": {
+			"bsonType": "string",
+			"title": "APP下载链接",
+			"defaultValue": ""
+		},
+		"app_dwonload_qr_code": {
+			"bsonType": "string",
+			"title": "APP下载二维码",
+			"defaultValue": ""
+		},
+		"app_share_content": {
+			"bsonType": "string",
+			"title": "APP分享内容",
+			"defaultValue": "",
+			"description": ""
+		},
+		"app_home_notice": {
+			"bsonType": "string",
+			"title": "APP首页公告",
+			"defaultValue": "",
+			"description": ""
+		},
+		"app_version": {
+			"bsonType": "string",
+			"title": "APP版本",
+			"description": "用于和客户端APP对比版本，如果不一致则提示更新",
+			"defaultValue": "1.0.0"
+		}
+	}
+}

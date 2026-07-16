@@ -1,0 +1,7 @@
+{
+  "name": "test-request-m3u8",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

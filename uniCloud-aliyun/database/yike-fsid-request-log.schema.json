@@ -1,0 +1,67 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "这个表用于追踪fsid的请求情况，记录每个文件请求的详细信息，包括文件ID、请求账号ID、请求状态和请求时间。",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "album_id",
+			"description": "一刻相册，相册id，和相册列表项关联",
+			"foreignKey": "yike-albums.album_id", // 关联某表字段
+			"defaultValue": ""
+		},
+		"fsid": {
+			"bsonType": "int",
+			"title": "文件ID",
+			"description": "一刻相册，文件的唯一标识符"
+		},
+		"tid": {
+			"bsonType": "string",
+			"title": "tid",
+			"description": "一刻相册，tid",
+			"defaultValue": ""
+		},
+		"uk": {
+			"bsonType": "int",
+			"title": "uk",
+			"description": "一刻相册，文件上传者用户id",
+			"defaultValue": ""
+		},
+		"account_id": {
+			"bsonType": "string",
+			"title": "账号ID",
+			"description": "发起请求的账号ID",
+			"defaultValue": ""
+		},
+		"m3u8_file_url": {
+			"bsonType": "string",
+			"title": "m3u8文件URL",
+			"description": "uniCloud云存储中的m3u8文件URL",
+			"defaultValue": ""
+		},
+		"requested": {
+			"bsonType": "bool",
+			"title": "已被请求",
+			"description": "标记文件是否已被请求过",
+			"defaultValue": false
+		},
+		"request_time": {
+			"bsonType": "timestamp",
+			"title": "请求时间",
+			"description": "请求发生的时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

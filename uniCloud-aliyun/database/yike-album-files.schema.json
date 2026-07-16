@@ -1,0 +1,207 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "一刻相册 - 相册文件表; 相册文件（相册里的文件）",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_type": { // 这里就这样默认0就好了，像同志网络剧等哪些自定义的，单独放到其他数据库表中。
+			"bsonType": "int",
+			"title": "相册类型",
+			"description": "相册类型：0 一刻相册 1 网剧相册 2 同多多相册", // 这个 [album_type] 是自己加的字段
+			"defaultValue": 0,
+			"enum": [{
+					"text": "一刻相册",
+					"value": 0
+				},
+				{
+					"text": "网剧相册",
+					"value": 1
+				},
+				{
+					"text": "同多多相册",
+					"value": 2
+				}
+			]
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "album_id",
+			"description": "一刻相册_相册id，和相册列表项关联",
+			"foreignKey": "yike-albums.album_id", // 关联某表字段
+			"defaultValue": ""
+		},
+		"category": {
+			"bsonType": "int",
+			"title": "类别",
+			"description": "一刻相册_文件类别: 1=视频；3=图片",
+			"defaultValue": 1,
+			"enum": [{
+					"text": "视频",
+					"value": 1
+				},
+				{
+					"text": "图片",
+					"value": 3
+				}
+			]
+		},
+		"file_type": { // 自己补充的字段
+			"bsonType": "string",
+			"title": "文件类型", // 采集后同步上传时自动根据 [category] 字段，设为对应值。这个 [file_type] 是自己加的字段
+			"description": "文件类型: image/video",
+			"defaultValue": "video"
+		},
+		"ctime": {
+			"bsonType": "timestamp",
+			"title": "上传时间",
+			"description": "一刻相册 文件上传/创建时间，时间戳：秒（S）"
+		},
+		"desc": {
+			"bsonType": "string",
+			"title": "描述",
+			"description": "一刻相册_文件描述"
+		},
+		"dlink": {
+			"bsonType": "string",
+			"title": "dlink",
+			"description": "一刻相册_文件下载地址"
+		},
+		"extra_info": {
+			"bsonType": "object",
+			"title": "额外信息",
+			"description": "一刻相册_额外信息"
+			/* "defaultValue": {
+				"date_time": "2023:12:23 19:57:08",
+				"duration": "1321.069313",
+				"duration_ms": "1321104",
+				"height": "1000",
+				"width": "1776"
+			} */
+		},
+		"fsid": {
+			"bsonType": "int", // 请求一刻相册视频流接口时，需要将fsid.toString(), 视频流接口所有字段必须是string类型
+			"title": "fsid",
+			"description": "一刻相册_文件id"
+		},
+		"md5": {
+			"bsonType": "string",
+			"title": "md5",
+			"description": "一刻相册_文件md5"
+		},
+		"nickname": {
+			"bsonType": "string",
+			"title": "nickname",
+			"description": "一刻相册_上传者昵称"
+		},
+		"path": {
+			"bsonType": "string",
+			"title": "path",
+			"description": "一刻相册_上传路径（上传到一刻相册的云盘路径）"
+		},
+		"photo": {
+			"bsonType": "string",
+			"title": "photo",
+			"description": "一刻相册_上传者头像"
+		},
+		"server_md5": {
+			"bsonType": "string",
+			"title": "server_md5",
+			"description": "一刻相册_服务器md5"
+		},
+		"size": {
+			"bsonType": "int",
+			"title": "size",
+			"description": "一刻相册_文件大小" // 单位：bytes 
+		},
+		"bytes": { // 自己补充的字段
+			"bsonType": "string",
+			"title": "bytes",
+			"description": "GB、MB、KB" // 对 [size] 字段格式化为GB、MB、KB单位的数值，如188.4M。这个 [bytes] 是自己加的字段
+		},
+		"duration_format": { // 采集后同步上传时自动根据 [category == 1] 字段，设为对应值。这个 [duration_format] 是自己加的字段
+			"bsonType": "string",
+			"title": "总时长",
+			"description": "总时长格式化后：时分秒 01:30:55",
+			"defaultValue": "0"
+		},
+		"thumburl": { // [album_type] 为“同多多相册”时，[0]为空，[1]为uniCloud云储存中的文件地址，因为要统一
+			"bsonType": "array",
+			"title": "thumburl",
+			"description": "一刻相册_文件缩略图[0]、文件原图[1]"
+		},
+		"tid": {
+			"bsonType": "string",
+			"title": "tid",
+			"description": "一刻相册_相册tid"
+		},
+		"uk": {
+			"bsonType": "int",
+			"title": "uk",
+			"description": "一刻相册_文件上传者用户id"
+		},
+		"title": { // 这个 [title] 是自己加的字段
+			"bsonType": "string",
+			"title": "标题",
+			"description": "一刻相册_相册文件没有名称，这个title是自己加的字段" // 这个 [title] 是自己加的字段
+		},
+		"tag": { // 这个 [tag] 是自己加的字段
+			"bsonType": "array",
+			"title": "标签",
+			"description": "标签 同多多网盘系统内置",
+			"defaultValue": []
+		},
+		"free_video": { // 这个 [free_video] 是自己加的字段
+			"bsonType": "bool",
+			"title": "限免视频",// 或者最好新建个Rees短视频的表，然后做个自动扫描这个表的定时任务与前端手动操作的功能，让他自动遍历listfile表，找出<=5分钟的视频，并添加到Rees表中，这样在APP端，Rees获取数据会更快。
+			"description": "视频是否限时免费",// 限免视频仅用于Rees抖音上下滑动页面，暂时未开放，后续开发（当采集同步云端时，如果视频时长<=5分钟，则限免=true）
+			"defaultValue": false
+		},
+		"price": {
+			"bsonType": "int",
+			"title": "价格",
+			"description": "单独购买此文件的价格",
+			"trim": "both",
+			"defaultValue": 10
+		},
+		"duration_ms_long": {
+			"bsonType": "int",
+			"title": "总时长毫秒",
+			"description": "总时长毫秒",
+			"trim": "both",
+			"defaultValue": 0
+		},
+		"status": { // 这个 [status] 是自己加的字段
+			"bsonType": "int",
+			"title": "发布状态",
+			"description": "发布状态：0 草稿箱 1 已发布",
+			"defaultValue": 1,
+			"enum": [{
+					"value": 0,
+					"text": "草稿箱"
+				},
+				{
+					"value": 1,
+					"text": "已发布"
+				},
+				{
+					"value": 2,
+					"text": "审核中"
+				}
+			]
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "同步至后台 > 云储存管理 > 文件管理 > 时的随机分配时间，时间戳：毫秒（mS）"
+		}
+	}
+}

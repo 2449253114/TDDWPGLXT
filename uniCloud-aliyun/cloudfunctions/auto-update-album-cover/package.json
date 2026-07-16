@@ -1,0 +1,19 @@
+{
+  "name": "auto-update-album-cover",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+  	"concurrency": 10,
+  	"memorySize": 512,
+  	"timeout": 600,
+  	"triggers": [{
+  		"name": "myTrigger",
+  		"type": "timer",
+  		"config": "0 0 4 * * * *"
+  	}],
+  	"path": "/api/test",
+  	"runtime": "Nodejs12"
+  }
+}

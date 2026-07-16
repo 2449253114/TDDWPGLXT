@@ -1,0 +1,29 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"invalid_m3u8_file_url": {
+			"bsonType": "string",
+			"title": "已失效的m3u8文件URL",
+			"description": "uniCloud云存储中的m3u8文件URL，用于清理掉失效的文件，节省云空间每日消费",
+			"defaultValue": ""
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

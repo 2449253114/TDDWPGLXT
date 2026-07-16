@@ -1,0 +1,614 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		// #ifdef APP 
+		{
+			"path" : "pages/other/kefu-activate-vip/kefu-activate-vip",
+			"style" : {
+				"navigationBarTitleText" : ""
+			}
+		},
+		// #endif 
+		{
+			"path": "pages/unlock/unlock",
+			"style": {
+				"navigationBarTitleText": "解锁进入后台",
+				"leftWindow": false,
+				"topWindow": false
+			}
+		},
+		{
+			"path": "pages/index/adminHome"
+		},
+		// #ifdef H5 
+		{
+			"path" : "pages/other/kefu-activate-vip/kefu-activate-vip",
+			"style" : {
+				"navigationBarTitleText" : ""
+			}
+		},
+		// #endif 
+		{
+			"path": "pages/index/uni-stat/uni-stat",
+			"style": {
+				"navigationBarTitleText": "统计"
+			}
+		},
+		{
+			"path": "pages/error/404",
+			"style": {
+				"navigationBarTitleText": "Not Found"
+			}
+		},
+		{
+			"path": "pages/telegra.ph/cheerio/cheerio",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/telegra.ph/cheerio/tongyong",
+			"style": {
+				"navigationBarTitleText": "",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/index/test/test",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/uni-stat/uChart/uChart",
+			"style": {
+				"navigationBarTitleText": "模版图表"
+			}
+		},
+		{
+			"path": "pages/other/perk/perk",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/test/test2",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path": "pages/index/test/test3",
+			"style": {
+				"navigationBarTitleText": ""
+			}
+		},
+		{
+			"path" : "pages/index/other/other_1",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path" : "pages/other/xiufu-video/xiufu-video",
+			"style" : 
+			{
+				"navigationBarTitleText" : ""
+			}
+		},
+		{
+			"path": "pages/yike-fsid-request-log/add",
+			"style": {
+				"navigationBarTitleText": "新增"
+			}
+		},
+		{
+			"path": "pages/yike-fsid-request-log/edit",
+			"style": {
+        "navigationBarTitleText": "编辑"
+			}
+		},
+		{
+			"path": "pages/yike-fsid-request-log/list",
+			"style": {
+				"navigationBarTitleText": "列表"
+			}
+		},
+		{
+			"path" : "pages/other/violation-invitation/violation-invitation",
+			"style" : 
+			{
+				"navigationBarTitleText" : "效验是否违规邀请"
+			}
+		},
+		{
+			"path" : "pages/other/violation-register/violation-register",
+			"style" : 
+			{
+				"navigationBarTitleText" : "违规注册检测系统"
+			}
+		}
+],
+	"subPackages": [{
+			"root": "pages/system",
+			"pages": [{
+					"path": "app/config/basic",
+					"style": {
+						"navigationBarTitleText": "APP设置"
+					}
+				}, {
+					"path": "app/notice/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "app/notice/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "app/notice/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "app/notice/mass",
+					"style": {
+						"navigationBarTitleText": "群发通知"
+					}
+				}, {
+					"path": "yike/account-cookie/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "yike/account-cookie/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "yike/account-cookie/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}, {
+					"path": "tag/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "tag/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "tag/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}
+			]
+		}, {
+			"root": "pages/member",
+			"pages": [{
+				"path": "users/add",
+				"style": {
+					"navigationBarTitleText": "新增"
+				}
+			}, {
+				"path": "users/edit",
+				"style": {
+					"navigationBarTitleText": "编辑"
+				}
+			}, {
+				"path": "users/list",
+				"style": {
+					"navigationBarTitleText": "列表"
+				}
+			}, {
+				"path": "pay-orders/add",
+				"style": {
+					"navigationBarTitleText": "新增"
+				}
+			}, {
+				"path": "pay-orders/edit",
+				"style": {
+					"navigationBarTitleText": "编辑"
+				}
+			}, {
+				"path": "pay-orders/list",
+				"style": {
+					"navigationBarTitleText": "列表"
+				}
+			}, {
+				"path": "shop-goods/add",
+				"style": {
+					"navigationBarTitleText": "新增"
+				}
+			}, {
+				"path": "shop-goods/edit",
+				"style": {
+					"navigationBarTitleText": "编辑"
+				}
+			}, {
+				"path": "shop-goods/list",
+				"style": {
+					"navigationBarTitleText": "列表"
+				}
+			}, {
+				"path": "purchases/add",
+				"style": {
+					"navigationBarTitleText": "新增"
+				}
+			}, {
+				"path": "purchases/edit",
+				"style": {
+					"navigationBarTitleText": "编辑"
+				}
+			}, {
+				"path": "purchases/list",
+				"style": {
+					"navigationBarTitleText": "列表"
+				}
+			}]
+		},
+		{
+			"root": "pages/demo",
+			"pages": [{
+					"path": "icons/icons",
+					"style": {
+						"navigationBarTitleText": "图标"
+					}
+				},
+				{
+					"path": "table/table",
+					"style": {
+						"navigationBarTitleText": "表格"
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/photo-baidu",
+			"pages": [
+
+				{
+					"path": "config/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "config/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "config/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}, {
+					"path": "web/album/list/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "web/album/listfile/listfile",
+					"style": {
+						"navigationBarTitleText": "",
+						"enablePullDownRefresh": false,
+						"leftWindow": false,
+						"topWindow": false
+					}
+				},
+				{
+					"path": "web/album/filter/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "web/album/filter/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "web/album/filter/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "web/person/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}, {
+					"path": "collection/album_files/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "collection/album_files/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "collection/album_files/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "collection/async-to-cloud-storage-file/index",
+					"style": {
+						"navigationBarTitleText": "将采集的相册文件同步到云存储相册文件",
+						"enablePullDownRefresh": false,
+						"topWindow": false,
+						"leftWindow": false
+					}
+				},
+				{
+					"path": "fastupload/fastupload",
+					"style": {
+						"navigationBarTitleText": "一刻相册 · 上传文件到相册的示例",
+						"enablePullDownRefresh": false
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/cloud-storage",
+			"pages": [{
+					"path": "album/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "album/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				},
+				{
+					"path": "album/detail",
+					"style": {
+						"navigationBarTitleText": "详情（某相册全部文件）"
+					}
+				}, {
+					"path": "album/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "file/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "file/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "file/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}, {
+					"path": "reading/add",
+					"style": {
+						"navigationBarTitleText": "新增",
+						"backgroundColor": "#f8f8f8",
+						"leftWindow": false,
+						"topWindow": true
+					}
+				}, {
+					"path": "reading/edit",
+					"style": {
+						"navigationBarTitleText": "编辑",
+						"backgroundColor": "#f8f8f8",
+						"leftWindow": false,
+						"topWindow": true
+					}
+				}, {
+					"path": "reading/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}, {
+					"path": "person/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "person/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "person/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				}, {
+					"path": "m3u8file/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "m3u8file/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "m3u8file/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "person/bind/bind-cover-fsid",
+					"style": {
+						"navigationBarTitleText": "",
+						"leftWindow": false,
+						"topWindow": false
+					}
+				}, {
+					"path": "tv-series/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "tv-series/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "tv-series/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "tv-series/test-auto-stask/test-auto-stask",
+					"style": {
+						"navigationBarTitleText": "测试自动更新电视剧剧集的相册文件的封面"
+					}
+				}
+			]
+		}, {
+			"root": "pages/cheerio-crawler",
+			"pages": [{
+					"path": "tasks/add",
+					"style": {
+						"navigationBarTitleText": "新增"
+					}
+				}, {
+					"path": "tasks/edit",
+					"style": {
+						"navigationBarTitleText": "编辑"
+					}
+				}, {
+					"path": "tasks/list",
+					"style": {
+						"navigationBarTitleText": "列表"
+					}
+				},
+				{
+					"path": "tasks/crawler/crawler",
+					"style": {
+						"navigationBarTitleText": "采集漫画任务页",
+						"enablePullDownRefresh": false,
+						"leftWindow": false,
+						"topWindow": true
+					}
+				},
+				{
+					"path": "tasks/ubearcn/ubearcn",
+					"style": {
+						"navigationBarTitleText": "http://gw-hope.blogspot.com/2020/05/20200508.html漫画网站的专用采集页",
+						"enablePullDownRefresh": false,
+						"leftWindow": false,
+						"topWindow": true
+					}
+				},
+				{
+					"path": "tasks/ubearcn/fs-file/fs-file",
+					"style": {
+						"navigationBarTitleText": "测试",
+						"enablePullDownRefresh": false
+					}
+				}
+			]
+		},
+		{
+			"root": "pages/telegram",
+			"pages": [{
+					"path": "tdl/chat-ls/chat-ls",
+					"style": {
+						"navigationBarTitleText": "列出聊天列表"
+					}
+				},
+				{
+					"path": "tdl/chat-exoprt/chat-exoprt",
+					"style": {
+						"navigationBarTitleText": "导出聊天消息"
+					}
+				}
+			]
+		}
+
+		/* ,
+		{
+			"root": "pages/uni-stat",
+			"pages": [{
+					"path": "pay-order/overview/overview",
+					"style": {
+						"navigationBarTitleText": "订单概况",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "pay-order/list/list",
+					"style": {
+						"navigationBarTitleText": "订单明细",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "pay-order/funnel/funnel",
+					"style": {
+						"navigationBarTitleText": "漏斗分析",
+						"enablePullDownRefresh": false
+					}
+				},
+				{
+					"path": "pay-order/ranking/ranking",
+					"style": {
+						"navigationBarTitleText": "用户价值排行",
+						"enablePullDownRefresh": false
+					}
+				}
+			]
+		} */
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "管理系统",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"h5": {
+			"titleNView": false
+		},
+		"app-plus": {
+		  "titleNView": true
+		}
+	},
+	"topWindow": {
+		"path": "windows/topWindow",
+		"style": {
+			"height": "60px"
+		},
+		"matchMedia": {
+			"minWidth": 0
+		}
+	},
+	"leftWindow": {
+		"path": "windows/leftWindow",
+		"style": {
+			"width": "240px"
+		}
+	}
+	/* , // 注释后不需要登录
+	"uniIdRouter": {
+		"loginPage": "uni_modules/uni-id-pages/pages/login/login-withpwd",
+		"needLogin": [
+			"^((?!uni-id-pages\/pages\/login|register|retrieve).)*$"
+		],
+		"resToLogin": true
+	} */
+}

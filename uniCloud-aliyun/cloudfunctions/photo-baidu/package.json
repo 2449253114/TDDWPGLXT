@@ -1,0 +1,15 @@
+{
+  "name": "photo-baidu",
+  "dependencies": {
+  },
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 10,
+    "memorySize": 512,
+    "timeout": 600,
+	"path": "/api/v1/photobaidu",
+    "runtime": "Nodejs12"
+  }
+}

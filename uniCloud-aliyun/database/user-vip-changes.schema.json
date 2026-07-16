@@ -1,0 +1,56 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "会员变更记录表",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "用户id，参考uni-id-users表",
+			"foreignKey": "user-accounts._id",
+			"defaultValue": ""
+		},
+		"time_limit_day": {
+			"bsonType": "int",
+			"title": "天数",
+			"description": "时间限制天（本次变化的天数，也就是充值的天数）"
+		},
+		"vip_expire_date": {
+			"bsonType": "timestamp",
+			"title": "会员有效期至",
+			"description": "会员有效期至",
+			"defaultValue": 0
+		},
+		"out_trade_no": {
+			"title": "支付订单号",
+			"bsonType": "string",
+			"description": "支付订单号（需控制唯一，不传则由插件自动生成）",
+			"trim": "both"
+		},
+		"total_fee": {
+			"bsonType": "int",
+			"description": "订单总金额，单位：元。（只支持int整数型，不支持小数，0.9这样不行）"
+		},
+		"comment": {
+			"bsonType": "string",
+			"description": "备注，说明会员的开通、续费",
+			"trim": "both"
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

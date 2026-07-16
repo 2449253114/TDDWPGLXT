@@ -1,0 +1,33 @@
+[
+  {// 内置测试数据
+    "_id": "_photo_baidu_album_list_preset",
+    "album_type": 0,
+    "album_id": "4064158634569417858",
+    "bg_info": {},
+    "cover_info": {
+		"category": 1,
+		"dlink": "https://photo.baidu.com/youai/album/v1/download?album_id=4064158634569417858&uk=1815907562&tid=0&fsid=511843860017785",
+		"fsid": 511843860017785,
+		"md5": "293d0510df79b806b59e7475307a1249",
+		"path": "/youa/web/转码VID_20230814_205310_274.mp4",
+		"server_md5": "a30799d2ej55f3faddf0ff65ee62db6a",
+		"thumburl": [
+			"https://pcsdata.baidu.com/thumbnail/a30799d2ej55f3faddf0ff65ee62db6a?fid=1815907562-16051585-511843860017785&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-xnGDptA0A3cJEHGxuTCEAL0KzpU%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=338126012189061607&dp-callid=0&time=1703826000&bus_no=26&size=c800_u800&quality=100&vuk=-&ft=video",
+			"https://pcsdata.baidu.com/thumbnail/a30799d2ej55f3faddf0ff65ee62db6a?fid=1815907562-16051585-511843860017785&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-xnGDptA0A3cJEHGxuTCEAL0KzpU%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=338126012189061607&dp-callid=0&time=1703826000&bus_no=26&size=c1600_u1600&quality=100&vuk=-&ft=video"
+		],
+		"uk": 1815907562
+	},
+	"create_time": 1703332682,
+	"creator_user": {
+		"nickname": "活泼开朗的小灵通",
+		"photo": "https://himg.bdimg.com/sys/portraith/item/public.1.e1b7a64b.Vk_O1Ls6gNsyDRzEMTNnXw",
+		"youa_id": 1815907562
+	},
+	"notice": "演员blc113的视频集",
+	"tid": "317033326838614036",
+	"title": "演员blc113_分组1_主页onlyfans_来源Telegram群",
+	"pic_count": 0,
+	"video_count": 0,
+	"total_count": 0
+  }
+]

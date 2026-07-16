@@ -1,0 +1,7 @@
+{
+  "name": "deleteM3U8File",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  }
+}

@@ -1,0 +1,112 @@
+[
+    {
+        "_id": {
+            "$oid": "653a1f7b189f86f5be84f143"
+        },
+        "type": 1,
+        "price": 100,
+        "day_count": 30,
+        "giveaway_score": 18,
+        "name": "每月",
+        "create_date": 1698307963729
+    },
+    {
+        "_id": {
+            "$oid": "653a20f1337a9fe98771343a"
+        },
+        "type": 1,
+        "price": 280,
+        "day_count": 90,
+        "giveaway_score": 60,
+        "name": "每季",
+        "create_date": 1698308337287
+    },
+    {
+        "_id": {
+            "$oid": "653a21229755e3e35f0e74eb"
+        },
+        "type": 1,
+        "price": 568,
+        "day_count": 180,
+        "giveaway_score": 138,
+        "name": "半年",
+        "create_date": 1698308386125
+    },
+    {
+        "_id": {
+            "$oid": "653a215309664cd614cc50fc"
+        },
+        "type": 1,
+        "price": 1,
+        "day_count": 365,
+        "giveaway_score": 288,
+        "name": "每年",
+        "create_date": 1698308435768
+    },
+    {
+        "_id": {
+            "$oid": "653c7dca337a9fe987c342e2"
+        },
+        "type": 0,
+        "price": 30,
+        "day_count": 0,
+        "giveaway_score": 0,
+        "name": "30湾币",
+        "create_date": 1698463177967
+    },
+    {
+        "_id": {
+            "$oid": "653c7eec09664cd6141df463"
+        },
+        "type": 0,
+        "price": 50,
+        "day_count": 0,
+        "giveaway_score": 5,
+        "name": "50湾币",
+        "create_date": 1698463468662
+    },
+    {
+        "_id": {
+            "$oid": "653c7f0c21821b22194fc3f9"
+        },
+        "type": 0,
+        "price": 100,
+        "day_count": 0,
+        "giveaway_score": 12,
+        "name": "100湾币",
+        "create_date": 1698463500029
+    },
+    {
+        "_id": {
+            "$oid": "653c7f5109664cd6141e0996"
+        },
+        "type": 0,
+        "price": 200,
+        "day_count": 0,
+        "giveaway_score": 30,
+        "name": "200湾币",
+        "create_date": 1698463569132
+    },
+    {
+        "_id": {
+            "$oid": "653c7f7e8b0da47be115f54e"
+        },
+        "type": 0,
+        "price": 300,
+        "day_count": 0,
+        "giveaway_score": 50,
+        "name": "300湾币",
+        "create_date": 1698463614358
+    },
+    {
+        "_id": {
+            "$oid": "653c7fbefe975fe6ffafa259"
+        },
+        "type": 0,
+        "price": 500,
+        "day_count": 0,
+        "giveaway_score": 120,
+        "name": "500湾币",
+        "create_date": 1698463678152
+    }
+]

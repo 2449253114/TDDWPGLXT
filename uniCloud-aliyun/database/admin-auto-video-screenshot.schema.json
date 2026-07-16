@@ -1,0 +1,59 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "储存视频截图相册的光标，用于分配多账号请求",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "album_id",
+			"foreignKey": "yike-album-files.album_id",
+			"description": "一刻相册_相册id"
+		},
+		"cursor": {
+			"bsonType": "string",
+			"title": "cursor",
+			"description": "光标，用于请求下一页。（比如请求第二页，需要把第一页返回data里的cursor值带上才可以请求第二页。data.cursor）"
+		},
+		"cursor_page_num": {
+			"bsonType": "string",
+			"title": "光标页码",
+			"description": "光标页码，用于标记这是这是第几页的cursor"
+		},
+		"has_more": {
+			"bsonType": "int",
+			"title": "是否有更多",
+			"description": "是否还有更多数据 ? 1 还有更多、0 没有更多了。（data.has_more）",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "没有更多了",
+					"value": 0
+				},
+				{
+					"text": "还有更多",
+					"value": 1
+				}
+			]
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+					"name": "uni-dateformat"
+				}
+			}
+		}
+	}
+}

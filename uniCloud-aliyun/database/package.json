@@ -1,0 +1,7 @@
+{
+  "name": "database",
+  "dependencies": {},
+  "extensions": { // 随便加个依赖，不然会导致错误性连接到扩展数据库的BUG。
+    "uni-cloud-sms": {} 
+  }
+}

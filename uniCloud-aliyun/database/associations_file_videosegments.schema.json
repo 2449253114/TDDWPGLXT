@@ -1,0 +1,56 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "视频片段与文件关联表",
+	"required": ["file_id", "start_time", "end_time", "gif_cover_id"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"file_id": {
+			"bsonType": "int",
+			"foreignKey": "yike-album-files.fsid",
+			"description": "主视频文件ID，关联Files表指向原始视频文件"
+		},
+		"start_time": {
+			"bsonType": "int",
+			"description": "片段开始时间（单位：秒）"
+		},
+		"end_time": {
+			"bsonType": "int",
+			"description": "片段结束时间（单位：秒）"
+		},
+		"gif_cover_id": {
+			"bsonType": "string",
+			"foreignKey": "GIFCovers.gif_cover_id",
+			"description": "GIF封面图文件ID，关联GIFCovers表"
+		},
+		"tag_ids": {
+			"bsonType": "array",
+			"description": "与该视频片段关联的标签ID列表，关联Tags表",
+			"items": {
+				"bsonType": "string" // 如：人物名、某动作（插入、内射、吃鸡、吃精液、添咪咪、吃奶水、等等）用于显示在GIF图右上角
+			}
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "与该视频片段的描述总结" // 如：被爸爸爆菊、被灌满精液
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"label": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+				"name": "uni-dateformat"
+			}
+		}
+	}
+}

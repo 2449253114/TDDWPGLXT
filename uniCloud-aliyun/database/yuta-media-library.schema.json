@@ -1,0 +1,97 @@
+{
+	"bsonType": "object",
+	"description": "媒体库，主要用于记录上传到uniCloud云储存中的资源图片",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"src": {
+			"bsonType": "string",
+			"description": "媒体资源地址"
+		},
+		"cover": {
+			"bsonType": "string",
+			"description": "媒体资源封面地址；仅视频使用"
+		},
+		"type": {
+			"bsonType": "string",
+			"description": "媒体资源类型",
+			"enum": ["image", "video"]
+		},
+		"description": {
+			"bsonType": "string",
+			"description": "媒体资源描述"
+		},
+		"original_name": {
+			"bsonType": "string",
+			"description": "媒体资源原始文件名"
+		},
+		"file_type": {
+			"bsonType": "string",
+			"description": "媒体资源文件类型"
+		},
+		"size": {
+			"bsonType": "number",
+			"description": "媒体资源大小"
+		},
+		"bytes": {
+			"bsonType": "string",
+			"title": "文件大小",
+			"description": "以GB、MB、KB单位表示的文件大小",
+			"defaultValue": "0MB"
+		},
+		"resolution": {
+			"bsonType": "object",
+			"description": "媒体资源分辨率",
+			"properties": {
+				"width": {
+					"bsonType": "int",
+					"title": "width",
+					"description": "宽度",
+					"errorMessage": "{title}不能为空"
+				},
+				"height": {
+					"bsonType": "int",
+					"title": "height",
+					"description": "高度",
+					"errorMessage": "{title}不能为空"
+				}
+			}
+		},
+		"creator_user": {
+			"bsonType": "object",
+			"title": "创建者信息",
+			"description": "文章或漫画的创建者信息",
+			"required": ["nickname"],
+			"properties": {
+				"user_id": {
+					"bsonType": "string",
+					"title": "用户ID",
+					"description": "创建者的用户ID",
+					"defaultValue": "0"// 0为内部
+				},
+				"nickname": {
+					"bsonType": "string",
+					"title": "昵称",
+					"description": "创建者的昵称",
+					"errorMessage": "{title}不能为空"
+				}
+			}
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "内容创建的时间戳",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

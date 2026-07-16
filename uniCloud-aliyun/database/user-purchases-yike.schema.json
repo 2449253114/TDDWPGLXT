@@ -1,0 +1,62 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "存储用户购买的相册和文件信息",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "用户id，参考uni-id-users表",
+			"foreignKey": "user-accounts._id",
+			"defaultValue": ""
+		},
+		"purchase_type": {
+			"bsonType": "int",
+			"title": "购买类型",
+			"description": "购买类型（相册或文件）",
+			"enum": [{
+					"text": "相册",
+					"value": 0
+				},
+				{
+					"text": "文件",
+					"value": 1
+				}
+			]
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "相册ID",
+			"description": "如果购买类型是相册，则记录相册ID",
+			"foreignKey": "yike-albums.album_id" // 关联某表字段
+		},
+		"file_id": {
+			"bsonType": "int",
+			"title": "文件ID",
+			"description": "如果购买类型是文件，则记录文件IDD",
+			"foreignKey": "yike-album-files.fsid" // 关联某表字段
+		},
+		"purchase_time": {
+			"bsonType": "timestamp",
+			"title": "购买时间",
+			"description": "购买时间，记录购买发生的时间戳。",
+			"defaultValue": {
+				"$env": "now"
+			}
+		},
+		"price": {
+			"bsonType": "int",
+			"title": "购买价格",
+			"description": "购买价格，记录用户支付的金额。"
+		}
+	}
+}

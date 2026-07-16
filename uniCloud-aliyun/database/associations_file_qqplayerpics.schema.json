@@ -1,0 +1,40 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "QQ影音连拍图与文件关联表",
+	"required": ["file_id", "burst_pic_fsid"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"file_id": {
+			"bsonType": "int",
+			"foreignKey": "yike-album-files.fsid",
+			"description": "主视频文件ID，关联Files表指向原始视频文件"
+		},
+		"burst_pic_fsid": {
+			"bsonType": "int",
+			"description": "连拍图的文件fsid，与一刻相册中的某个文件相关联，这个不需要关联某数据库表，因为它和人物头像相册一样，是单独的一刻相册，这边只需要定时采集更新GIF图URL即可。"
+		},
+		"burst_pic_cover_url": {
+			"bsonType": "string",
+			"description": "连拍图封面的URL"
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"label": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+				"name": "uni-dateformat"
+			}
+		}
+	}
+}

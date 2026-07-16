@@ -1,0 +1,1574 @@
+[
+    {
+        "_id": {
+            "$oid": "652ec3186e5d2da311dcd972"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 4.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697563416
+    },
+    {
+        "_id": {
+            "$oid": "652ec31e7ad52d7c8a631815"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 5.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697563422
+    },
+    {
+        "_id": {
+            "$oid": "652ec3226e5d2da311dcd9de"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 6.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697563425
+    },
+    {
+        "_id": {
+            "$oid": "652edcbfa09a9bd1a4b16099"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 7.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697569983
+    },
+    {
+        "_id": {
+            "$oid": "652edd5599c6248d804d71d9"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 8.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697570133
+    },
+    {
+        "_id": {
+            "$oid": "652edd7aa7c432fcf88c1140"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 9.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697570170
+    },
+    {
+        "_id": {
+            "$oid": "652ee0656523417a8af0cfaa"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 10.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697570917
+    },
+    {
+        "_id": {
+            "$oid": "652ee0816523417a8af0d043"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 11.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697570944
+    },
+    {
+        "_id": {
+            "$oid": "652ee365337a9faec7342736"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 12.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697571684
+    },
+    {
+        "_id": {
+            "$oid": "652f040e99c6248d804f21e4"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 13.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697580046
+    },
+    {
+        "_id": {
+            "$oid": "652f081321821b97c61f7400"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 14.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697581074
+    },
+    {
+        "_id": {
+            "$oid": "652f0a6955b3379a66f9b57d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 15.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697581673
+    },
+    {
+        "_id": {
+            "$oid": "652facbd55b3379a661b2d53"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 16.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697623227
+    },
+    {
+        "_id": {
+            "$oid": "652fad3e6523417a8a1412d9"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 17.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697623357
+    },
+    {
+        "_id": {
+            "$oid": "652fb30b7ad52d7c8a883d7d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 18.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697624843
+    },
+    {
+        "_id": {
+            "$oid": "652fb311bd0220d76371e591"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 19.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697624849
+    },
+    {
+        "_id": {
+            "$oid": "652fb313e0ec19c8d68ae23f"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 20.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697624851
+    },
+    {
+        "_id": {
+            "$oid": "652fb3cd337a9faec757be7d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 21.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697625036
+    },
+    {
+        "_id": {
+            "$oid": "652fb75655b3379a661cdae8"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 22.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697625941
+    },
+    {
+        "_id": {
+            "$oid": "652fb7dca09a9bd1a4d637d0"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 23.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626076
+    },
+    {
+        "_id": {
+            "$oid": "652fb7e98b0da4ca0860e19d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 24.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626088
+    },
+    {
+        "_id": {
+            "$oid": "652fb7e98620660127fec9c4"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 25.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626089
+    },
+    {
+        "_id": {
+            "$oid": "652fb8e3337a9faec75889fa"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 26.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626338
+    },
+    {
+        "_id": {
+            "$oid": "652fb8e3f08210299b31669c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 27.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626339
+    },
+    {
+        "_id": {
+            "$oid": "652fb95855b3379a661d29dc"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 28.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626456
+    },
+    {
+        "_id": {
+            "$oid": "652fb959a09a9bd1a4d676be"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 29.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626456
+    },
+    {
+        "_id": {
+            "$oid": "652fb9ffe0ec19c8d68bf081"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 30.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626622
+    },
+    {
+        "_id": {
+            "$oid": "652fb9ff8b0da4ca086133a4"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 31.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626623
+    },
+    {
+        "_id": {
+            "$oid": "652fba9e09664c3d33d41500"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 32.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626782
+    },
+    {
+        "_id": {
+            "$oid": "652fbaac09664c3d33d4171a"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 33.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626796
+    },
+    {
+        "_id": {
+            "$oid": "652fbaad189f860b76c4c599"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 34.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697626797
+    },
+    {
+        "_id": {
+            "$oid": "652fbb8e7ad52d7c8a8992c1"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 35.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627022
+    },
+    {
+        "_id": {
+            "$oid": "652fbb8f99c6248d807365bf"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 36.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627023
+    },
+    {
+        "_id": {
+            "$oid": "652fbba08620660127ff579b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 37.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627040
+    },
+    {
+        "_id": {
+            "$oid": "652fbba16e5d2da311040c1c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 38.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627041
+    },
+    {
+        "_id": {
+            "$oid": "652fbbb3a09a9bd1a4d6d288"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 39.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627059
+    },
+    {
+        "_id": {
+            "$oid": "652fbc84337a9faec7591933"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 40.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627267
+    },
+    {
+        "_id": {
+            "$oid": "652fbc84f08210299b31f66c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 41.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627268
+    },
+    {
+        "_id": {
+            "$oid": "652fbc8b55b3379a661daa6a"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 42.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627274
+    },
+    {
+        "_id": {
+            "$oid": "652fbc8c7ad52d7c8a89bab1"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 43.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627275
+    },
+    {
+        "_id": {
+            "$oid": "652fbcb0f08210299b320246"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 44.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627311
+    },
+    {
+        "_id": {
+            "$oid": "652fbcb0337a9faec7591f6b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 45.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627312
+    },
+    {
+        "_id": {
+            "$oid": "652fbcd9bd0220d76373638e"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 46.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627352
+    },
+    {
+        "_id": {
+            "$oid": "652fbcd96523417a8a1682af"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 47.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627353
+    },
+    {
+        "_id": {
+            "$oid": "652fbd35a09a9bd1a4d70b23"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 48.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627445
+    },
+    {
+        "_id": {
+            "$oid": "652fbd3ce0ec19c8d68c6a3d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 49.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627452
+    },
+    {
+        "_id": {
+            "$oid": "652fbd3d8620660127ff9e83"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 50.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627453
+    },
+    {
+        "_id": {
+            "$oid": "652fbd47466d417a37544ac6"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 51.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627463
+    },
+    {
+        "_id": {
+            "$oid": "652fbd4899c6248d8073a378"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 52.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627464
+    },
+    {
+        "_id": {
+            "$oid": "652fbd9ba7c432fcf8b2164c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 53.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627547
+    },
+    {
+        "_id": {
+            "$oid": "652fbd9ce0ec19c8d68c7b1b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 54.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627548
+    },
+    {
+        "_id": {
+            "$oid": "652fbdcafe975f09c7b837b0"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 55.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627594
+    },
+    {
+        "_id": {
+            "$oid": "652fbdd66523417a8a16a695"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 56.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627605
+    },
+    {
+        "_id": {
+            "$oid": "652fbdd6189f860b76c53b06"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 57.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697627606
+    },
+    {
+        "_id": {
+            "$oid": "652fc4e66e5d2da311057359"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 58.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697629414
+    },
+    {
+        "_id": {
+            "$oid": "652fc505fe975f09c7b95ace"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 59.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697629445
+    },
+    {
+        "_id": {
+            "$oid": "652fc50621821b97c6446c3a"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 60.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697629445
+    },
+    {
+        "_id": {
+            "$oid": "652fc57621821b97c6447d70"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 61.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697629557
+    },
+    {
+        "_id": {
+            "$oid": "652fc5777ad52d7c8a8b1ed7"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 62.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697629558
+    },
+    {
+        "_id": {
+            "$oid": "652fcba7a09a9bd1a4d92f88"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 63.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697631142
+    },
+    {
+        "_id": {
+            "$oid": "652fd180a09a9bd1a4da1eff"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 64.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632640
+    },
+    {
+        "_id": {
+            "$oid": "652fd181a09a9bd1a4da1f32"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 65.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632641
+    },
+    {
+        "_id": {
+            "$oid": "652fd1aff08210299b353cc4"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 66.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632686
+    },
+    {
+        "_id": {
+            "$oid": "652fd1afa7c432fcf8b514d9"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 67.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632687
+    },
+    {
+        "_id": {
+            "$oid": "652fd1b4189f860b76c869e2"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 68.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632692
+    },
+    {
+        "_id": {
+            "$oid": "652fd1bf862066012702deac"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 69.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632703
+    },
+    {
+        "_id": {
+            "$oid": "652fd1c009664c3d33d7ab04"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 70.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632704
+    },
+    {
+        "_id": {
+            "$oid": "652fd1e06e5d2da311076c58"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 71.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632736
+    },
+    {
+        "_id": {
+            "$oid": "652fd1e08b0da4ca0864f14c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 72.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632736
+    },
+    {
+        "_id": {
+            "$oid": "652fd1ef337a9faec75c834e"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 73.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632751
+    },
+    {
+        "_id": {
+            "$oid": "652fd1f0a09a9bd1a4da2d7e"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 74.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632752
+    },
+    {
+        "_id": {
+            "$oid": "652fd1f2e0ec19c8d68f870c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 75.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632754
+    },
+    {
+        "_id": {
+            "$oid": "652fd1f2f08210299b354535"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 76.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632754
+    },
+    {
+        "_id": {
+            "$oid": "652fd203fe975f09c7bb4e25"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 77.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632771
+    },
+    {
+        "_id": {
+            "$oid": "652fd203fe975f09c7bb4e37"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 78.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632771
+    },
+    {
+        "_id": {
+            "$oid": "652fd209862066012702e8ed"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 79.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632777
+    },
+    {
+        "_id": {
+            "$oid": "652fd20a466d417a37575b54"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 80.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632777
+    },
+    {
+        "_id": {
+            "$oid": "652fd20ba09a9bd1a4da312a"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 81.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632779
+    },
+    {
+        "_id": {
+            "$oid": "652fd20c09664c3d33d7b4c8"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 82.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632780
+    },
+    {
+        "_id": {
+            "$oid": "652fd20f55b3379a6620ee4e"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 83.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632783
+    },
+    {
+        "_id": {
+            "$oid": "652fd2108b0da4ca0864f75b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 84.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632784
+    },
+    {
+        "_id": {
+            "$oid": "652fd240213929cbce72e526"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 85.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632832
+    },
+    {
+        "_id": {
+            "$oid": "652fd2418b0da4ca0864fd6d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 86.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632833
+    },
+    {
+        "_id": {
+            "$oid": "652fd243466d417a375762d3"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 87.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632835
+    },
+    {
+        "_id": {
+            "$oid": "652fd24355b3379a6620f578"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 88.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632835
+    },
+    {
+        "_id": {
+            "$oid": "652fd246466d417a37576350"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 89.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632838
+    },
+    {
+        "_id": {
+            "$oid": "652fd26c99c6248d8076e6ff"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 90.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632875
+    },
+    {
+        "_id": {
+            "$oid": "652fd2807ad52d7c8a8d16cb"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 91.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632895
+    },
+    {
+        "_id": {
+            "$oid": "652fd2a8189f860b76c88c7c"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 92.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632935
+    },
+    {
+        "_id": {
+            "$oid": "652fd2ad99c6248d8076f00b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 93.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632941
+    },
+    {
+        "_id": {
+            "$oid": "652fd2c555b3379a66210790"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 94.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632964
+    },
+    {
+        "_id": {
+            "$oid": "652fd2c56e5d2da311078e1f"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 95.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632965
+    },
+    {
+        "_id": {
+            "$oid": "652fd2c609664c3d33d7d50f"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 96.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632966
+    },
+    {
+        "_id": {
+            "$oid": "652fd2d3337a9faec75ca236"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 97.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632979
+    },
+    {
+        "_id": {
+            "$oid": "652fd2d4f08210299b35637d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 98.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632979
+    },
+    {
+        "_id": {
+            "$oid": "652fd2d8a09a9bd1a4da4f60"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 99.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697632984
+    },
+    {
+        "_id": {
+            "$oid": "652fd3159755e363d7ab16e5"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 100.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697633044
+    },
+    {
+        "_id": {
+            "$oid": "652fd31521821b97c646ac5d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 101.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697633045
+    },
+    {
+        "_id": {
+            "$oid": "652fd324f08210299b356e1b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 102.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697633060
+    },
+    {
+        "_id": {
+            "$oid": "652fd32421821b97c646ae3e"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 103.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697633060
+    },
+    {
+        "_id": {
+            "$oid": "652fd3cba09a9bd1a4da70c0"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 104.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697633227
+    },
+    {
+        "_id": {
+            "$oid": "652fd3cbf08210299b358d28"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 105.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697633227
+    },
+    {
+        "_id": {
+            "$oid": "652fd729213929cbce73a690"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 106.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697634089
+    },
+    {
+        "_id": {
+            "$oid": "652fd72afe975f09c7bc193d"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 107.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697634089
+    },
+    {
+        "_id": {
+            "$oid": "652fdc0ae0ec19c8d6911343"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 108.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697635337
+    },
+    {
+        "_id": {
+            "$oid": "652fdc0a6e5d2da3110900a9"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 109.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697635338
+    },
+    {
+        "_id": {
+            "$oid": "652fe4de7ad52d7c8a8fc30e"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 110.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697637598
+    },
+    {
+        "_id": {
+            "$oid": "652fe4df466d417a375a1a23"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 111.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697637598
+    },
+    {
+        "_id": {
+            "$oid": "65302bd3213929cbce7d6825"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 112.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697655763
+    },
+    {
+        "_id": {
+            "$oid": "6530b0c2bd0220d763933cb1"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 113.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697689793
+    },
+    {
+        "_id": {
+            "$oid": "6530b0c3466d417a37751a6b"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 114.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697689794
+    },
+    {
+        "_id": {
+            "$oid": "6530b0da8b0da4ca08830045"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 115.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697689818
+    },
+    {
+        "_id": {
+            "$oid": "6530b0dbf08210299b5278a1"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 116.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697689819
+    },
+    {
+        "_id": {
+            "$oid": "6531e8d47ad52d7c8ad9050f"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "score": 1,
+        "balance": 117.5,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1697769684
+    },
+    {
+        "_id": {
+            "$oid": "653a6f2d862066c60205e391"
+        },
+        "user_id": {
+            "$oid": "64f34c00337a9f4db71a9b14"
+        },
+        "balance": 117.5,
+        "type": 1,
+        "comment": "会员开通",
+        "create_date": 1698328365
+    },
+    {
+        "_id": {
+            "$oid": "653a9fa4bd022034f49004bf"
+        },
+        "user_id": {
+            "$oid": "65326d83466d417a37c018d7"
+        },
+        "score": 288,
+        "balance": 288,
+        "type": 1,
+        "comment": "会员开通（含赠送金币）",
+        "create_date": 1698340772
+    },
+    {
+        "_id": {
+            "$oid": "653c78b6189f86f5bed6a4c0"
+        },
+        "user_id": {
+            "$oid": "65326d83466d417a37c018d7"
+        },
+        "score": 288,
+        "balance": 576,
+        "type": 1,
+        "comment": "会员开通（含赠送金币）",
+        "create_date": 1698461877
+    },
+    {
+        "_id": {
+            "$oid": "653c9bcda09a9b1c28eff3a8"
+        },
+        "user_id": {
+            "$oid": "65326d83466d417a37c018d7"
+        },
+        "score": 121,
+        "balance": 697,
+        "type": 1,
+        "comment": "充值金币（含赠送金币）",
+        "create_date": 1698470861
+    },
+    {
+        "_id": {
+            "$oid": "653c9c99337a9fe987c822d6"
+        },
+        "user_id": {
+            "$oid": "65326d83466d417a37c018d7"
+        },
+        "score": 121,
+        "balance": 818,
+        "type": 1,
+        "comment": "充值金币（含赠送金币）",
+        "create_date": 1698471065
+    },
+    {
+        "_id": {
+            "$oid": "6544c92d8b0da47be1484469"
+        },
+        "user_id": {
+            "$oid": "65326d83466d417a37c018d7"
+        },
+        "score": 288,
+        "balance": 1106,
+        "type": 1,
+        "comment": "会员开通（含赠送金币）",
+        "create_date": 1699006765
+    },
+    {
+        "_id": {
+            "$oid": "6544c944fe975fe6ffe1e392"
+        },
+        "user_id": {
+            "$oid": "65326d83466d417a37c018d7"
+        },
+        "score": 30,
+        "balance": 1136,
+        "type": 1,
+        "comment": "充值金币",
+        "create_date": 1699006788
+    }
+]

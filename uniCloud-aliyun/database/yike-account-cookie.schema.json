@@ -1,0 +1,55 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "一刻相册账号cookie（m3u8流请求时需要的cookie）",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_name": {
+			"bsonType": "string",
+			"title": "用户名",
+			"trim": "both",
+			"defaultValue": ""
+		},
+		"cookie": {
+			"bsonType": "string",
+			"title": "cookie",
+			"trim": "end"
+		},
+		"status": { 
+			"bsonType": "int",
+			"title": "账户状态",
+			"description": "账户状态：0 正常 1 cookie过期或请求失败与超时 2 账户异常，请稍后重试",
+			"defaultValue": 0,
+			"enum": [{
+					"value": 0,
+					"text": "正常"
+				},
+				{
+					"value": 1,
+					"text": "cookie过期"
+				},
+				{
+					"value": 2,
+					"text": "账户异常"
+				}
+			]
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

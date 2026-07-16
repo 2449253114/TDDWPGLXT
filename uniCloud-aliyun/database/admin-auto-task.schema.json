@@ -1,0 +1,56 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"task_type": {
+			"bsonType": "string",
+			"description": "任务类型，用于标识任务的具体类型或归属"
+		},
+		"task_details": {
+			"bsonType": "object",
+			"description": "任务详细信息，根据不同任务类型存储不同的信息"
+		},
+		"task_albums": {
+			"bsonType": "array",
+			"description": "任务相册"
+		},
+		"task_album_file_total": {
+			"bsonType": "int",
+			"description": "任务相册文件总数量"
+		},
+		"task_completed_file_count": {
+			"bsonType": "int",
+			"description": "当前已完成更新URL的相册文件数量"
+		},
+		"task_sort": {
+			"bsonType": "string",
+			"description": "排序的顺序，升序(asc) 或 降序(desc)"
+		},
+		"task_description": {
+			"bsonType": "string",
+			"description": "任务描述，例如：'按照相册文件数量升序排序', '按照相册文件数量降序排序'"
+		},
+		"status": {
+			"bsonType": "string",
+			"description": "任务状态，例如：'pending', 'running', 'completed', 'failed'"
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"description": "任务创建时间"
+		},
+		"updated_time": {
+			"bsonType": "timestamp",
+			"description": "任务最后更新时间"
+		}
+	}
+}

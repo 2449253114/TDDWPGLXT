@@ -1,0 +1,18 @@
+{
+	"name": "AdminDesktopAppTools",
+	"version": "1.0.0",
+	"description": "熊多多后端工具箱API接口 - AdminDesktopAppTools",
+	"dependencies": {
+
+	},
+	"extensions": {
+		"uni-cloud-jql": {}
+	},
+	"cloudfunction-config": {
+		"concurrency": 10,
+		"memorySize": 512,
+		"timeout": 600,
+		"path": "/api/admin/desktopapp/tools",
+		"runtime": "Nodejs12"
+	}
+}

@@ -1,0 +1,28 @@
+[
+	{
+		"_id": "admin-auto-task-auto-update-file-cover",
+		"task_type": "album-files-update-file-cover",
+		"task_details": {
+			"album_id": "", // 当前任务的相册ID
+			"cursor": "", // 光标，用于请求下一页。（比如请求第二页，需要把第一页返回data里的cursor值带上才可以请求第二页）
+			"has_more": 0 ,// 如果has_more为1，表示还有更多数据需要处理，我们将继续调用更新函数，并传递新的cursor值。
+			"current_page": 0,
+			"total_count": 0 // 总数量
+		},
+		"task_albums": [// 如果task_albums中全部item.status都为completed，则任务重新开始，否则从除completed外，在当前第一个pending中开始执行album_id的任务
+			{
+				"album_id": "",
+				"status": "pending" ,// 等待中（pending）、进行中（running）、已完成（completed）
+				"total_count": 0
+			}
+		],
+		"task_album_file_total": 0,
+		"task_completed_file_count": 0,
+		"task_sort": "desc",
+		"task_description": "按照相册数量降序排序",
+		"status": "pending",
+		"create_time": 0,
+		"updated_time": 0
+	}
+]
+

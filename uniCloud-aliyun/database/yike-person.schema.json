@@ -1,0 +1,82 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "一刻相册 - 人物表",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "album_id",
+			"description": "一刻相册_相册id，和相册列表项关联",
+			"foreignKey": "yike-albums.album_id", // 关联某表字段
+			"defaultValue": ""
+		},
+		"person_id": {
+			"bsonType": "int",
+			"title": "人物id",
+			"description": "一刻相册_人物id",
+			"foreignKey": "yike-albums.person_info.person_id", // 关联某表字段
+			"defaultValue": 0
+		},
+		"name": {
+			"bsonType": "string",
+			"title": "人物名字",
+			"defaultValue": ""
+		},
+		"covers": {
+			"bsonType": "array",
+			"title": "人物头像",
+			"defaultValue": []
+		},
+		"description": {
+			"bsonType": "string",
+			"title": "描述、介绍下自己",
+			"description": "",
+			"defaultValue": ""
+		},
+		"link": {
+			"bsonType": "string",// 转数组时以换行符分割
+			"title": "创作者主页链接",
+			"description": "",
+			"defaultValue": ""
+		},
+		"status": {
+			"bsonType": "int",
+			"title": "发布状态",
+			"description": "发布状态：0 草稿箱 1 已发布",
+			"defaultValue": 1,
+			"enum": [{
+					"value": 0,
+					"text": "草稿箱"
+				},
+				{
+					"value": 1,
+					"text": "已发布"
+				},
+				{
+					"value": 2,
+					"text": "等待上线"
+				}
+			]
+		},
+		"ctime": {
+			"bsonType": "timestamp",
+			"description": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+				"name": "uni-dateformat"
+			}
+		}
+	}
+}

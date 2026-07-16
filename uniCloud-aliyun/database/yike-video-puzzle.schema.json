@@ -1,0 +1,51 @@
+{
+  "bsonType": "object",
+  "description": "视频封面和拼图信息表",
+  "required": ["video_id", "puzzle_url"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+  "properties": {
+    "_id": {
+      "description": "ID，系统自动生成"
+    },
+    "video_fsid": {
+			"bsonType": "int",
+			"foreignKey": "yike-album-files.fsid",
+			"description": "主视频文件ID，关联Files表指向原始视频文件"
+    },
+    "cover_url": {
+      "description": "视频封面图片URL，命名规则：fsid_{video_fsid}_cover.jpg，例如：fsid_134480830088_cover.jpg",
+      "bsonType": "string",
+      "pattern": "^fsid_\\d+_cover\\.jpg$"
+    },
+    "puzzle_url": {
+      "description": "视频拼图图片URL，存储连续截图拼接后的完整图片。命名规则：fsid_{video_fsid}_screenshot.jpg，例如：fsid_134480830088_screenshot.jpg",
+      "bsonType": "string",
+      "pattern": "^fsid_\\d+_screenshot\\.jpg$"
+    },
+		"create_time": {
+			"bsonType": "timestamp",
+			"label": "创建时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+				"name": "uni-dateformat"
+			}
+		},
+    "update_time": {
+			"bsonType": "timestamp",
+      "description": "更新时间",
+			"defaultValue": {
+				"$env": "now"
+			},
+			"componentForEdit": {
+				"name": "uni-dateformat"
+			}
+    }
+  }
+} 

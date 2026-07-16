@@ -1,0 +1,40 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "用于记录已采集过的URL",
+	"required": ["task_id", "url"],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"task_id": {
+			"bsonType": "string",
+			"title": "采集任务id",
+			"foreignKey": "cheerio-crawler-tasks._id"
+		},
+		"url": {
+			"bsonType": "string",
+			"title": "已采集的URL",
+			"description": "已采集的URL"
+		},
+		"reading_id": {
+			"bsonType": "string",
+			"title": "阅读文id",
+			"foreignKey": "yuta-cms-reading._id",
+			"description": "已发布的漫画文的id"
+		},
+		"timestamp": {
+			"bsonType": "timestamp",
+			"title": "采集完成时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

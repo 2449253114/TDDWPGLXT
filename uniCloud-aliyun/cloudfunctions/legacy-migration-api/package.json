@@ -1,0 +1,9 @@
+{
+	"name": "legacy-migration-api",
+	"description": "旧版用户数据迁移查询接口",
+	"dependencies": {},
+	"cloudfunction-config": {
+		"path": "/api/legacy-migration",
+		"runtime": "Nodejs18"
+	}
+}

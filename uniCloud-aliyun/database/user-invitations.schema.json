@@ -1,0 +1,41 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+
+{
+	// 我邀请的用户数据库表（用户邀请其他用户数据库表）
+	"bsonType": "object",
+	"description": "用户 - 邀请用户表; 我邀请的用户 （如a用户邀请了b用户c用户等等，都在此表记录）",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"user_id": {
+			"bsonType": "string",
+			"description": "用户ID（邀请者自身ID）， 参考`uni-id-users` 表",
+			"title": "用户ID",
+			"foreignKey": "user-accounts._id",
+			"defaultValue": ""
+		},
+		"user_invite_users_id": {
+			"bsonType": "string",
+			"title": "我邀请的用户ID",// 我邀请的用户
+			"description": "我邀请的 A用户的ID",
+			"foreignKey": "user-accounts._id",
+			"defaultValue": ""
+		},
+		"user_invite_time": {
+			"bsonType": "timestamp",
+			"title": "邀请时间" ,// 我邀请a用户注册的时间
+			"description": "我邀请的 A用户注册的时间",
+			"forceDefaultValue": {
+				"$env": "now"
+			}
+		}
+	}
+}

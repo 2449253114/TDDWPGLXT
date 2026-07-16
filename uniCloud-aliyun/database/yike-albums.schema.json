@@ -1,0 +1,184 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+{
+	"bsonType": "object",
+	"description": "一刻相册 - 相册表; 相册列表（全部相册）接口：https://photo.baidu.com/youai/album/v1/list?",
+	"required": [],
+	"permission": {
+		"read": true,
+		"create": true,
+		"update": true,
+		"delete": true
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"album_type": {
+			"bsonType": "int",
+			"title": "相册类型",
+			"description": "相册类型：0 一刻相册 1 网剧相册 2 同多多相册",
+			"defaultValue": 0,
+			"enum": [{
+					"text": "一刻相册",
+					"value": 0
+				},
+				{
+					"text": "网剧相册",
+					"value": 1
+				},
+				{
+					"text": "同多多相册",
+					"value": 2
+				}
+			]
+		},
+		"album_id": {
+			"bsonType": "string",
+			"title": "album_id",
+			"foreignKey": "yike-album-files.album_id",
+			"description": "一刻相册_相册id",
+			"defaultValue": ""
+		},
+		"bg_info": {
+			"bsonType": "object",
+			"title": "bg_info",
+			"description": "一刻相册_相册背景墙"// 《不需要》为相册中最新的第一个文件的封面，参考“一刻相册”APP
+		},
+		"cover_info": {
+			"bsonType": "object",// object类型，不能加默认值:{}
+			"title": "cover_info",
+			"description": "一刻相册_相册封面"
+			/* "defaultValue": {
+				"uk": 1815907562,
+				"fsid": 511843860017785,
+				"category": 1,
+				"md5": "293d0510df79b806b59e7475307a1249",
+				"server_md5": "a30799d2ej55f3faddf0ff65ee62db6a",
+				"path": "/youa/web/转码VID_20230814_205310_274.mp4",
+				"thumburl": [
+					"https://pcsdata.baidu.com/thumbnail/a30799d2ej55f3faddf0ff65ee62db6a?fid=1815907562-16051585-511843860017785&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-ExlUX%2F1WcR3qJul0QUsqrJxfGSY%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=368242517301816081&dp-callid=0&time=1703937600&bus_no=26&size=c800_u800&quality=100&vuk=-&ft=video",
+					"https://pcsdata.baidu.com/thumbnail/a30799d2ej55f3faddf0ff65ee62db6a?fid=1815907562-16051585-511843860017785&rt=pr&sign=FDTAER-yUdy3dSFZ0SVxtzShv1zcMqd-ExlUX%2F1WcR3qJul0QUsqrJxfGSY%3D&expires=48h&chkv=0&chkbd=0&chkpc=&dp-logid=368242517301816081&dp-callid=0&time=1703937600&bus_no=26&size=c1600_u1600&quality=100&vuk=-&ft=video"
+				],
+				"dlink": "https://photo.baidu.com/youai/album/v1/download?album_id=4064158634569417858&uk=1815907562&tid=0&fsid=511843860017785"
+			} */
+		},
+		"create_time": {
+			"bsonType": "timestamp",
+			"title": "创建时间",
+			"description": "一刻相册 相册创建时间，时间戳：毫秒（mS）"
+		},
+		"creator_user": {
+			"bsonType": "object",
+			"title": "creator_user",
+			"description": "一刻相册 相册创建者用户"
+		},
+		"notice": {
+			"bsonType": "string",
+			"title": "相册描述",
+			"description": "一刻相册 相册描述"
+		},
+		"tid": {
+			"bsonType": "string",
+			"title": "tid",
+			"description": "一刻相册 tid"
+		},
+		"title": {
+			"bsonType": "string",
+			"title": "相册名称",
+			"description": "一刻相册 相册名称"
+		},
+		"custom_title": {
+			"bsonType": "string",
+			"title": "APP相册名称",
+			"description": "自定义 APP相册名称"
+		},
+		"pic_count": {
+			"bsonType": "int",
+			"title": "图片数量",
+			"description": "一刻相册 album/v1/listfile接口中pic_count字段",
+			"defaultValue": 0
+		},
+		"video_count": {
+			"bsonType": "int",
+			"title": "视频数量",
+			"description": "一刻相册 album/v1/listfile接口中video_count字段",
+			"defaultValue": 0
+		},
+		"total_count": {
+			"bsonType": "int",
+			"title": "总数量（图片和视频）",
+			"description": "一刻相册 album/v1/listfile接口中total_count字段",
+			"defaultValue": 0
+		},
+		"person_info": {
+			"bsonType": "object",
+			"title": "人物信息",
+			"properties": {
+				"person_id": {
+					"bsonType": "string",
+					"title": "person_id",
+					"description": "一刻相册_相册id，和相册列表项关联",
+					"foreignKey": "yike-person.person_id", // 关联某表字段
+					"defaultValue": ""
+				},
+				"avatarurl": {
+					"bsonType": "string",
+					"title": "头像"
+				},
+				"name": {
+					"bsonType": "string",
+					"title": "名字"
+				},
+				"description": {
+					"bsonType": "string",
+					"title": "描述、介绍下自己"
+				},
+				"link": {
+					"bsonType": "array",
+					"title": "创作者主页链接"
+				}
+			}
+		},
+		"price": {
+			"bsonType": "int",
+			"title": "价格",
+			"description": "订阅相册的价格",
+			"trim": "both",
+			"defaultValue": 0
+		},
+		"tag": {// 这个 [tag] 是自己加的字段
+			"bsonType": "array",
+			"title": "标签",
+			"description": "标签 同多多网盘系统内置",
+			"defaultValue": []
+		},
+		// 其他字段...
+		"top_days": {
+			"bsonType": "int",
+			"title": "置顶天数",
+			"description": "置顶天数，用于控制相册在列表中的置顶时长，置顶有效期计算方式：create_time + 置顶天数时长 < 现在的时间，则在数据返回前，把当前item项放到数组前面",
+			"minimum": 0,
+			"defaultValue": 30
+		},
+		"status": {// 这个 [status] 是自己加的字段
+			"bsonType": "int",
+			"title": "发布状态",
+			"description": "发布状态：0 草稿箱 1 已发布 2 审核中",
+			"defaultValue": 0,
+			"enum": [
+				{
+					"value": 0,
+					"text": "草稿箱"
+				},
+				{
+					"value": 1,
+					"text": "已发布"
+				},
+				{
+					"value": 2,
+					"text": "审核中"
+				}
+			]
+		}
+	}
+}

@@ -1,0 +1,26 @@
+[
+	{// 内置测试数据
+	    "_id": "app_config_default",
+	    "register_reward": {
+			"reward_type": 1,
+			"reward_amount": 7
+		},
+	    "daily_login_reward": {
+			"reward_type": 0,
+			"reward_amount": 1
+		},
+	    "weekly_login_vip_reward": {
+	        "login_day": 6,
+	        "reward_vip_days": 1
+	    },
+	    "invite_reward": {
+	        "reward_type": 1,
+	        "reward_amount": 3
+	    },
+	    "share_reward": {
+	        "reward_type": 1,
+	        "reward_amount": 1
+	    },
+		"free_video_views_per_day": 5
+	}
+]
