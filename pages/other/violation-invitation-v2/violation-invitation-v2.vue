@@ -553,7 +553,7 @@
 						<uni-th width="90" align="center">账号状态</uni-th>
 						<uni-th width="90" align="center">风险等级</uni-th>
 						<uni-th width="170" align="center">邀请归属 / 自身邀请码</uni-th>
-						<uni-th width="190" align="center">受邀账号 ID</uni-th>
+						<uni-th width="130" align="center">受邀账号 ID</uni-th>
 						<uni-th width="155" align="center">邀请时间</uni-th>
 						<uni-th width="190" align="center">注册时间 / IP</uni-th>
 						<uni-th width="190" align="center">最后登录时间 / IP</uni-th>
@@ -582,14 +582,16 @@
 							<text class="cell-subline">自身：{{ user.my_invite_code || '无' }}</text>
 							<text v-if="selectedNewInviteeIds[user._id]" class="change-badge cell-subline">新增待审核</text>
 						</uni-td>
-						<uni-td align="center"><text class="mono small">{{ user._id }}</text></uni-td>
-						<uni-td align="center">{{ formatTimestamp(user.invite_time) }}</uni-td>
+						<uni-td align="center"><text class="mono small invitee-id">{{ user._id }}</text></uni-td>
 						<uni-td align="center">
-							<text>{{ formatTimestamp(user.register_date) }}</text>
+							<text class="timestamp-value"><text :class="getInviteeDateHighlightClass(user)">{{ getTimestampDatePart(user.invite_time) }}</text><text>{{ getTimestampTimeSuffix(user.invite_time) }}</text></text>
+						</uni-td>
+						<uni-td align="center">
+							<text class="timestamp-value"><text :class="getInviteeDateHighlightClass(user)">{{ getTimestampDatePart(user.register_date) }}</text><text>{{ getTimestampTimeSuffix(user.register_date) }}</text></text>
 							<text class="mono cell-subline">{{ user.register_ip || '无' }}</text>
 						</uni-td>
 						<uni-td align="center">
-							<text>{{ formatTimestamp(user.login_date) }}</text>
+							<text class="timestamp-value"><text :class="getInviteeDateHighlightClass(user)">{{ getTimestampDatePart(user.login_date) }}</text><text>{{ getTimestampTimeSuffix(user.login_date) }}</text></text>
 							<text class="mono cell-subline">{{ user.login_ip || '无' }}</text>
 						</uni-td>
 						<uni-td align="center"><text class="mono small">{{ user.device_oaid || '无' }}</text></uni-td>
@@ -705,7 +707,9 @@
 <script>
 	const {
 		analyzeInviterIpAccounts,
-		chunkArray
+		chunkArray,
+		buildTimestampDisplay,
+		haveSameDisplayedDate
 	} = require('./violation-invitation-v2.utils.js')
 	const { normalizeTimestamp, getBusinessDayKey, RISK_RANK } = require('./violation-invitation-v2.scan.js')
 	const discoveryMixin = require('./violation-invitation-v2.discovery.js')
@@ -1744,13 +1748,30 @@
 				if (normalized === 2) return 'reviewing'
 				return 'normal'
 			},
+			getTimestampDisplay(timestamp) {
+				return buildTimestampDisplay(normalizeTimestamp(timestamp))
+			},
 			formatTimestamp(timestamp) {
-				const normalized = normalizeTimestamp(timestamp)
-				if (!normalized) return '无'
-				const date = new Date(normalized)
-				if (Number.isNaN(date.getTime())) return '无'
-				const pad = value => String(value).padStart(2, '0')
-				return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+				return this.getTimestampDisplay(timestamp).text
+			},
+			getTimestampDatePart(timestamp) {
+				return this.getTimestampDisplay(timestamp).date
+			},
+			getTimestampTimeSuffix(timestamp) {
+				const display = this.getTimestampDisplay(timestamp)
+				return display.valid ? ` ${display.time}` : ''
+			},
+			hasSameInviteeLifecycleDate(user) {
+				if (!user || typeof user !== 'object') return false
+				return haveSameDisplayedDate([
+					this.getTimestampDisplay(user.invite_time),
+					this.getTimestampDisplay(user.register_date),
+					this.getTimestampDisplay(user.login_date)
+				])
+			},
+			getInviteeDateHighlightClass(user) {
+				if (!this.hasSameInviteeLifecycleDate(user)) return []
+				return ['same-day-date', this.getAccountRiskLevel(user._id)]
 			},
 			getErrorMessage(error) {
 				return error && error.message ? error.message : '未知错误'
@@ -2136,11 +2157,29 @@
 		white-space: nowrap;
 	}
 
-	.risk-pill.high { background: #fef0f0; color: #f56c6c; }
-	.risk-pill.abnormal { background: #fff0f6; color: #c41d7f; }
-	.risk-pill.medium { background: #fdf6ec; color: #e6a23c; }
-	.risk-pill.normal { background: #f0f9eb; color: #67c23a; }
-	.risk-pill.unknown { background: #f4f4f5; color: #909399; }
+	.timestamp-value {
+		white-space: nowrap;
+	}
+
+	.same-day-date {
+		display: inline-block;
+		padding: 1px 3px;
+		border: 1px solid currentColor;
+		border-radius: 3px;
+		font-weight: 700;
+		line-height: 1.25;
+	}
+
+	.risk-pill.high,
+	.same-day-date.high { background: #fef0f0; color: #f56c6c; }
+	.risk-pill.abnormal,
+	.same-day-date.abnormal { background: #fff0f6; color: #c41d7f; }
+	.risk-pill.medium,
+	.same-day-date.medium { background: #fdf6ec; color: #e6a23c; }
+	.risk-pill.normal,
+	.same-day-date.normal { background: #f0f9eb; color: #67c23a; }
+	.risk-pill.unknown,
+	.same-day-date.unknown { background: #f4f4f5; color: #909399; }
 
 	.status-text.banned { color: #f56c6c; font-weight: 700; }
 	.status-text.restricted { color: #e6a23c; }
@@ -2203,6 +2242,14 @@
 	.mono.small {
 		font-size: 12px;
 		word-break: break-all;
+	}
+
+	.invitee-id {
+		display: block;
+		width: 100%;
+		white-space: normal;
+		overflow-wrap: anywhere;
+		line-height: 1.45;
 	}
 
 	.popup-card {

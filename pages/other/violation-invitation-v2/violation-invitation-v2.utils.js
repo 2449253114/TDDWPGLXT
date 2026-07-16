@@ -8,6 +8,32 @@ const RISK_RANK = {
 	high: 3
 }
 
+function buildTimestampDisplay(normalizedTimestamp) {
+	const timestamp = Number(normalizedTimestamp)
+	if (!Number.isFinite(timestamp) || timestamp <= 0) {
+		return { valid: false, date: '无', time: '', text: '无' }
+	}
+
+	const value = new Date(timestamp)
+	if (Number.isNaN(value.getTime())) {
+		return { valid: false, date: '无', time: '', text: '无' }
+	}
+	const pad = part => String(part).padStart(2, '0')
+	const date = `${value.getFullYear()}-${pad(value.getMonth() + 1)}-${pad(value.getDate())}`
+	const time = `${pad(value.getHours())}:${pad(value.getMinutes())}:${pad(value.getSeconds())}`
+	return { valid: true, date, time, text: `${date} ${time}` }
+}
+
+function haveSameDisplayedDate(displays) {
+	if (!Array.isArray(displays) || displays.length !== 3) return false
+	const first = displays[0]
+	return Boolean(
+		first &&
+		first.valid &&
+		displays.every(display => display && display.valid && display.date === first.date)
+	)
+}
+
 function normalizeIpv4(value) {
 	if (!/^\d{1,3}(?:\.\d{1,3}){3}$/.test(value)) {
 		return ''
@@ -244,6 +270,8 @@ function chunkArray(items, size) {
 module.exports = {
 	NORMAL_MAX,
 	HIGH_RISK_MIN,
+	buildTimestampDisplay,
+	haveSameDisplayedDate,
 	normalizeIp,
 	getRiskLevel,
 	analyzeAccounts,

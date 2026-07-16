@@ -88,6 +88,22 @@ assert(!/setTask\([^\n]*,\s*(?:3|5|10|30|32|40|86|95|98|100)\b/.test(pageSource 
 assert(pageSource.includes('taskStatus.metricText'), 'Task feedback must expose real count metrics')
 assert(pageSource.includes('class="inviter-detail-feedback-anchor"'), 'Opening inviter detail must expose in-place loading feedback near the clicked result list')
 assert(pageSource.includes('retryInviterDetailLoad'), 'Failed detail loading must expose an in-place retry action')
+assert.strictEqual((pageSource.match(/:class="getInviteeDateHighlightClass\(user\)"/g) || []).length, 3, 'All three invitee date fields must share the same highlight decision')
+;['invite_time', 'register_date', 'login_date'].forEach(field => {
+	assert(
+		pageSource.includes(`<text :class="getInviteeDateHighlightClass(user)">{{ getTimestampDatePart(user.${field}) }}</text><text>{{ getTimestampTimeSuffix(user.${field}) }}</text>`),
+		`${field} must apply the risk highlight to the date only and keep the time suffix outside it`
+	)
+})
+assert(pageSource.includes("return ['same-day-date', this.getAccountRiskLevel(user._id)]"), 'Same-day date highlighting must use the account risk level instead of a fixed warning color')
+assert(pageSource.includes('.risk-pill.high,\n\t.same-day-date.high'), 'High-risk date highlighting must reuse the high-risk pill palette')
+assert(pageSource.includes('.risk-pill.medium,\n\t.same-day-date.medium'), 'Medium-risk date highlighting must reuse the medium-risk pill palette')
+assert(pageSource.includes('.risk-pill.normal,\n\t.same-day-date.normal'), 'Normal-risk date highlighting must reuse the normal-risk pill palette')
+assert(pageSource.includes('.risk-pill.unknown,\n\t.same-day-date.unknown'), 'Unknown-risk date highlighting must reuse the unknown-risk pill palette')
+assert(pageSource.includes('<uni-th width="130" align="center">受邀账号 ID</uni-th>'), 'The invitee ID column must stay compact instead of reserving single-line width')
+assert(pageSource.includes('class="mono small invitee-id"'), 'Invitee IDs need a dedicated wrapping style')
+assert(pageSource.includes('.invitee-id {\n\t\tdisplay: block;'), 'Invitee IDs must be block-level so long IDs can wrap inside the compact column')
+assert(pageSource.includes('overflow-wrap: anywhere;'), 'Invitee IDs must be allowed to wrap at arbitrary character boundaries')
 assert(pageSource.includes('scanSummary.highIpGroupCount'), 'The result summary must strongly expose high-risk IP groups')
 assert(pageSource.includes('{{ item.invitedCount }} 人'), 'Each inviter row must explicitly show its invitee count')
 assert(pageSource.includes('IP 风险统计同时包含邀请人本人和当前名下受邀账号'), 'IP risk UI must explain that both inviter and invitees participate')

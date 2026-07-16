@@ -1,10 +1,37 @@
 const assert = require('assert')
 const {
+	buildTimestampDisplay,
+	haveSameDisplayedDate,
 	normalizeIp,
 	analyzeAccounts,
 	analyzeInviterIpAccounts,
 	chunkArray
 } = require('./violation-invitation-v2.utils.js')
+
+const localSameDayTimes = [
+	new Date(2025, 2, 23, 18, 23, 51).getTime(),
+	new Date(2025, 2, 23, 18, 23, 32).getTime(),
+	new Date(2025, 2, 23, 23, 59, 59).getTime()
+]
+const sameDayDisplays = localSameDayTimes.map(buildTimestampDisplay)
+assert.deepStrictEqual(sameDayDisplays[0], {
+	valid: true,
+	date: '2025-03-23',
+	time: '18:23:51',
+	text: '2025-03-23 18:23:51'
+})
+assert.strictEqual(haveSameDisplayedDate(sameDayDisplays), true)
+assert.strictEqual(haveSameDisplayedDate([
+	sameDayDisplays[0],
+	sameDayDisplays[1],
+	buildTimestampDisplay(new Date(2025, 2, 24, 0, 0, 0).getTime())
+]), false, 'all three displayed dates must match; two matching dates are insufficient')
+assert.strictEqual(haveSameDisplayedDate([
+	sameDayDisplays[0],
+	sameDayDisplays[1],
+	buildTimestampDisplay(0)
+]), false, 'missing or invalid times must never receive the same-day highlight')
+assert.deepStrictEqual(buildTimestampDisplay(0), { valid: false, date: '无', time: '', text: '无' })
 
 assert.strictEqual(normalizeIp(' 192.168.001.010 '), '192.168.1.10')
 assert.strictEqual(normalizeIp('未知'), '')
