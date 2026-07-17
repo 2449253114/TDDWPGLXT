@@ -6,8 +6,12 @@ const COLLECTIONS = {
 	ORDERS: 'user-payment-orders'
 }
 
-function response(code, message, data = null) {
-	return { code, message, data }
+function ok(data, message = 'ok') {
+	return { code: 0, message, data }
+}
+
+function fail(message) {
+	return { code: 1, message, data: null }
 }
 
 function getQuery(context) {
@@ -16,30 +20,55 @@ function getQuery(context) {
 
 module.exports = {
 	/**
-	 * GET /api/legacy-migration/user-info?my_invite_code=旧版邀请码
+	 * GET /api/legacy-migration/user-info
+	 *     ?my_invite_code=旧版邀请码
+	 *     &oaid_prefix=OAID前3位
+	 *     &oaid_suffix=OAID后4位
 	 */
 	async 'user-info'() {
 		const query = getQuery(this)
 		const inviteCode = typeof query.my_invite_code === 'string'
 			? query.my_invite_code.trim()
 			: ''
+		const oaidPrefix = typeof query.oaid_prefix === 'string'
+			? query.oaid_prefix.trim().toLowerCase()
+			: ''
+		const oaidSuffix = typeof query.oaid_suffix === 'string'
+			? query.oaid_suffix.trim().toLowerCase()
+			: ''
 
-		if (!inviteCode) {
-			return response(400, '缺少 my_invite_code')
+		if (!inviteCode || oaidPrefix.length !== 3 || oaidSuffix.length !== 4) {
+			return fail('旧版账号信息不匹配')
 		}
 
-		const result = await db.collection(COLLECTIONS.USERS)
-			.where({ my_invite_code: inviteCode })
-			.limit(1)
-			.get()
-		const user = result.data && result.data[0]
+		try {
+			const result = await db.collection(COLLECTIONS.USERS)
+				.where({ my_invite_code: inviteCode })
+				.field({ _id: true, vip_expire_date: true, device_oaid: true })
+				.limit(1)
+				.get()
+			const user = result.data && result.data[0]
+			const deviceOaid = user && typeof user.device_oaid === 'string'
+				? user.device_oaid.trim().toLowerCase()
+				: ''
 
-		if (!user) {
-			return response(404, '用户不存在')
+			if (
+				!user
+				|| deviceOaid.length < 7
+				|| !deviceOaid.startsWith(oaidPrefix)
+				|| !deviceOaid.endsWith(oaidSuffix)
+			) {
+				return fail('旧版账号信息不匹配')
+			}
+
+			return ok({
+				user_id: user._id,
+				vip_expire_date: user.vip_expire_date == null ? 0 : user.vip_expire_date
+			}, '旧版账号校验成功')
+		} catch (error) {
+			console.error('[legacy-migration-api.user-info] failed:', error)
+			return fail('旧版账号查询失败，请稍后重试')
 		}
-
-		delete user.password
-		return response(200, '查询用户信息成功', user)
 	},
 
 	/**
@@ -51,19 +80,33 @@ module.exports = {
 			? query.user_id.trim()
 			: ''
 
-		if (!userId) {
-			return response(400, '缺少 user_id')
+		if (!userId) return fail('user_id 不能为空')
+
+		try {
+			const result = await db.collection(COLLECTIONS.ORDERS)
+				.where({
+					user_id: userId,
+					total_fee: dbCmd.gt(0),
+					status: dbCmd.in([1, 2])
+				})
+				.field({
+					_id: true,
+					body: true,
+					pay_type: true,
+					out_trade_no: true,
+					total_fee: true,
+					status: true,
+					day_count: true,
+					create_time: true
+				})
+				.orderBy('create_time', 'desc')
+				.limit(1000)
+				.get()
+
+			return ok(result.data || [], '查询旧版付费订单成功')
+		} catch (error) {
+			console.error('[legacy-migration-api.user-orders] failed:', error)
+			return fail('旧版订单查询失败，请稍后重试')
 		}
-
-		const result = await db.collection(COLLECTIONS.ORDERS)
-			.where({
-				user_id: userId,
-				total_fee: dbCmd.gt(1)
-			})
-			.orderBy('create_time', 'desc')
-			.limit(1000)
-			.get()
-
-		return response(200, '查询用户实付订单成功', result.data || [])
 	}
 }
