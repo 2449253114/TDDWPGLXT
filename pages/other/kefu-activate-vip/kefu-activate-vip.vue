@@ -269,7 +269,9 @@
 			async addVipChangeRecord(userId) {
 				const goodName = `人工充值会员（${this.goods[this.selectedOption].name}）`
 				const goodPrice = this.goods[this.selectedOption].price
-				const dayCount = this.goods[this.selectedOption].price
+				// 订单中的会员天数必须与实际续期使用同一个商品 day_count。
+				// 不能写 price：价格是金额，不是天数；写错会导致后续订单迁移和对账产生错误数据。
+				const dayCount = this.goods[this.selectedOption].day_count
 				// 当前时间的时间戳：如果你需要一个10位的时间戳（代表以秒为单位的时间戳，而不是以毫秒为单位），你可以将Date.now()的结果除以1000，然后使用Math.floor来舍去小数点后的部分。
 				const timestamp = Math.floor(Date.now() / 1000);
 				
