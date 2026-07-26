@@ -88,7 +88,7 @@ module.exports = {
 					user_id: userId,
 					order_type: 1, // 只返回会员开通订单，避免其他付费订单混入新版 VIP 流水
 					total_fee: dbCmd.gt(0),
-					status: dbCmd.in([1, 2])
+					status: 1 // 只返回可迁移的已支付会员订单
 				})
 				.field({
 					_id: true,
