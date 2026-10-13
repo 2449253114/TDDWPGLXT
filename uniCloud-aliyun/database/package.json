@@ -1,8 +1,9 @@
 {
   "name": "database",
-  "_comment": "extensions 里必须随便保留一个依赖，不然会导致错误性连接到扩展数据库的BUG（原为 // 注释，因 JSON 不允许注释且会导致本地运行解析失败，改为字段保留）。",
+  "_comment": "已启用 uni-cloud-ext-database：DB Schema 扩展 JS 与 clientDB/JQL 读写扩展数据库。uni-cloud-sms 是原有扩展（当初为避免 extensions 为空时误连扩展库而保留），继续保留。JSON 不允许注释，所以用 _comment 字段说明。",
   "dependencies": {},
   "extensions": {
-    "uni-cloud-sms": {}
+    "uni-cloud-sms": {},
+    "uni-cloud-ext-database": {}
   }
 }

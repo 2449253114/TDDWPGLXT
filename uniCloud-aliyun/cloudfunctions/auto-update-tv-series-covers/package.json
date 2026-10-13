@@ -4,7 +4,8 @@
     "auto-update-tv-series-covers": "file:../common/auto-update-tv-series-covers"
   },
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
   "cloudfunction-config": {
     "concurrency": 10,
@@ -16,6 +17,6 @@
 		"config": "0 */59 * * * * *"
 	}],
     "path": "/api/auto/tv/test",
-    "runtime": "Nodejs12"
+    "runtime": "Nodejs18"
   }
 }

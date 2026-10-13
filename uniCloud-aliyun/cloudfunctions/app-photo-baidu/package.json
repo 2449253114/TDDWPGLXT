@@ -4,7 +4,8 @@
     "auto-update-album-cover": "file:../common/auto-update-album-cover"
   },
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
   "cloudfunction-config": {
     "concurrency": 10,
@@ -16,6 +17,6 @@
 		"config": "0 */50 * * * * *"
 	}],
     "path": "/api/yike",
-    "runtime": "Nodejs16"
+    "runtime": "Nodejs18"
   }
 }

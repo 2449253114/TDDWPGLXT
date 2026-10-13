@@ -3,7 +3,8 @@
 	"description": "定时任务：每8分钟触发一次",
 	"dependencies": {},
 	"extensions": {
-		"uni-cloud-jql": {}
+		"uni-cloud-jql": {},
+		"uni-cloud-ext-database": {}
 	},
 	"cloudfunction-config": {
 		"concurrency": 10,
@@ -15,6 +16,6 @@
 			"config": "0 0,16,31,45 * * * * *"
 		}],
 		"path": "/api/auto/m3u8fileurl/test",
-		"runtime": "Nodejs12"
+		"runtime": "Nodejs18"
 	}
 }

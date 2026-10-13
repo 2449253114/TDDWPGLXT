@@ -2,12 +2,13 @@
   "name": "bluetu_pay",
   "dependencies": {},
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
   "cloudfunction-config": {
     "concurrency": 10,
     "memorySize": 512,
     "timeout": 600,
-    "runtime": "Nodejs12"
+    "runtime": "Nodejs18"
   }
 }

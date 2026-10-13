@@ -2,9 +2,10 @@
   "name": "test-comm",
   "dependencies": {},
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
   "cloudfunction-config": {
-    "runtime": "Nodejs16"
+    "runtime": "Nodejs18"
   }
 }

@@ -4,7 +4,8 @@
 	"description": "自动更新视频封面和视频截帧拼图URL的云函数，每1小时触发一次（每小时的23分触发，如08:23:00、09:23:00）",
   "dependencies": {},
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
 	"cloudfunction-config": {
 	  "concurrency": 10,
@@ -16,6 +17,6 @@
 			"config": "0 23 * * * * *"
 		}],
 	  "path": "/admin/auto/update/video/screenshot",
-	  "runtime": "Nodejs12"
+	  "runtime": "Nodejs18"
 	}
 }

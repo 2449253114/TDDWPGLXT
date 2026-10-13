@@ -4,7 +4,8 @@
     "admin-auto-task": "file:../common/admin-auto-task"
   },
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
   "cloudfunction-config": {
     "concurrency": 10,
@@ -18,6 +19,6 @@
       }
     ],
     "path": "/admin/auto/task/asc",
-    "runtime": "Nodejs12"
+    "runtime": "Nodejs18"
   }
 }

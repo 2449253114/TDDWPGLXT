@@ -2,6 +2,9 @@
 	"name": "legacy-migration-api",
 	"description": "旧版用户数据迁移查询接口",
 	"dependencies": {},
+	"extensions": {
+		"uni-cloud-ext-database": {}
+	},
 	"cloudfunction-config": {
 		"path": "/api/legacy-migration",
 		"runtime": "Nodejs18"

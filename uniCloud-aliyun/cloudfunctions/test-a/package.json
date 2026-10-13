@@ -2,6 +2,10 @@
   "name": "test-a",
   "dependencies": {},
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
+  },
+  "cloudfunction-config": {
+    "runtime": "Nodejs18"
   }
 }

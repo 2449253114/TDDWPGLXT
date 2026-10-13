@@ -2,12 +2,14 @@
   "name": "cleanup-zero-fee-vip-changes",
   "dependencies": {},
   "extensions": {
-    "uni-cloud-jql": {}
+    "uni-cloud-jql": {},
+    "uni-cloud-ext-database": {}
   },
   "cloudfunction-config": {
     "concurrency": 1,
     "memorySize": 256,
     "timeout": 300,
-    "triggers": []
+    "triggers": [],
+    "runtime": "Nodejs18"
   }
 }
