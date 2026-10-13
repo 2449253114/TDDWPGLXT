@@ -1,7 +1,8 @@
 {
   "name": "database",
+  "_comment": "extensions 里必须随便保留一个依赖，不然会导致错误性连接到扩展数据库的BUG（原为 // 注释，因 JSON 不允许注释且会导致本地运行解析失败，改为字段保留）。",
   "dependencies": {},
-  "extensions": { // 随便加个依赖，不然会导致错误性连接到扩展数据库的BUG。
-    "uni-cloud-sms": {} 
+  "extensions": {
+    "uni-cloud-sms": {}
   }
 }

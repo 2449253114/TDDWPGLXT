@@ -1,0 +1,19 @@
+{
+  "name": "cleanup-expired-m3u8",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 1,
+    "memorySize": 256,
+    "timeout": 300,
+    "triggers": [
+      {
+        "name": "every8min",
+        "type": "timer",
+        "config": "0 0,8,16,24,32,40,48,56 * * * * *"
+      }
+    ]
+  }
+}
