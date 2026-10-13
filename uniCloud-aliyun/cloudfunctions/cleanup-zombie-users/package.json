@@ -1,0 +1,13 @@
+{
+  "name": "cleanup-zombie-users",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 1,
+    "memorySize": 256,
+    "timeout": 300,
+    "triggers": []
+  }
+}
