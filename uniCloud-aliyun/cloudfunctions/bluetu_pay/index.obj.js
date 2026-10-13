@@ -1001,7 +1001,7 @@ module.exports = {
 		}).get()
 		
 		// 2. 返回所有订单记录
-		if (queryPayOrder['affectedDocs'] == 0) {
+		if (queryPayOrder.data.length == 0) {
 			return createResponse(CODE.ERROR, "暂无订单记录");
 		}
 

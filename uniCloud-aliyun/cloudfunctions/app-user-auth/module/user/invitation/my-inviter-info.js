@@ -34,7 +34,7 @@ module.exports = async function() {
     try {
         // 查询当前用户信息以获取邀请人ID
         const currentUserResult = await userCollection.doc(userId).get();
-        if (currentUserResult.affectedDocs === 1) {
+        if (currentUserResult.data.length === 1) {
             const currentUser = currentUserResult.data[0];
             // 如果当前用户有邀请人，则查询邀请人信息
             if (currentUser.inviter_uid) {
@@ -43,7 +43,7 @@ module.exports = async function() {
 				.field({
 					device_oaid: true
 				}).get();
-                if (myInviterInfoResult.affectedDocs === 1) {
+                if (myInviterInfoResult.data.length === 1) {
 					const inviterInfo = myInviterInfoResult.data[0]; // 邀请人信息
                     // 处理数据，将device_oaid转换成前三位和后四位显示，中间用*代替，保留11位
 					if (inviterInfo.device_oaid) {

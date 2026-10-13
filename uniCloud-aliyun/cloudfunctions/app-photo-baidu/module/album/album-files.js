@@ -86,7 +86,7 @@ module.exports = async function () {
     }
     
     // 没有更多数据了
-    if (result['affectedDocs'] === 0) {
+    if (result.data.length === 0) {
         return createResponse(STATE_CODE.FAIL, '没有更多数据了', emptyResponse)
     }
 

@@ -1,6 +1,6 @@
 const {
 	userCollection,
-	allInvitationCodesCollection,
+	inviteCodeCollection,
 	appSystemNoticeCollection
 } = require('../../common/constants')
 
@@ -12,7 +12,8 @@ const {
 const {
 	checkVipStatus,
 	sendSystemNotice,
-	addVipChangeRecord
+	addVipChangeRecord,
+	reserveInviteCode
 } = require('../../common/fun')
 
 
@@ -25,38 +26,6 @@ const disable_login_users = [
 	//"65be37419755e3283004978c" // 我的账号，用来测试是否成功不让登录
 ]
 // 需要新增一个每分钟自动检查是否有短时间内同一个用户多次下单且不付款，如短时间(1分钟)内超过3个订单，则视为恶意刷单，直接封号。
-
-
-/**
- * 生成6位数邀请码的函数（用于注册账号成功时生成用户自身的邀请码）
- * 传入的参数是一个集合，用于存储已经生成的邀请码，确保生成的邀请码不重复，并且allCodesSet会在函数内部被修改，所以不需要返回新的allCodesSet
- * @param {Array} allCodesSet 
- * @returns 
- */
-function generateInviteCode(allCodesSet) {
-	// 定义所有可能的字符，去掉小写字母
-	const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-	// 生成邀请码的函数
-	function generateCode() {
-		let code = '';
-		// 循环6次，每次从characters中随机选择一个字符添加到code中
-		for (let i = 0; i < 6; i++) {
-			code += characters.charAt(Math.floor(Math.random() * characters.length));
-		}
-		// 检查新生成的邀请码是否已经存在
-		if (allCodesSet.has(code)) {
-			// 如果已经存在，则重新生成
-			return generateCode();
-		} else {
-			// 如果不存在，则添加到集合中并返回
-			allCodesSet.add(code);
-			return code;
-		}
-	}
-
-	return generateCode()
-}
 
 
 /**
@@ -186,7 +155,7 @@ module.exports = async function() {
 	}
 	
 	// 账号效验，如果有记录，则说明此设备已注册过账号，可以直接登录，否则直接注册
-	if (queryUserResult['affectedDocs'] == 1) { // 有记录，此账号存在
+	if (queryUserResult.data.length == 1) { // 有记录，此账号存在
 
 		const user = queryUserResult['data'][0]
 		const {
@@ -254,37 +223,15 @@ module.exports = async function() {
 	} else { // 无记录，此账号不存在，则先注册
 
 
-		// 1. 获取全部邀请码数据库表中所有用户的自身邀请码，因为注册时，生成的自身邀请码不可以和数据库表中已存在的邀请码重复
-
-
-		// 新版本获取全部邀请码从allInvitationCodesCollection获取，此时allInvitationCodesCollection的记录可能为空，所以需要判断
-    	// 获取全部邀请码
-    	const allInvitationCodesResult = await allInvitationCodesCollection.get();
-    	const allInvitationCodesData = allInvitationCodesResult['data'];
-
-		// 把allInvitationCodesData中的第一条记录的codes字段（如果存在）转换成Set
-		let allCodesSet = new Set(allInvitationCodesData.length > 0 && allInvitationCodesData[0].codes ? allInvitationCodesData[0].codes : []);
-
-		// 调用generateInviteCode函数生成新的邀请码
-		const newCode = generateInviteCode(allCodesSet);
-
-		// 更新或新增邀请码集合记录
-		if (allInvitationCodesData.length > 0) {
-			// 异步执行，不需要await同步等等
-			
-			// 如果记录存在，则更新
-			allInvitationCodesCollection.where({
-				_id: allInvitationCodesData[0]._id
-			}).update({
-				codes: Array.from(allCodesSet) // 注意这里确保了新邀请码已添加到集合中
-			});
-		} else {
-			// 如果记录不存在，则新增
-			allInvitationCodesCollection.add({
-				codes: Array.from(allCodesSet) // 注意这里确保了新邀请码已添加到集合中
-			});
+		// 1. 生成并占用用户自身邀请码：先随机生成，再查登记表 user-invite-codes 和用户表，两边都没有才使用
+		let newCode;
+		try {
+			newCode = await reserveInviteCode(inviteCodeCollection, userCollection);
+		} catch (error) {
+			console.error(error);
+			return createResponse(STATE_CODE.ERROR, "注册失败，请稍后重试");
 		}
-	
+
 		// 2. 开始注册（一键登录不用填写邀请码，邀请码在其他页面单独填写）
 
 		// 注册用户之前先计算赠送1天会员的到期时间（从当前时间开始计算新的到期时间）

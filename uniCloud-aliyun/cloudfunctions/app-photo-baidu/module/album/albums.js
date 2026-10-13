@@ -73,7 +73,7 @@ module.exports = async function () {
     }    
 
     // 没有更多数据了
-	if (result['affectedDocs'] === 0) {
+	if (result.data.length === 0) {
 		return createResponse(STATE_CODE.FAIL, '没有更多数据了', emptyResponse)
 	}
 	
@@ -100,7 +100,7 @@ module.exports = async function () {
 
     // 构造响应体
     let response = {
-        total: result['affectedDocs'],// 总记录数
+        total: result.data.length,// 总记录数
 		//list: result.data// 数据列表
 		list: sortedAlbums// 数据列表
     }

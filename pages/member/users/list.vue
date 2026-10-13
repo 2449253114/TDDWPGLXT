@@ -5,7 +5,7 @@
 				<input class="uni-search" type="text" v-model="query_userid" @confirm="searchToEdit" placeholder="请输入用户id" />
 				<button class="uni-button" type="primary" size="mini" @click="searchToEdit">搜索并修改</button>
 				<button class="uni-button" type="warn" size="mini" :disabled="!selectedIndexs.length"
-					@click="delTableAndInviteCode">批量删除并清理邀请码</button>
+					@click="delTableExcludePaidUsers">批量删除（跳过付费用户）</button>
 
 
 				<!-- 6647e8e07ad52dfccc7a52f4 第一笔200元充值的用户（也是第一位充值的用户） -->
@@ -221,8 +221,7 @@
 						"注册时 IP 地址": "register_ip"
 					}
 				},
-				exportExcelData: [],
-				allMyInviteCode: [] // 全部已选中用户的邀请码
+				exportExcelData: []
 			}
 		},
 		onLoad() {
@@ -346,63 +345,10 @@
 			// 多选
 			selectionChange(e) {
 				this.selectedIndexs = e.detail.index
-
-				// TODO 自己新增的
-				var dataList = this.$refs.udb.dataList
-
-				// 筛选出 dataList 中 _id 存在且 vip 等于 false 的项，然后返回这些项的 _id 集合
-				const filteredIds = this.selectedIndexs
-					.map(i => dataList[i])
-				// 筛选出 dataList 中的对象，其中 _id 存在且 vip 属性为 false
-				//.filter(item => item && item._id && item.vip === false)
-				// 提取筛选后对象的 _id 属性，形成一个新的数组
-				//.map(item => item._id);
-
-				this.allMyInviteCode = filteredIds
-				console.log("邀请码集合：", this.allMyInviteCode)
 			},
-			// 批量删除并清理邀请码
-			async delTableAndInviteCode() {
-				// 全部邀请码数据库表
-				const allInvitationCodesCollectionName = 'user-all-Invitation-codes'
-				const allInvitationCodesCollection = db.collection(allInvitationCodesCollectionName)
-
-				const {
-					result: {
-						data: allCodes
-					}
-				} = await allInvitationCodesCollection.get()
-
-				console.log("allCodes", allCodes[0])
-
-				let docId = allCodes[0]._id
-
-				// 把allInvitationCodesData中的第一条记录的codes字段（如果存在）转换成Set
-				let allCodesSet = new Set(allCodes.length > 0 && allCodes[0].codes ? allCodes[0].codes : []);
-
-				// 然后把this.allMyInviteCode里的邀请码从allCodesSet中删除
-				this.allMyInviteCode.forEach(inviteCode => {
-					allCodesSet.delete(inviteCode);
-				});
-
-				// 这里假设你已经成功地从allCodesSet中删除了不需要的邀请码
-				// 接下来你需要更新数据库中的记录
-				// 首先，将Set转换回数组
-				const updatedCodes = Array.from(allCodesSet);
-
-				// 然后更新数据库中的第一条记录的codes字段
-				if (allCodes.length > 0) {
-					const {
-						result: {
-							updated
-						}
-					} = await allInvitationCodesCollection.doc(docId).update({
-						codes: updatedCodes
-					});
-					console.log("更新成功条数：", updated);
-				}
-
-
+			// 批量删除选中用户，自动跳过付费用户。
+			// 被删用户的邀请码继续保留在 user-invite-codes 中占用，不回收，避免旧分享码被新用户复用而错绑邀请关系
+			async delTableExcludePaidUsers() {
 				// 支付订单数据库表
 				const payOrdersCollectionName = 'user-payment-orders'
 				const payOrdersCollection = db.collection(payOrdersCollectionName)

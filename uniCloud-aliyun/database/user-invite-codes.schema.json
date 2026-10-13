@@ -1,0 +1,35 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
+// 已占用邀请码登记表：每个邀请码一条记录，code 唯一（见 user-invite-codes.index.json）。
+// 替代旧表 user-all-Invitation-codes 的单文档 codes 数组；只由云函数读写，客户端无权限。
+{
+	"bsonType": "object",
+	"description": "已占用的用户邀请码，注册时先生成再查重，未占用才写入",
+	"required": ["code", "source", "create_date"],
+	"permission": {
+		"read": false,
+		"create": false,
+		"update": false,
+		"delete": false
+	},
+	"properties": {
+		"_id": {
+			"description": "ID，系统自动生成"
+		},
+		"code": {
+			"bsonType": "string",
+			"title": "邀请码",
+			"description": "用户自身邀请码，6 位数字或大写字母，全表唯一"
+		},
+		"source": {
+			"bsonType": "string",
+			"title": "来源",
+			"description": "legacy_array：从旧表 user-all-Invitation-codes 迁移；register：注册时生成",
+			"enum": ["legacy_array", "register"]
+		},
+		"create_date": {
+			"bsonType": "timestamp",
+			"title": "写入时间",
+			"description": "写入本表的毫秒时间戳；迁移记录为迁移执行时间，不是邀请码最初生成时间"
+		}
+	}
+}

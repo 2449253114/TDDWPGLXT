@@ -147,7 +147,7 @@ async function getRandomSampleComics(
 		.end();
 
 	  // 如果没有数据，则直接返回
-	if (aggregateResult['affectedDocs'] === 0) {
+	if (aggregateResult.data.length === 0) {
 		return {
 			affectedDocs: 0,
 			data: []
@@ -159,7 +159,7 @@ async function getRandomSampleComics(
 
 	// 返回处理后的结果
 	return {
-		affectedDocs: aggregateResult['affectedDocs'],
+		affectedDocs: aggregateResult.data.length,
 		data: processedData
 	};
 
@@ -196,7 +196,7 @@ async function getComicsByCreateTime(
 		.get();
 
 	// 如果没有数据，则直接返回
-	if (comicResult['affectedDocs'] === 0) {
+	if (comicResult.data.length === 0) {
 		return {
 			affectedDocs: 0,
 			data: []
@@ -208,7 +208,7 @@ async function getComicsByCreateTime(
 
 	// 返回处理后的结果
 	return {
-		affectedDocs: comicResult['affectedDocs'],
+		affectedDocs: comicResult.data.length,
 		data: processedData
 	};
 }
@@ -242,7 +242,7 @@ async function getComicsByCreateTimeGroupStick(
 		.get();
 
 	// 如果没有数据，则直接返回
-	if (comicResult['affectedDocs'] === 0) {
+	if (comicResult.data.length === 0) {
 		return {
 			affectedDocs: 0,
 			data: []
@@ -290,7 +290,7 @@ async function getComicsByCreateTimeGroupStick(
 
 	// 返回处理后的结果
 	return {
-		affectedDocs: comicResult['affectedDocs'],
+		affectedDocs: comicResult.data.length,
 		//affectedDocs: processedData.length,
 		data: processedData
 	};

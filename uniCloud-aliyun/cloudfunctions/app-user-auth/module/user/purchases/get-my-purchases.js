@@ -157,7 +157,7 @@ module.exports = async function() {
 		if (aggregateResult && aggregateResult.data && aggregateResult.data.length > 0) {
 			// 返回带有购买记录的响应
 			return createResponse(STATE_CODE.SUCCESS, `获取购买记录成功`, {
-				total: aggregateResult.affectedDocs,
+				total: aggregateResult.data.length,
 				list: aggregateResult.data
 			});
 		} else {

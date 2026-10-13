@@ -47,7 +47,7 @@ module.exports = async function() {
 
 	// 检查用户是否存在
 	const userResult = await userCollection.doc(user_id).get();
-	if (userResult.affectedDocs !== 1) {
+	if (userResult.data.length !== 1) {
 		return createResponse(STATE_CODE.FAIL, "用户不存在");
 	}
 
@@ -68,7 +68,7 @@ module.exports = async function() {
 	            album_id: album_id
 	        }).get();
 	    }
-	    if (existingPurchase && existingPurchase.affectedDocs > 0) {
+	    if (existingPurchase && existingPurchase.data.length > 0) {
 	        return createResponse(STATE_CODE.FAIL, "您已购买过此内容，无需重复购买");
 	    }
 	
@@ -83,7 +83,7 @@ module.exports = async function() {
 		const albumResult = await albumCollection.where({
 			album_id: album_id
 		}).get();
-		if (albumResult.affectedDocs !== 1) {
+		if (albumResult.data.length !== 1) {
 			return createResponse(STATE_CODE.FAIL, "相册不存在");
 		}
 		price = albumResult.data[0].price || 0;

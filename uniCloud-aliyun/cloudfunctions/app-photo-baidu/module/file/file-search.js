@@ -111,7 +111,7 @@ module.exports = async function () {
 
 
 			return createResponse(STATE_CODE.SUCCESS, "获取文件详情成功", {
-				total: fileResult['affectedDocs'],
+				total: fileResult.data.length,
 				list: processedData
 			});
 		} else {

@@ -56,12 +56,12 @@ module.exports = async function () {
 	}
 
 	// 检查查询结果，绑定邀请关系
-	if (inviterResult['affectedDocs'] === 1) {
+	if (inviterResult.data.length === 1) {
 		const inviter = inviterResult['data'][0];
 
 		// 检查用户是否已经被邀请
 		let currentUserResult = await userCollection.doc(userId).get();
-		if (currentUserResult['affectedDocs'] === 1) {
+		if (currentUserResult.data.length === 1) {
 			const currentUser = currentUserResult['data'][0];
 
 			// 如果当前用户已有邀请人，则不能再次绑定

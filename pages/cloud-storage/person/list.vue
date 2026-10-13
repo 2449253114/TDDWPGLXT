@@ -293,7 +293,7 @@
 				}).get()
 
 				// 如果没有数据，则直接返回
-				if (queryPersonResult['affectedDocs'] === 0) {
+				if (queryPersonResult.data.length === 0) {
 					uni.showToast({
 						title: '人物无数据'
 					})
@@ -317,7 +317,7 @@
 				}).get()
 
 				// 如果没有相册数据，则直接返回
-				if (queryAlbumResult['affectedDocs'] === 0) {
+				if (queryAlbumResult.data.length === 0) {
 					uni.showToast({
 						title: '相册无数据'
 					})

@@ -382,7 +382,7 @@ async function getRandomSampleFiles(
 		.end();
 
 	// 如果没有数据，则重新分配随机时间戳
-	if (aggregateResult['affectedDocs'] === 0) {
+	if (aggregateResult.data.length === 0) {
 		// 更新last_create_time为当前累积数据的最后一项的创建时间，准备下一次递归调用
 		const newLastCreateTime = getRandomTimestampInRange();
 		const newLastId = 0;
@@ -821,7 +821,7 @@ async function getFilesByCreateTime(
 		.get();
 
 	// 如果没有数据，则直接返回
-	if (filesResult['affectedDocs'] === 0) {
+	if (filesResult.data.length === 0) {
 		return {
 			affectedDocs: 0,
 			data: []
@@ -853,7 +853,7 @@ async function getFilesByCreateTime(
 
 	// 返回处理后的结果
 	return {
-		affectedDocs: filesResult['affectedDocs'],
+		affectedDocs: filesResult.data.length,
 		data: processedData
 	};
 }
@@ -912,7 +912,7 @@ async function getFilesByCreateTimeGroupStick(
 		.get();
 
 	// 如果没有数据，则直接返回
-	if (filesResult['affectedDocs'] === 0) {
+	if (filesResult.data.length === 0) {
 		return {
 			affectedDocs: 0,
 			data: []
@@ -975,7 +975,7 @@ async function getFilesByCreateTimeGroupStick(
 
 	// 返回处理后的结果
 	return {
-		affectedDocs: filesResult['affectedDocs'],
+		affectedDocs: filesResult.data.length,
 		//affectedDocs: processedData.length,
 		data: processedData
 	};

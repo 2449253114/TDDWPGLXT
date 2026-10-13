@@ -55,7 +55,7 @@ async function extendUserVipExpiration(
 	try {
 		// 获取用户当前的VIP到期时间
 		const userResult = await userCollection.doc(userId).get();
-		if (userResult['affectedDocs'] === 1) {
+		if (userResult.data.length === 1) {
 			const userInfo = userResult['data'][0];
 			let newExpireDate;
 
@@ -154,6 +154,59 @@ async function addOrderRecord(
 }
 
 
+// 邀请码沿用历史格式：6 位数字或大写字母。后台客服开通会员、取消邀请人等页面都按这个格式输入
+const INVITE_CODE_CHARACTERS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const INVITE_CODE_LENGTH = 6;
+// 36^6 约 21.8 亿种组合，每次碰撞概率约为“已占用数 / 21.8 亿”，连续 5 次失败基本只会是数据库故障
+const INVITE_CODE_MAX_ATTEMPTS = 5;
+
+/** 随机生成一个邀请码候选值，不保证未被占用。 */
+function generateInviteCodeCandidate() {
+	let code = '';
+	for (let i = 0; i < INVITE_CODE_LENGTH; i++) {
+		code += INVITE_CODE_CHARACTERS.charAt(Math.floor(Math.random() * INVITE_CODE_CHARACTERS.length));
+	}
+	return code;
+}
+
+/**
+ * 生成并占用一个未被使用的邀请码（注册时调用）。
+ * 流程：随机生成 → 同时查询登记表和用户表是否已有 → 都没有则写入登记表完成占用。
+ * - 登记表 user-invite-codes 的历史数据由迁移云对象 migrate-invite-codes 从旧 codes 数组写入，
+ *   包含已删除用户的码，这些码也不再分配。
+ * - 再查 user-accounts.my_invite_code（唯一索引，单次点查）：旧数组漏掉的在用码、后台手工新增用户的码都不会被分配。
+ * - 查重与写入之间若被并发注册抢先写入同一个码，code 唯一索引会让本次写入失败，随后换一个码重试。
+ * @param {Collection} inviteCodeCollection user-invite-codes 集合
+ * @param {Collection} userCollection user-accounts 集合
+ * @returns {Promise<String>} 已写入登记表的邀请码
+ * @throws {Error} 连续 INVITE_CODE_MAX_ATTEMPTS 次都没能占用成功时抛出，调用方应按注册失败处理
+ */
+async function reserveInviteCode(inviteCodeCollection, userCollection) {
+	let lastError = null;
+	for (let attempt = 1; attempt <= INVITE_CODE_MAX_ATTEMPTS; attempt++) {
+		const code = generateInviteCodeCandidate();
+		const [registered, ownedByUser] = await Promise.all([
+			inviteCodeCollection.where({ code }).limit(1).get(),
+			userCollection.where({ my_invite_code: code }).field({ _id: true }).limit(1).get()
+		]);
+		if (registered.data.length > 0 || ownedByUser.data.length > 0) {
+			continue;
+		}
+		try {
+			await inviteCodeCollection.add({
+				code,
+				source: 'register',
+				create_date: Date.now()
+			});
+			return code;
+		} catch (error) {
+			lastError = error;
+			console.warn(`占用邀请码 ${code} 失败，第 ${attempt} 次`, error);
+		}
+	}
+	throw new Error(`连续 ${INVITE_CODE_MAX_ATTEMPTS} 次未能占用邀请码${lastError ? '：' + lastError.message : ''}`);
+}
+
 
 module.exports = {
 	checkVipStatus,
@@ -161,5 +214,6 @@ module.exports = {
 	extendUserVipExpiration,
 	addVipChangeRecord,
 	addOrderRecord,
-	updateUserLastOnline
+	updateUserLastOnline,
+	reserveInviteCode
 }

@@ -34,7 +34,7 @@ module.exports = async function () {
 	}
 	
 	// 没有更多数据了
-	if (personResult['affectedDocs'] === 0) {
+	if (personResult.data.length === 0) {
 		return createResponse(STATE_CODE.FAIL, '没有更多数据了', emptyResponse)
 	}	
 	
@@ -68,7 +68,7 @@ module.exports = async function () {
 	
 	// 构造响应体
 	let response = {
-		total: personResult['affectedDocs'],// 总记录数
+		total: personResult.data.length,// 总记录数
 		list: personResult.data// 数据列表
 	}
 	

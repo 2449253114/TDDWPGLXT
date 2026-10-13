@@ -1,0 +1,15 @@
+{
+  "name": "migrate-invite-codes",
+  "description": "一次性迁移：把 user-all-Invitation-codes 的 codes 数组拆分写入 user-invite-codes",
+  "dependencies": {},
+  "extensions": {
+    "uni-cloud-jql": {}
+  },
+  "cloudfunction-config": {
+    "concurrency": 1,
+    "memorySize": 512,
+    "timeout": 600,
+    "triggers": [],
+    "runtime": "Nodejs18"
+  }
+}

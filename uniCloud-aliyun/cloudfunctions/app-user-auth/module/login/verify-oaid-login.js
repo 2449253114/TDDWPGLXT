@@ -172,7 +172,7 @@ module.exports = async function() {
 	}
 	
 	// 账号效验，如果有记录，则说明此设备已注册过账号，可以直接登录，否则直接注册
-	if (queryUserResult['affectedDocs'] == 1) { // 有记录，此账号存在
+	if (queryUserResult.data.length == 1) { // 有记录，此账号存在
 
 		const user = queryUserResult['data'][0]
 		const {

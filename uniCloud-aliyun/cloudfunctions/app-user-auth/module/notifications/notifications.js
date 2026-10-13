@@ -44,13 +44,13 @@ module.exports = async function() {
 		}
 		
 		// 没有更多数据了
-		if (noticesResult['affectedDocs'] === 0) {
+		if (noticesResult.data.length === 0) {
 			return createResponse(STATE_CODE.SUCCESS, '没有更多数据了', emptyResponse)
 		}
 		
 		// 构造响应体
 		let response = {
-			total: noticesResult['affectedDocs'],// 总记录数
+			total: noticesResult.data.length,// 总记录数
 			list: noticesResult.data// 数据列表
 		}
 		

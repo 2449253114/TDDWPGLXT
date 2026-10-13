@@ -21,9 +21,13 @@ const userVipCollection = db.collection(userVipCollectionName)
 const payOrdersCollectionName = 'user-payment-orders'
 const payOrdersCollection = db.collection(payOrdersCollectionName)
 
-// 全部邀请码数据库表
+// 全部邀请码数据库表（旧表：单文档 codes 数组，已由 user-invite-codes 替代，仅未路由的旧版登录仍引用）
 const allInvitationCodesCollectionName = 'user-all-Invitation-codes'
 const allInvitationCodesCollection = db.collection(allInvitationCodesCollectionName)
+
+// 已占用邀请码登记表（每个邀请码一条记录，code 唯一）
+const inviteCodeCollectionName = 'user-invite-codes'
+const inviteCodeCollection = db.collection(inviteCodeCollectionName)
 
 // APP系统通知数据库表
 const appSystemNoticeCollectionName = 'system-app-notice'
@@ -50,6 +54,7 @@ module.exports = {
 	userVipCollection,
 	payOrdersCollection,
 	allInvitationCodesCollection,
+	inviteCodeCollection,
 	appSystemNoticeCollection,
 	userPurchasesCollection,
 	fileCollectionName,

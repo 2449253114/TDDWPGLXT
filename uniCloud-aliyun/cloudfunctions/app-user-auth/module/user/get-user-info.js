@@ -50,12 +50,12 @@ module.exports = async function () {
 	}
 
 	// 没有此用户
-	if (queryUserResult['affectedDocs'] == 0) {
+	if (queryUserResult.data.length == 0) {
 		return createResponse(STATE_CODE.FAIL, "用户不存在")
 	}
 
 	let userInfo;
-	if (queryUserResult['affectedDocs'] == 1) {
+	if (queryUserResult.data.length == 1) {
 		userInfo = queryUserResult['data'][0]
 	}
 	

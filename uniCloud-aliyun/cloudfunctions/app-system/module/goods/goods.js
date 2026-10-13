@@ -36,7 +36,7 @@ module.exports = async function() {
 	// 业务逻辑开始-----------------------------------------------------------
 	const goodsResult = await shopGoodsCollection.where({type}).get()
 	
-	if (goodsResult.affectedDocs === 0) {
+	if (goodsResult.data.length === 0) {
 		return createResponse(STATE_CODE.ERROR, "没有找到相关商品");
 	}
 	
