@@ -1,4 +1,5 @@
 const {
+	dbCmd,
 	userCollection,
 	inviteCodeCollection,
 	appSystemNoticeCollection
@@ -26,6 +27,22 @@ const disable_login_users = [
 	//"65be37419755e3283004978c" // 我的账号，用来测试是否成功不让登录
 ]
 // 需要新增一个每分钟自动检查是否有短时间内同一个用户多次下单且不付款，如短时间(1分钟)内超过3个订单，则视为恶意刷单，直接封号。
+
+/**
+ * 拒绝新注册的 app_platform。正版 App 登录时传的是应用名“熊多多”，以下取值只拦新注册，不影响已有账号登录：
+ * - WithHim：App 请求模型 OaIdLoginRequest 里的默认值，正常登录流程不会用到，只出现在脚本伪造的请求里。
+ *   2026-10 起每天有 2-3 万个，设备号是随机 32 位 hex，注册后隔天回来的比例为 0。
+ * - 熊多多共存版：他人用分身或共存工具重新打包的 App，不是官方版本。
+ */
+const BLOCKED_REGISTER_PLATFORMS = ['WithHim', '熊多多共存版']
+
+/**
+ * 同一 IP 在 24 小时内最多能注册的账号数，超过即拒绝，用于限制换平台名、换设备号后的批量注册。
+ * 按 2026-11 近 7 天数据模拟，上限 10 会拦下约 5.3 万个注册，其中注册后隔天回来过的只有 9 个。
+ * 计数依赖 user-accounts 的 register_ip_register_date 索引（见 scripts/mongodb/create-indexes.mongosh.js）。
+ */
+const REGISTER_IP_LIMIT = 10
+const REGISTER_IP_WINDOW_MS = 24 * 60 * 60 * 1000
 
 
 /**
@@ -222,6 +239,28 @@ module.exports = async function() {
 
 	} else { // 无记录，此账号不存在，则先注册
 
+		// 0. 拦截伪造注册。对外统一返回“注册失败，请稍后重试”，不暴露具体规则，只在日志里记录原因
+		const clientIP = clientInfo['clientIP'];
+		if (BLOCKED_REGISTER_PLATFORMS.includes(app_platform)) {
+			console.warn(`拒绝注册：app_platform=${app_platform}，IP=${clientIP}`);
+			return createResponse(STATE_CODE.ERROR, "注册失败，请稍后重试");
+		}
+		if (typeof clientIP === 'string' && clientIP) {
+			let recentRegisterCount;
+			try {
+				recentRegisterCount = (await userCollection.where({
+					register_ip: clientIP,
+					register_date: dbCmd.gte(Date.now() - REGISTER_IP_WINDOW_MS)
+				}).count()).total;
+			} catch (error) {
+				console.error(error);
+				return createResponse(STATE_CODE.ERROR, "注册失败，请稍后重试");
+			}
+			if (recentRegisterCount >= REGISTER_IP_LIMIT) {
+				console.warn(`拒绝注册：IP=${clientIP} 24 小时内已注册 ${recentRegisterCount} 个账号`);
+				return createResponse(STATE_CODE.ERROR, "注册失败，请稍后重试");
+			}
+		}
 
 		// 1. 生成并占用用户自身邀请码：先随机生成，再查登记表 user-invite-codes 和用户表，两边都没有才使用
 		let newCode;

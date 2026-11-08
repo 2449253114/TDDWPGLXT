@@ -124,7 +124,10 @@
 			// 新增（仓库已声明）：违规邀请 v2 按时间段扫描（invite_time 范围 + _id 区间），时间窗口小，invite_time 放首位选择性高
 			{ name: 'invite_time_id', key: { invite_time: 1, _id: 1 } },
 			// 新增：违规注册检测按 register_date 范围计数并分页读取，会员列表也有注册时间筛选。该字段注册后不变，只在注册时有维护成本
-			{ name: 'register_date', key: { register_date: 1 } }
+			{ name: 'register_date', key: { register_date: 1 } },
+			// 新增：注册接口 verify-oaid-login-v2 在每次新注册前，统计同一 register_ip 近 24 小时的注册数（等值 + 范围，符合 ESR）。
+			// 没有这个索引时，只能沿 register_date 扫描当天几万条记录
+			{ name: 'register_ip_register_date', key: { register_ip: 1, register_date: 1 } }
 		],
 
 		'user-payment-orders': [
