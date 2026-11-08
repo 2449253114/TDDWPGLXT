@@ -83,6 +83,13 @@ export default {
 				value: '/pages/other/violation-register/violation-register'
 			},
 			{
+				menu_id: "zombie-accounts",
+				text: '僵尸号清理',
+				icon: 'uni-icons-trash-filled',
+				url: "",
+				value: '/pages/other/zombie-accounts/zombie-accounts'
+			},
+			{
 				menu_id: "kefu-activate-vip",
 				text: '请求日志',
 				icon: 'uni-icons-chatboxes-filled',

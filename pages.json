@@ -141,6 +141,13 @@
 			{
 				"navigationBarTitleText" : "违规注册检测系统"
 			}
+		},
+		{
+			"path" : "pages/other/zombie-accounts/zombie-accounts",
+			"style" : 
+			{
+				"navigationBarTitleText" : "僵尸号清理"
+			}
 		}
 ],
 	"subPackages": [{

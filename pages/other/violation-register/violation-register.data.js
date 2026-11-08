@@ -111,24 +111,28 @@ async function countRegisteredAccounts({ collection, dbCmd }, range, options = {
 }
 
 /**
- * 按 _id 游标分页读取范围内注册的全部账号（只读 SCAN_FIELDS）。
- * 用 _id 游标而不是 skip：扫描期间有账号被删除时不会漏读或重复读，深分页也不会越来越慢。
+ * 按 _id 游标分页读取满足条件的全部记录。
+ * 用 _id 游标而不是 skip：扫描期间有记录被删除时不会漏读或重复读，深分页也不会越来越慢。
  * @param {{collection, dbCmd}} context
- * @param {{startMs: number, endMs: number}} range
- * @param {{isCancelled?: Function, onPage?: Function, onRetry?: Function, retryDelayMs?: number}} options
- *   onPage(loadedCount) 每读完一页回调一次
- * @returns {Promise<Array>} 账号数组；取消时抛出 error.cancelled === true 的错误
+ * @param {Object} baseWhere - 查询条件，不能包含 _id（_id 由游标占用）
+ * @param {Object} fields - 读取的字段，必须包含 _id
+ * @param {{isCancelled?: Function, onPage?: Function, onRetry?: Function, retryDelayMs?: number, label?: string}} options
+ *   onPage(loadedCount) 每读完一页回调一次；label 用于错误信息
+ * @returns {Promise<Array>} 记录数组；取消时抛出 error.cancelled === true 的错误
  */
-async function scanRegisteredAccounts({ collection, dbCmd }, range, options = {}) {
-	const condition = registerDateCondition(dbCmd, range)
-	const accounts = []
+async function scanByIdCursor({ collection, dbCmd }, baseWhere, fields, options = {}) {
+	if (!baseWhere || Object.prototype.hasOwnProperty.call(baseWhere, '_id')) {
+		throw new TypeError('游标扫描的查询条件不能包含 _id')
+	}
+	const label = options.label || '记录'
+	const records = []
 	let lastId = ''
 	for (;;) {
-		const where = { register_date: condition }
+		const where = { ...baseWhere }
 		if (lastId) where._id = dbCmd.gt(lastId)
 		const data = await readWithRetry(async () => readResultData(
-			await collection.where(where).field(SCAN_FIELDS).orderBy('_id', 'asc').limit(SCAN_PAGE_SIZE).get(),
-			'注册账号'
+			await collection.where(where).field(fields).orderBy('_id', 'asc').limit(SCAN_PAGE_SIZE).get(),
+			label
 		), options)
 		if (options.isCancelled && options.isCancelled()) throw createCancelledError()
 		if (!data.length) break
@@ -138,12 +142,24 @@ async function scanRegisteredAccounts({ collection, dbCmd }, range, options = {}
 		if (!nextLastId || (lastId && nextLastId <= lastId)) {
 			throw new Error('分页游标没有前进，已中止扫描以免重复读取')
 		}
-		for (let index = 0; index < data.length; index++) accounts.push(data[index])
-		if (options.onPage) options.onPage(accounts.length)
+		for (let index = 0; index < data.length; index++) records.push(data[index])
+		if (options.onPage) options.onPage(records.length)
 		// 读到空页才结束，不用“本页不足 SCAN_PAGE_SIZE”判断，避免服务端单次上限更小时静默漏读。
 		lastId = nextLastId
 	}
-	return accounts
+	return records
+}
+
+/**
+ * 读取范围内注册的全部账号（只读 SCAN_FIELDS）。
+ * @param {{collection, dbCmd}} context
+ * @param {{startMs: number, endMs: number}} range - 两端都包含
+ * @param {Object} options - 同 scanByIdCursor
+ * @returns {Promise<Array>} 账号数组
+ */
+async function scanRegisteredAccounts(context, range, options = {}) {
+	const where = { register_date: registerDateCondition(context.dbCmd, range) }
+	return scanByIdCursor(context, where, SCAN_FIELDS, { label: '注册账号', ...options })
 }
 
 /**
@@ -236,7 +252,10 @@ module.exports = {
 	DETAIL_FIELDS,
 	STATUS_ACTIONS,
 	getErrorMessage,
+	readResultData,
+	readWithRetry,
 	countRegisteredAccounts,
+	scanByIdCursor,
 	scanRegisteredAccounts,
 	readAccountsByIds,
 	changeAccountStatus

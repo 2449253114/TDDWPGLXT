@@ -1,11 +1,14 @@
 /**
- * 测试专用：模拟 clientDB 的 user-accounts 集合与 db.command，只实现本页用到的查询能力。
+ * 测试专用：模拟 clientDB 集合与 db.command，只实现违规注册检测页和僵尸号清理页用到的查询能力。
  * 页面代码不会引用本文件。
  */
 const dbCmd = {
 	gte: value => ({ op: 'gte', value }),
 	lte: value => ({ op: 'lte', value }),
 	gt: value => ({ op: 'gt', value }),
+	lt: value => ({ op: 'lt', value }),
+	neq: value => ({ op: 'neq', value }),
+	exists: value => ({ op: 'exists', value }),
 	in: values => ({ op: 'in', value: values.slice() }),
 	and: conditions => ({ op: 'and', value: conditions })
 }
@@ -16,6 +19,10 @@ function matches(value, condition) {
 		case 'gte': return value >= condition.value
 		case 'lte': return value <= condition.value
 		case 'gt': return value > condition.value
+		case 'lt': return value < condition.value
+		// 与 MongoDB 一致：字段缺失也算“不等于”
+		case 'neq': return value !== condition.value
+		case 'exists': return (value !== undefined) === condition.value
 		case 'in': return condition.value.includes(value)
 		case 'and': return condition.value.every(item => matches(value, item))
 		default: throw new Error(`假实现不支持的条件：${condition.op}`)
@@ -26,11 +33,11 @@ function matches(value, condition) {
  * @param {Array} rows - 集合中的文档，会被 update 原地修改
  * @param {Object} options
  *   maxLimit：服务端单次返回上限；ignoreIdCursor：忽略 _id 的 gt 条件（模拟条件失效）；
- *   failGet(n) / failUpdate(n) / failCount(n)：第 n 次调用返回 true 时抛错；
+ *   failGet(n) / failUpdate(n) / failCount(n) / failRemove(n)：第 n 次调用返回 true 时抛错；
  *   dropUpdate：update 不生效但不报错；beforeGet(n)：每次 get 前回调
  */
 function createCollection(rows, options = {}) {
-	const calls = { get: [], update: [], count: 0 }
+	const calls = { get: [], update: [], remove: [], count: 0 }
 	const collection = {
 		where(where) {
 			const state = { fields: null, order: null, limit: 100 }
@@ -76,6 +83,15 @@ function createCollection(rows, options = {}) {
 					const matched = select()
 					if (!options.dropUpdate) matched.forEach(row => Object.assign(row, patch))
 					return { result: { updated: matched.length } }
+				},
+				async remove() {
+					calls.remove.push({ where })
+					if (options.failRemove && options.failRemove(calls.remove.length)) throw new Error('删除超时')
+					const matched = new Set(select())
+					for (let index = rows.length - 1; index >= 0; index--) {
+						if (matched.has(rows[index])) rows.splice(index, 1)
+					}
+					return { result: { deleted: matched.size } }
 				}
 			}
 			return query
