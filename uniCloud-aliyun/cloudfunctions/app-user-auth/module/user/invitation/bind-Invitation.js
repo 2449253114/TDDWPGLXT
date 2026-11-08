@@ -1,4 +1,5 @@
 const {
+	dbCmd,
 	userCollection,
 	userVipCollection,
 	payOrdersCollection,
@@ -59,6 +60,12 @@ module.exports = async function () {
 	if (inviterResult.data.length === 1) {
 		const inviter = inviterResult['data'][0];
 
+		// 不能绑定自己的邀请码：否则同一账号会同时拿到邀请方和受邀方两份奖励。
+		// _id 读出来可能是字符串也可能是 ObjectId，统一转成字符串再比较
+		if (String(inviter._id) === String(userId)) {
+			return createResponse(STATE_CODE.ERROR, "不能绑定自己的邀请码");
+		}
+
 		// 检查用户是否已经被邀请
 		let currentUserResult = await userCollection.doc(userId).get();
 		if (currentUserResult.data.length === 1) {
@@ -69,7 +76,11 @@ module.exports = async function () {
 				return createResponse(STATE_CODE.ERROR, "已存在邀请关系，不能重复绑定");
 			}
 
-			
+			// 不能互相邀请：邀请码主人的邀请人正是当前用户（当前用户邀请过对方），再反向绑定就成了互刷奖励
+			if (String(inviter.inviter_uid) === String(userId)) {
+				return createResponse(STATE_CODE.ERROR, "对方是你邀请的用户，不能互相绑定");
+			}
+
 			try {
 				// 绑定邀请关系
 				await userCollection.doc(userId).update({
@@ -97,16 +108,26 @@ module.exports = async function () {
 					inviter_uid: inviter._id
 				}).count();
 				
-				// 如果邀请人已邀请了50人，授予他们永久VIP会员资格
-				if (inviterCountResult.total >= 50) {
-					let dayCount = 365 // 默认为365
-					if (inviterCountResult.total == 50) {
+				// 邀请满 50 人的奖励：正好 50 人时送永久VIP（9999天），超过 50 人后每多一人加 365 天。
+				// 人数是实时统计的，受邀账号被删除或被取消邀请关系后会回落。为防止再次达到 50 人时重复发放永久VIP，
+				// 先用条件更新把 invite_permanent_vip_granted 从“未领取”改为 true，只有改成功的这一次才发放
+				const inviterCount = inviterCountResult.total
+				let dayCount = 0
+				if (inviterCount == 50) {
+					const claimResult = await userCollection.where({
+						_id: inviter._id,
+						invite_permanent_vip_granted: dbCmd.neq(true)
+					}).update({
+						invite_permanent_vip_granted: true
+					});
+					if (claimResult.updated === 1) {
 						dayCount = 9999
 					}
-					
-					// 邀请总数
-					let inviterCount = inviterCountResult.total
-					
+				} else if (inviterCount > 50) {
+					dayCount = 365
+				}
+
+				if (dayCount > 0) {
 					// 延长邀请人的VIP时间
 					await extendUserVipExpiration(userCollection, inviter._id, dayCount);
 					

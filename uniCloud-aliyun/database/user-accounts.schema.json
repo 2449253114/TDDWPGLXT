@@ -111,6 +111,12 @@
 			"description": "受邀时间",
 			"defaultValue": 0
 		},
+		"invite_permanent_vip_granted": {
+			"bsonType": "bool",
+			"title": "已领邀请永久VIP",
+			"description": "邀请满 50 人的永久VIP（9999天）是否已发放。为 true 时，受邀人数回落后再次达到 50 人也不再发放；缺失或 false 视为未发放",
+			"defaultValue": false
+		},
 		"my_invite_code": {
 			"bsonType": "string",
 			"title": "我的邀请码",

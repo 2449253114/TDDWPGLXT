@@ -1,2 +1,3 @@
 /unpackage/
 .env
+/scripts/mongodb/backups/
