@@ -1,1036 +1,1169 @@
 <template>
-	<view class="container">
-		<!-- 说明卡片 -->
-		<uni-card class="card" :is-shadow="false" :is-full="false" :border="true" margin="0 0 10px 0">
-			<text class="uni-card-txt">违规注册检测 - 检测相同IP地址注册的用户账号，识别潜在的批量注册行为</text>
+	<view class="page-container">
+		<uni-card :is-shadow="false" :is-full="false" :border="true" margin="0 0 12px 0">
+			<view class="page-heading">
+				<view>
+					<text class="page-title">违规注册检测</text>
+					<text class="page-subtitle">统计时间范围内注册的账号，按注册 IP 分组，找出同一 IP 批量注册的账号</text>
+				</view>
+				<view class="thresholds">
+					<text class="threshold-label">同 IP 账号数</text>
+					<text class="risk-pill normal">低风险 2–{{ normalMax }}</text>
+					<text class="risk-pill medium">中风险 {{ normalMax + 1 }}–{{ highMin - 1 }}</text>
+					<text class="risk-pill high">高风险 ≥{{ highMin }}</text>
+				</view>
+			</view>
+
+			<view v-if="task.visible" class="task-panel" :class="{ error: task.error }">
+				<view class="task-row">
+					<text class="task-message">{{ task.message }}</text>
+					<text v-if="task.metric" class="task-metric">{{ task.metric }}</text>
+				</view>
+				<view v-if="task.progress !== null" class="progress-track">
+					<view class="progress-value" :style="{ width: task.progress + '%' }"></view>
+				</view>
+			</view>
 		</uni-card>
 
-		<!-- 查询条件区域 -->
-		<uni-card :is-shadow="false" :is-full="false" :border="true" margin="0 0 10px 0">
-			<view class="query-section">
-				<text class="section-title">查询条件</text>
-				
-				<!-- 时间范围显示 -->
-				<uni-forms-item label="查询时间范围" :label-width="120">
-					<uni-datetime-picker 
-						v-model="timeRange" 
-						type="datetimerange" 
-						:disabled="true"
-						rangeSeparator="至"
-						:clear-icon="false"
-						:border="false"
-						class="time-picker-display" />
-				</uni-forms-item>
+		<uni-card :is-shadow="false" :is-full="false" :border="true" margin="0 0 12px 0">
+			<text class="section-title">注册时间范围</text>
+			<view class="option-row">
+				<button
+					v-for="option in dateOptions"
+					:key="option.value"
+					size="mini"
+					:class="['option-button', { active: dateMode === option.value }]"
+					:disabled="busy"
+					@click="setDateMode(option.value)"
+				>
+					{{ option.label }}
+				</button>
+			</view>
+			<view v-if="dateMode === 'custom'" class="condition-row">
+				<uni-easyinput
+					v-model="customDays"
+					class="days-input"
+					type="number"
+					:disabled="busy"
+					placeholder="请输入天数"
+					@confirm="startScan"
+				/>
+				<text>天内（含今天）</text>
+			</view>
+			<view v-if="dateMode === 'manual'" class="condition-row">
+				<uni-datetime-picker
+					v-model="manualDateRange"
+					type="daterange"
+					range-separator="至"
+					:end="businessToday"
+					:disabled="busy"
+				/>
+			</view>
+			<text :class="['range-preview', { error: rangePreview.error }]">{{ rangePreview.text }}</text>
+			<text class="inline-note">按北京时间自然日计算。只统计范围内注册的账号，同一 IP 在范围外注册的账号不计入；只按注册 IP 分组，最后登录 IP 仅作展示。</text>
+			<view class="button-row">
+				<button type="primary" size="mini" :disabled="busy" @click="startScan">开始检测</button>
+				<button v-if="scanning" size="mini" :disabled="cancelRequested" @click="cancelScan">
+					{{ cancelRequested ? '正在取消…' : '取消检测' }}
+				</button>
+			</view>
+		</uni-card>
 
-				<!-- 快捷时间选择按钮 -->
-				<uni-forms-item label="快捷选择" :label-width="120">
-					<view class="time-buttons">
-						<button 
-							v-for="(option, index) in timeOptions" 
-							:key="index"
-							:class="['time-button', { selected: selectedTimeOption === index }]" 
-							@click="selectTimeOption(index)"
-							size="mini">
-							{{ option.name }}
-						</button>
-						<view v-if="selectedTimeOption === timeOptions.length - 1" class="custom-days-input">
-							<uni-easyinput 
-								v-model="customDays" 
-								type="number" 
-								placeholder="输入天数" 
-								class="days-input" />
-							<button 
-								size="mini" 
-								type="primary"
-								@click="applyCustomDays">
-								确定
-							</button>
+		<uni-card v-if="scanMeta" :is-shadow="false" :is-full="false" :border="true" margin="0 0 12px 0">
+			<view class="section-heading">
+				<text class="section-title">检测结果</text>
+				<text class="section-subtitle">{{ scanMeta.rangeText }} · 完成于 {{ scanMeta.completedText }}</text>
+			</view>
+
+			<view class="stat-grid">
+				<view class="stat-item">
+					<text class="stat-number">{{ scanMeta.scannedCount }}</text>
+					<text class="stat-label">范围内注册账号</text>
+				</view>
+				<view class="stat-item high">
+					<text class="stat-number">{{ summary.high.groupCount }}</text>
+					<text class="stat-label">高风险 IP（{{ summary.high.accountCount }} 个账号）</text>
+				</view>
+				<view class="stat-item medium">
+					<text class="stat-number">{{ summary.medium.groupCount }}</text>
+					<text class="stat-label">中风险 IP（{{ summary.medium.accountCount }} 个账号）</text>
+				</view>
+				<view class="stat-item normal">
+					<text class="stat-number">{{ summary.normal.groupCount }}</text>
+					<text class="stat-label">低风险 IP（{{ summary.normal.accountCount }} 个账号）</text>
+				</view>
+				<view class="stat-item">
+					<text class="stat-number">{{ summary.mediumHighInviterCount }}</text>
+					<text class="stat-label">中高风险组涉及邀请人（去重）</text>
+				</view>
+			</view>
+			<view v-if="scanMeta.invalidIpCount" class="load-warning">
+				{{ scanMeta.invalidIpCount }} 个账号的注册 IP 为空或格式无效，未参与分组。
+			</view>
+			<view v-if="scanMeta.expectedCount !== scanMeta.scannedCount" class="load-warning">
+				开始时统计到 {{ scanMeta.expectedCount }} 个账号，实际读取 {{ scanMeta.scannedCount }} 个，差异通常来自扫描期间账号被删除。
+			</view>
+
+			<view class="option-row filter-row">
+				<text class="filter-label">风险筛选</text>
+				<button
+					v-for="option in riskFilterOptions"
+					:key="option.value"
+					size="mini"
+					:class="['option-button', { active: riskFilter === option.value }]"
+					@click="setRiskFilter(option.value)"
+				>
+					{{ option.label }}（{{ groupCountByFilter[option.value] }}）
+				</button>
+			</view>
+
+			<view v-if="!filteredGroups.length" class="empty-state">
+				{{ groups.length ? '当前筛选下没有分组，可切换到“全部”查看低风险分组' : '本次范围内没有多个账号共用同一注册 IP' }}
+			</view>
+
+			<view
+				v-for="group in pagedGroups"
+				:key="group.ip"
+				:class="['ip-group', group.riskLevel, { expanded: group.ip === expandedIp }]"
+			>
+				<view class="ip-group-header" @click="toggleGroup(group.ip)">
+					<view class="ip-group-title">
+						<text class="ip-text">{{ group.ip }}</text>
+						<text :class="['risk-pill', group.riskLevel]">{{ group.riskText }}</text>
+					</view>
+					<view class="ip-group-meta">
+						<text>{{ group.count }} 个账号</text>
+						<text :class="{ 'banned-count': group.bannedCount }">已封禁 {{ group.bannedCount }}</text>
+						<text>{{ group.inviterCount ? '邀请人 ' + group.inviterCount + ' 位' : '无邀请人' }}</text>
+						<text v-if="group.inviterCount && group.noInviterCount">无邀请人账号 {{ group.noInviterCount }}</text>
+						<text class="expand-hint">{{ group.ip === expandedIp ? '收起 ▲' : '展开 ▼' }}</text>
+					</view>
+				</view>
+
+				<!-- 只渲染当前展开的一组，收起即销毁，避免成百上千个分组的表格同时进入 DOM -->
+				<view v-if="group.ip === expandedIp && expandedGroup" class="ip-group-body">
+					<view class="group-actions">
+						<text class="inline-note">本组 {{ expandedBannableCount }} 个“正常”账号可批量封禁，其它状态的账号不参与。修改注册 IP 或邀请人后需重新检测才会重新分组。</text>
+						<view class="action-buttons">
+							<button size="mini" type="warn" :disabled="actionLocked || !expandedBannableCount" @click="confirmBanGroup">封禁本组正常账号</button>
+							<button size="mini" :disabled="actionLocked" @click="loadVisibleDetails(true)">刷新本页数据</button>
 						</view>
 					</view>
-				</uni-forms-item>
-
-				<!-- 查询按钮 -->
-				<view class="query-actions">
-					<button type="primary" @click="queryViolationUsers" :loading="loading">
-						{{ loading ? '查询中...' : '开始检测' }}
-					</button>
-				</view>
-			</view>
-		</uni-card>
-
-		<!-- 统计信息卡片 -->
-		<uni-card v-if="statisticsData.totalViolationUsers > 0" :is-shadow="false" :is-full="false" :border="true" margin="0 0 10px 0">
-			<view class="statistics-section">
-				<text class="section-title">检测统计</text>
-				<view class="statistics-grid">
-					<view class="stat-item">
-						<text class="stat-number">{{ statisticsData.totalViolationUsers }}</text>
-						<text class="stat-label">违规用户总数</text>
+					<view v-if="detailError" class="load-warning detail-error">
+						<text>详情读取失败：{{ detailError }}</text>
+						<button size="mini" :disabled="actionLocked" @click="loadVisibleDetails(true)">重试</button>
 					</view>
-					<view class="stat-item">
-						<text class="stat-number">{{ statisticsData.violationIpCount }}</text>
-						<text class="stat-label">违规IP数量</text>
-					</view>
-					<view class="stat-item">
-						<text class="stat-number">{{ statisticsData.suspiciousInviters }}</text>
-						<text class="stat-label">可疑邀请人</text>
-					</view>
-				</view>
-			</view>
-		</uni-card>
 
-		<!-- 相同IP分组数据 -->
-		<view v-if="violationGroups.length > 0">
-			<uni-collapse>
-				<uni-collapse-item
-					v-for="(group, groupIndex) in violationGroups" 
-					:key="groupIndex"
-					:title="'IP: ' + group.ip + ' (用户数: ' + group.users.length + ', 风险等级: ' + group.ipRiskLevel + ')'"
-					:open="groupIndex === 0">
-		
-					<uni-card
-						:is-shadow="false" 
-						:is-full="false" 
-						:border="true" 
-						margin="0 0 15px 0">
-						
-						<view class="ip-group-header">
-							<view class="ip-info">
-								<text class="ip-address">IP: {{ group.ip }}</text>
-								<text class="risk-level" :class="getRiskLevelClass(group.ipRiskLevel)">
-									风险等级: {{ group.ipRiskLevel }}
-								</text>
-								<text class="user-count">注册用户数: {{ group.users.length }}</text>
-							</view>
-							<view class="inviter-info">
-								<text class="inviter-label">邀请人信息:</text>
-								<view v-if="group.inviterInfo.length > 0">
-									<view 
-										v-for="(inviter, inviterIndex) in group.inviterInfo" 
-										:key="inviterIndex"
-										class="inviter-item">
-										<text class="inviter-code">邀请码: {{ inviter.inviteCode || '无' }}</text>
-										<text class="inviter-count">邀请数量: {{ inviter.count }}</text>
-										<text class="risk-level" :class="getRiskLevelClass(inviter.riskLevel)">
-											风险等级: {{ inviter.riskLevel }}
-										</text>
-										<button 
-											v-if="inviter.inviteCode && inviter.inviteCode !== '无'" 
-											class="ban-inviter-btn" 
-											size="mini" 
-											type="warn"
-											:disabled="inviter.status === 3"
-											@click="banInviter(inviter.inviteCode, inviter.inviterId)">
-											{{ inviter.status === 3 ? '已封禁' : '封禁邀请人' }}
-										</button>
-										<button 
-											v-if="inviter.inviteCode && inviter.inviteCode !== '无'" 
-											size="mini" 
-											type="primary"
-											@click="editUser(inviter.inviterId)">
-											修改
-										</button>
-										<button 
-											v-if="inviter.inviteCode && inviter.inviteCode !== '无'" 
-											size="mini" 
-											type="default"
-											@click="checkViolationInvitation(inviter.inviteCode)">
-											检测违规邀请
-										</button>
-									</view>
+					<text class="sub-title">邀请人（{{ expandedInviters.length }} 位；本组无邀请人账号 {{ expandedGroup.noInviterCount }} 个）</text>
+					<view v-if="!expandedInviters.length" class="empty-state small">本组账号都没有邀请人</view>
+					<uni-table v-else border stripe>
+						<uni-tr>
+							<uni-th align="left">邀请人</uni-th>
+							<uni-th width="100" align="center">邀请码</uni-th>
+							<uni-th width="90" align="center">本组受邀</uni-th>
+							<uni-th width="110" align="center">状态</uni-th>
+							<uni-th width="300" align="center">操作</uni-th>
+						</uni-tr>
+						<uni-tr v-for="row in pagedInviterRows" :key="row.id">
+							<uni-td align="left">
+								<text class="cell-main">{{ row.nickname }}</text>
+								<text class="cell-sub">{{ row.id }}</text>
+								<text v-if="row.inGroup" class="tag danger">本人也在本组</text>
+							</uni-td>
+							<uni-td align="center">{{ row.inviteCodeText }}</uni-td>
+							<uni-td align="center">{{ row.count }} 人</uni-td>
+							<uni-td align="center"><text :class="['status-text', row.statusClass]">{{ row.statusText }}</text></uni-td>
+							<uni-td align="center">
+								<view class="action-buttons">
+									<button v-if="row.canBan" size="mini" type="warn" :disabled="actionLocked" @click="confirmStatusChange(row.id, 'ban', '邀请人')">封禁</button>
+									<button v-if="row.canUnban" size="mini" :disabled="actionLocked" @click="confirmStatusChange(row.id, 'unban', '邀请人')">解封</button>
+									<button v-if="row.exists" size="mini" type="primary" :disabled="busy" @click="editAccount(row.id)">修改</button>
+									<button v-if="row.inviteCode" size="mini" :disabled="busy" @click="openInvitationCheck(row.inviteCode)">检测违规邀请</button>
 								</view>
-								<text v-else class="no-inviter">无邀请人</text>
-							</view>
-						</view>
+							</uni-td>
+						</uni-tr>
+					</uni-table>
+					<view v-if="expandedInviters.length > inviterPageSize" class="pagination-row">
+						<uni-pagination show-icon :page-size="inviterPageSize" :current="inviterPage" :total="expandedInviters.length" @change="changeInviterPage" />
+					</view>
 
-						<!-- 用户列表表格 -->
-						<uni-table ref="table" :loading="false" border stripe>
-							<uni-tr>
-								<uni-th width="80" align="center">用户状态</uni-th>
-								<uni-th width="100" align="center">邀请码</uni-th>
-								<uni-th width="140" align="center" sortable @sort-change="sortChange($event, 'invite_time', groupIndex)">受邀时间</uni-th>
-								<uni-th width="140" align="center" sortable @sort-change="sortChange($event, 'login_date', groupIndex)">最后登录</uni-th>
-								<uni-th width="120" align="center" sortable @sort-change="sortChange($event, 'login_ip', groupIndex)">最后登录IP</uni-th>
-								<uni-th width="140" align="center" sortable @sort-change="sortChange($event, 'register_date', groupIndex)">注册时间</uni-th>
-								<uni-th width="120" align="center">注册IP</uni-th>
-								<uni-th width="140" align="center">操作</uni-th>
-							</uni-tr>
-							<uni-tr v-for="(user, userIndex) in group.users" :key="userIndex">
-								<uni-td align="center">
-									<text :class="getStatusClass(user.status)">
-										{{ getStatusText(user.status) }}
-									</text>
-								</uni-td>
-								<uni-td align="center">{{ user.inviterInviteCode || '无' }}</uni-td>
-								<uni-td align="center">
-									{{ user.invite_time ? formatTimestampToDateTime(user.invite_time) : '无' }}
-								</uni-td>
-								<uni-td align="center">
-									{{ formatTimestampToDateTime(user.login_date) }}
-								</uni-td>
-								<uni-td align="center">{{ user.login_ip }}</uni-td>
-								<uni-td align="center">
-									{{ formatTimestampToDateTime(user.register_date) }}
-								</uni-td>
-								<uni-td align="center">{{ user.register_ip }}</uni-td>
-								<uni-td align="center">
-									<view class="action-buttons">
-										<button 
-											size="mini" 
-											type="warn" 
-											@click="banUser(user._id, userIndex, groupIndex)"
-											:disabled="user.status === 3">
-											{{ user.status === 3 ? '已封禁' : '封禁' }}
-										</button>
-										<button 
-											size="mini" 
-											type="primary" 
-											@click="editUser(user._id)">
-											修改
-										</button>
-									</view>
-								</uni-td>
-							</uni-tr>
-						</uni-table>
-					</uni-card>
-				</uni-collapse-item>
-			</uni-collapse>
-		</view>
+					<text class="sub-title">账号（{{ expandedGroup.count }} 个）</text>
+					<uni-table border stripe>
+						<uni-tr>
+							<uni-th align="left">账号</uni-th>
+							<uni-th width="100" align="center">本人邀请码</uni-th>
+							<uni-th width="110" align="center">状态</uni-th>
+							<uni-th width="110" align="center">邀请人邀请码</uni-th>
+							<uni-th width="160" align="center">受邀时间</uni-th>
+							<uni-th width="170" align="center" sortable @sort-change="changeAccountSort">注册时间</uni-th>
+							<uni-th width="160" align="center">最后登录</uni-th>
+							<uni-th width="140" align="center">最后登录 IP</uni-th>
+							<uni-th width="190" align="center">操作</uni-th>
+						</uni-tr>
+						<uni-tr v-for="row in pagedAccountRows" :key="row.id">
+							<uni-td align="left">
+								<text class="cell-main">{{ row.nickname }}</text>
+								<text class="cell-sub">{{ row.id }}</text>
+							</uni-td>
+							<uni-td align="center">{{ row.myInviteCode }}</uni-td>
+							<uni-td align="center"><text :class="['status-text', row.statusClass]">{{ row.statusText }}</text></uni-td>
+							<uni-td align="center">{{ row.inviterCodeText }}</uni-td>
+							<uni-td align="center">{{ row.inviteTimeText }}</uni-td>
+							<uni-td align="center">{{ row.registerTimeText }}</uni-td>
+							<uni-td align="center">{{ row.loginTimeText }}</uni-td>
+							<uni-td align="center">{{ row.loginIp }}</uni-td>
+							<uni-td align="center">
+								<view class="action-buttons">
+									<button v-if="row.canBan" size="mini" type="warn" :disabled="actionLocked" @click="confirmStatusChange(row.id, 'ban', '账号')">封禁</button>
+									<button v-if="row.canUnban" size="mini" :disabled="actionLocked" @click="confirmStatusChange(row.id, 'unban', '账号')">解封</button>
+									<button v-if="row.exists" size="mini" type="primary" :disabled="busy" @click="editAccount(row.id)">修改</button>
+								</view>
+							</uni-td>
+						</uni-tr>
+					</uni-table>
+					<view v-if="expandedGroup.count > accountPageSize" class="pagination-row">
+						<uni-pagination show-icon :page-size="accountPageSize" :current="accountPage" :total="expandedGroup.count" @change="changeAccountPage" />
+					</view>
+				</view>
+			</view>
 
-		<!-- 无数据提示 -->
-		<uni-card v-if="hasQueried && violationGroups.length === 0" :is-shadow="false" :is-full="false" :border="true">
-			<view class="no-data">
-				<text>暂无发现违规注册用户</text>
+			<view v-if="filteredGroups.length > groupPageSize" class="pagination-row">
+				<uni-pagination show-icon :page-size="groupPageSize" :current="groupPage" :total="filteredGroups.length" @change="changeGroupPage" />
 			</view>
 		</uni-card>
 	</view>
 </template>
 
 <script>
-	const db = uniCloud.database();
-	const dbCmd = db.command;
+	const {
+		NORMAL_MAX,
+		HIGH_RISK_MIN,
+		RISK_FILTERS,
+		buildRegisterIpGroups,
+		summarizeGroups,
+		filterGroups,
+		countGroupInviters,
+		paginate,
+		getStatusText,
+		getRiskText
+	} = require('./violation-register.utils.js')
+	const {
+		DETAIL_FIELDS,
+		STATUS_ACTIONS,
+		getErrorMessage,
+		countRegisteredAccounts,
+		scanRegisteredAccounts,
+		readAccountsByIds,
+		changeAccountStatus
+	} = require('./violation-register.data.js')
+	const {
+		ONE_DAY_MS,
+		resolveBusinessDateRange,
+		formatBusinessTimestamp,
+		getBusinessDayKey,
+		getBusinessDateStart
+	} = require('../violation-invitation-v2/violation-invitation-v2.scan.js')
 
-	// 用户数据库表
-	const userCollectionName = 'user-accounts'
-	const userCollection = db.collection(userCollectionName)
+	const db = uniCloud.database()
+	const dbContext = {
+		collection: db.collection('user-accounts'),
+		dbCmd: db.command
+	}
+
+	/** 已读取过但数据库中不存在的账号（扫描后被删除，或邀请人账号已删除）。 */
+	const MISSING_ACCOUNT = Object.freeze({ missing: true })
+	const EMPTY_GROUPS = Object.freeze([])
+	const STATUS_CLASS = {
+		0: 'normal',
+		1: 'restricted',
+		2: 'reviewing',
+		3: 'banned'
+	}
+
+	function formatTime(value) {
+		return formatBusinessTimestamp(value) || '无'
+	}
 
 	export default {
 		data() {
 			return {
-				loading: false, // 查询加载状态
-				hasQueried: false, // 是否已经查询过
-				timeRange: [], // 时间范围选择器的值
-				selectedTimeOption: 0, // 当前选择的时间选项
-				customDays: '', // 自定义天数
-				timeOptions: [ // 时间选择选项
-					{ name: '今天', days: 0, type: 'today' },
-					{ name: '昨天', days: 1, type: 'yesterday' },
-					{ name: '前天', days: 2, type: 'dayBefore' },
-					{ name: '最近3天', days: 3, type: 'recent' },
-					{ name: '最近7天', days: 7, type: 'recent' },
-					{ name: '最近15天', days: 15, type: 'recent' },
-					{ name: '最近30天', days: 30, type: 'recent' },
-					{ name: '自定义', days: 0, type: 'custom' }
+				normalMax: NORMAL_MAX,
+				highMin: HIGH_RISK_MIN,
+				// “昨天”“前天”与违规邀请 v2 一致：从当天 0 点起截止到检测时刻
+				dateOptions: [
+					{ value: 'today', label: '今天' },
+					{ value: 'yesterday', label: '昨天起' },
+					{ value: 'dayBeforeYesterday', label: '前天起' },
+					{ value: 'days3', label: '3 天内' },
+					{ value: 'days7', label: '7 天内' },
+					{ value: 'days15', label: '15 天内' },
+					{ value: 'days30', label: '30 天内' },
+					{ value: 'custom', label: '自定义天数' },
+					{ value: 'manual', label: '手动日期' }
 				],
-				violationGroups: [], // 违规分组数据
-				statisticsData: { // 统计数据
-					totalViolationUsers: 0, // 违规用户总数
-					violationIpCount: 0, // 违规IP数量
-					suspiciousInviters: 0 // 可疑邀请人数量
-				},
-				sortConfig: {} // 改为对象，按IP存储每个分组的排序状态
+				dateMode: 'today',
+				customDays: '',
+				manualDateRange: [],
+				businessToday: getBusinessDayKey(Date.now()),
+				// 范围预览的参考时刻；只用于显示，实际检测以点击“开始检测”的时刻为准
+				previewNow: Date.now(),
+				riskFilterOptions: [
+					{ value: 'mediumHigh', label: '中高风险' },
+					{ value: 'high', label: '仅高风险' },
+					{ value: 'all', label: '全部（≥2 个账号）' }
+				],
+				riskFilter: 'mediumHigh',
+				scanning: false,
+				cancelRequested: false,
+				acting: false,
+				detailLoading: false,
+				detailError: '',
+				task: { visible: false, message: '', metric: '', progress: null, error: false },
+				scanMeta: null,
+				summary: null,
+				// 冻结数组：Vue 2 不会为数万个分组建立响应式
+				groups: EMPTY_GROUPS,
+				groupPage: 1,
+				groupPageSize: 20,
+				expandedIp: '',
+				accountPage: 1,
+				accountPageSize: 50,
+				inviterPage: 1,
+				inviterPageSize: 10,
+				accountSortOrder: 'desc',
+				// 状态与详情存放在非响应式 Map 中，变更后递增版本号触发相关计算属性重新计算
+				statusVersion: 0,
+				detailVersion: 0
 			}
 		},
-		onLoad() {
-			// 页面加载时默认选择今天
-			this.selectTimeOption(0);
+		created() {
+			// 以下属性故意不放进 data：数据量可达数十万条，不能被 Vue 2 深度观察
+			this.accountIndex = new Map() // 扫描快照：账号 id → { registerDate, inviterId, status }
+			this.statusById = new Map() // 账号与邀请人的最新状态，唯一来源
+			this.detailById = new Map() // 已读取的账号详情；MISSING_ACCOUNT 表示已不存在
+			this.scanToken = 0
+			this.detailToken = 0
+		},
+		onShow() {
+			this.previewNow = Date.now()
+			this.businessToday = getBusinessDayKey(this.previewNow)
+		},
+		onUnload() {
+			// 离开页面时让进行中的扫描和详情读取在下一步停止
+			this.scanToken++
+			this.detailToken++
+		},
+		computed: {
+			busy() {
+				return this.scanning || this.acting
+			},
+			/** 封禁、解封按钮在详情读取期间也锁定，避免读回的旧状态覆盖刚写入的新状态。 */
+			actionLocked() {
+				return this.busy || this.detailLoading
+			},
+			rangePreview() {
+				const now = this.previewNow
+				try {
+					const range = resolveBusinessDateRange({
+						mode: this.dateMode,
+						customDays: this.customDays,
+						dateRange: this.manualDateRange,
+						confirmedAt: now
+					})
+					const days = Math.round((getBusinessDateStart(range.endDate) - getBusinessDateStart(range.startDate)) / ONE_DAY_MS) + 1
+					const endText = range.endDate === getBusinessDayKey(now)
+						? `${range.endDate} 点击“开始检测”的时刻`
+						: `${range.endDate} 23:59:59`
+					return { error: false, text: `检测范围：${range.startDate} 00:00:00 至 ${endText}，共 ${days} 个自然日` }
+				} catch (error) {
+					return { error: true, text: getErrorMessage(error) }
+				}
+			},
+			filteredGroups() {
+				return filterGroups(this.groups, this.riskFilter)
+			},
+			groupCountByFilter() {
+				const counts = {}
+				Object.keys(RISK_FILTERS).forEach(key => {
+					counts[key] = filterGroups(this.groups, key).length
+				})
+				return counts
+			},
+			pagedGroups() {
+				return paginate(this.filteredGroups, this.groupPage, this.groupPageSize).map(group => ({
+					ip: group.ip,
+					count: group.count,
+					riskLevel: group.riskLevel,
+					riskText: getRiskText(group.riskLevel),
+					inviterCount: group.inviterIds.length,
+					noInviterCount: group.noInviterCount,
+					bannedCount: group.ids.reduce((count, id) => count + (this.statusOf(id) === STATUS_ACTIONS.ban.to ? 1 : 0), 0)
+				}))
+			},
+			expandedGroup() {
+				if (!this.expandedIp) return null
+				return this.groups.find(group => group.ip === this.expandedIp) || null
+			},
+			expandedBannableCount() {
+				const group = this.expandedGroup
+				return group ? group.ids.filter(id => this.statusOf(id) === STATUS_ACTIONS.ban.from).length : 0
+			},
+			expandedInviters() {
+				const group = this.expandedGroup
+				return group ? countGroupInviters(group.ids, this.accountIndex) : []
+			},
+			pagedInviters() {
+				return paginate(this.expandedInviters, this.inviterPage, this.inviterPageSize)
+			},
+			pagedAccountIds() {
+				const group = this.expandedGroup
+				if (!group) return []
+				// group.ids 已按注册时间倒序排好
+				const ids = this.accountSortOrder === 'asc' ? group.ids.slice().reverse() : group.ids
+				return paginate(ids, this.accountPage, this.accountPageSize)
+			},
+			pagedInviterRows() {
+				return this.pagedInviters.map(entry => {
+					const detail = this.detailOf(entry.inviterId)
+					const exists = Boolean(detail && !detail.missing)
+					const inviteCode = exists && detail.my_invite_code ? String(detail.my_invite_code) : ''
+					return {
+						id: entry.inviterId,
+						count: entry.count,
+						inGroup: entry.inGroup,
+						exists,
+						nickname: this.describeName(detail, '邀请人账号已不存在'),
+						inviteCode,
+						inviteCodeText: !detail ? '加载中…' : exists ? (inviteCode || '未设置') : '—',
+						...this.buildStatusView(entry.inviterId, exists)
+					}
+				})
+			},
+			pagedAccountRows() {
+				return this.pagedAccountIds.map(id => {
+					const snapshot = this.accountIndex.get(id)
+					const detail = this.detailOf(id)
+					const exists = Boolean(detail && !detail.missing)
+					return {
+						id,
+						exists,
+						nickname: this.describeName(detail, '账号已不存在'),
+						myInviteCode: exists ? (detail.my_invite_code || '无') : '—',
+						inviterCodeText: snapshot.selfInvited ? '自己（数据异常）' : this.describeInviterCode(snapshot.inviterId),
+						inviteTimeText: exists ? formatTime(detail.invite_time) : '—',
+						registerTimeText: formatTime(snapshot.registerDate),
+						loginTimeText: exists ? formatTime(detail.login_date) : '—',
+						loginIp: exists ? (detail.login_ip || '无') : '—',
+						...this.buildStatusView(id, exists)
+					}
+				})
+			}
 		},
 		methods: {
 			/**
-			 * 选择时间选项
-			 * @param { Number } index - 时间选项的索引
+			 * 读取状态表与详情缓存。二者是非响应式 Map，先读取对应版本号，
+			 * 让调用它的计算属性在版本号递增时重新计算；条件判断保证这次读取不会被压缩工具当作无用代码删除。
 			 */
-			selectTimeOption(index) {
-				this.selectedTimeOption = index;
-				const option = this.timeOptions[index];
-				if (option.type === 'custom' && this.customDays === '') {
-					// 等待用户输入自定义天数
-					return;
+			statusOf(id) {
+				return this.statusVersion >= 0 ? this.statusById.get(id) : undefined
+			},
+			detailOf(id) {
+				return this.detailVersion >= 0 ? this.detailById.get(id) : undefined
+			},
+			setTask(message, options = {}) {
+				this.task = {
+					visible: true,
+					message,
+					metric: options.metric || '',
+					progress: options.progress === undefined ? null : options.progress,
+					error: Boolean(options.error)
 				}
-				const timeRange = this.calculateTimeRange(option.days, option.type);
-				this.timeRange = timeRange;
 			},
-			
-			/**
-			 * 应用自定义天数
-			 */
-			applyCustomDays() {
-			  const days = parseInt(this.customDays);
-			  if (isNaN(days) || days <= 0) {
-			    uni.showToast({
-			      title: '请输入有效天数',
-			      icon: 'none'
-			    });
-			    return;
-			  }
-			  this.timeOptions[this.timeOptions.length - 1].days = days;
-			  this.selectTimeOption(this.timeOptions.length - 1);
+			setDateMode(mode) {
+				if (this.busy) return
+				this.dateMode = mode
+				this.previewNow = Date.now()
+				this.businessToday = getBusinessDayKey(this.previewNow)
 			},
-
-			/**
-			 * 计算时间范围
-			 * @param { Number } days - 天数
-			 * @param { String } type - 类型 today/yesterday/dayBefore/recent
-			 * @return { Array } 时间范围数组
-			 */
-			calculateTimeRange(days, type) {
-				const now = new Date();
-				let startTime, endTime;
-
-				if (type === 'today') {
-					// 今天：今天0点0分0秒至现在
-					startTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-					endTime = now;
-				} else if (type === 'yesterday') {
-					// 昨天：昨天0点0分0秒至现在
-					const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-					startTime = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0);
-					endTime = now;
-				} else if (type === 'dayBefore') {
-					// 前天：前天0点0分0秒至现在
-					const dayBefore = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
-					startTime = new Date(dayBefore.getFullYear(), dayBefore.getMonth(), dayBefore.getDate(), 0, 0, 0);
-					endTime = now;
-				} else {
-					// 最近N天：N天前的0点0分0秒至现在
-					const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
-					startTime = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate(), 0, 0, 0);
-					endTime = now;
+			describeName(detail, missingText) {
+				if (!detail) return '加载中…'
+				if (detail.missing) return missingText
+				return detail.nickname || '未设置昵称'
+			},
+			describeInviterCode(inviterId) {
+				if (!inviterId) return '无'
+				const detail = this.detailOf(inviterId)
+				if (!detail) return '加载中…'
+				if (detail.missing) return '邀请人已删除'
+				return detail.my_invite_code || '未设置'
+			},
+			/** 状态展示与可执行操作；状态未知（未加载或结果待确认）时不提供封禁、解封。 */
+			buildStatusView(id, exists) {
+				const status = this.statusOf(id)
+				const loaded = this.detailOf(id) !== undefined
+				return {
+					statusText: !loaded && status === undefined ? '加载中…' : exists || !loaded ? getStatusText(status) : '—',
+					statusClass: STATUS_CLASS[status] || 'unknown',
+					canBan: exists && status === STATUS_ACTIONS.ban.from,
+					canUnban: exists && status === STATUS_ACTIONS.unban.from
 				}
-
-				return [
-					this.formatDateTimeToString(startTime),
-					this.formatDateTimeToString(endTime)
-				];
 			},
-
-			/**
-			 * 将Date对象格式化为字符串
-			 * @param { Date } date - 日期对象
-			 * @return { String } 格式化后的日期时间字符串
-			 */
-			formatDateTimeToString(date) {
-				const year = date.getFullYear();
-				const month = String(date.getMonth() + 1).padStart(2, '0');
-				const day = String(date.getDate()).padStart(2, '0');
-				const hours = String(date.getHours()).padStart(2, '0');
-				const minutes = String(date.getMinutes()).padStart(2, '0');
-				const seconds = String(date.getSeconds()).padStart(2, '0');
-				return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+			resetResults() {
+				this.detailToken++
+				this.accountIndex = new Map()
+				this.statusById = new Map()
+				this.detailById = new Map()
+				this.groups = EMPTY_GROUPS
+				this.summary = null
+				this.scanMeta = null
+				this.groupPage = 1
+				this.expandedIp = ''
+				this.detailLoading = false
+				this.detailError = ''
+				this.statusVersion++
+				this.detailVersion++
 			},
-
-			/**
-			 * 将时间戳转换为指定格式的日期时间字符串
-			 * @param { Number } timestamp - 时间戳（支持秒和毫秒）
-			 * @return { String } 格式化后的日期时间字符串
-			 */
-			formatTimestampToDateTime(timestamp) {
-				if (!timestamp) return '无';
-				
-				// 判断时间戳是秒还是毫秒
-				const isMilliseconds = timestamp.toString().length > 10;
-				const date = new Date(isMilliseconds ? timestamp : timestamp * 1000);
-
-				const year = date.getFullYear();
-				const month = String(date.getMonth() + 1).padStart(2, '0');
-				const day = String(date.getDate()).padStart(2, '0');
-				const hours = String(date.getHours()).padStart(2, '0');
-				const minutes = String(date.getMinutes()).padStart(2, '0');
-				const seconds = String(date.getSeconds()).padStart(2, '0');
-
-				return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-			},
-
-			/**
-			 * 查询违规注册用户
-			 * 1. 先查询记录总数
-			 * 2. 分页查询用户数据（每次limit 1000条），显示查询进度
-			 * 3. 合并所有分页数据并按IP分组处理
-			 * 4. 按风险等级和邀请人状态排序
-			 */
-			async queryViolationUsers() {
-				if (this.timeRange.length !== 2) {
-					uni.showToast({
-						title: '请选择时间范围',
-						icon: 'none'
-					});
-					return;
+			async startScan() {
+				if (this.busy) return
+				const confirmedAt = Date.now()
+				this.previewNow = confirmedAt
+				this.businessToday = getBusinessDayKey(confirmedAt)
+				let range
+				try {
+					range = resolveBusinessDateRange({
+						mode: this.dateMode,
+						customDays: this.customDays,
+						dateRange: this.manualDateRange,
+						confirmedAt
+					})
+				} catch (error) {
+					uni.showToast({ title: getErrorMessage(error), icon: 'none' })
+					return
 				}
 
-				this.loading = true;
-				this.hasQueried = false;
+				const token = ++this.scanToken
+				const isCancelled = () => token !== this.scanToken
+				const rangeText = `${formatBusinessTimestamp(range.startMs)} 至 ${formatBusinessTimestamp(range.endMs)}（北京时间）`
+				const onRetry = attempt => !isCancelled() && this.setTask(`读取失败，正在第 ${attempt} 次尝试`, { progress: this.task.progress, metric: this.task.metric })
+				this.resetResults()
+				this.scanning = true
+				this.cancelRequested = false
+				this.setTask(`正在统计 ${rangeText} 注册的账号数`)
 
 				try {
-					// 解析时间范围
-					const startTime = new Date(this.timeRange[0]).getTime();
-					const endTime = new Date(this.timeRange[1]).getTime();
+					const expectedCount = await countRegisteredAccounts(dbContext, range, { isCancelled, onRetry })
+					if (isCancelled()) return
+					this.setTask('正在读取注册账号', { progress: 0, metric: `0 / ${expectedCount}` })
+					const accounts = await scanRegisteredAccounts(dbContext, range, {
+						isCancelled,
+						onRetry,
+						onPage: loaded => this.setTask('正在读取注册账号', {
+							progress: Math.min(99, Math.floor(loaded / Math.max(expectedCount, 1) * 100)),
+							metric: `${loaded} / ${expectedCount}`
+						})
+					})
 
-					console.log('查询时间范围:', startTime, 'to', endTime);
+					this.setTask('正在按注册 IP 分组', { progress: 99 })
+					const result = buildRegisterIpGroups(accounts)
+					if (isCancelled()) return
 
-					// 查询记录总数
-					const { result: { total } } = await userCollection.where({
-						register_date: dbCmd.gte(startTime).and(dbCmd.lte(endTime))
-					}).count();
-			
-					console.log('总记录数:', total);
-					
-					// 分页查询
-					const pageSize = 1000;
-					const pageCount = Math.ceil(total / pageSize);
-					let allUsers = [];
-
-					// 查询指定时间范围内的所有用户
-					for (let page = 0; page < pageCount; page++) {
-						// 显示当前查询页数
-						uni.showToast({
-							title: `正在查询第${page + 1}页，共${pageCount}页`,
-							icon: 'none',
-							mask: true
-						});
-						
-						const { result: { data } } = await userCollection.where({
-							register_date: dbCmd.gte(startTime).and(dbCmd.lte(endTime))
-						}).skip(page * pageSize).limit(pageSize).get();
-						allUsers = allUsers.concat(data);
-						// 添加延时，避免请求过快被拒绝
-						await this.sleep(200)
+					this.accountIndex = result.accountIndex
+					result.accountIndex.forEach((snapshot, id) => this.statusById.set(id, snapshot.status))
+					this.groups = Object.freeze(result.groups)
+					this.summary = summarizeGroups(result.groups)
+					this.scanMeta = {
+						rangeText,
+						completedText: formatBusinessTimestamp(Date.now()),
+						expectedCount,
+						scannedCount: result.scannedCount,
+						invalidIpCount: result.invalidIpCount
 					}
-
-					console.log('查询到用户数量:', allUsers.length);
-
-					// 按注册IP分组
-					const ipGroups = this.groupUsersByIp(allUsers);
-					
-					// 筛选出相同IP注册的用户（排除单一IP注册的用户）
-					const violationIpGroups = Object.entries(ipGroups).filter(([ip, users]) => users.length > 1);
-
-					console.log('违规IP分组数量:', violationIpGroups.length);
-
-					// 处理违规分组数据
-					const processedGroups = await this.processViolationGroups(violationIpGroups);
-
-					// 计算统计数据
-					this.calculateStatistics(processedGroups);
-					
-					// 按风险等级和邀请人状态排序
-					this.violationGroups = this.sortViolationGroups(processedGroups);;
-					this.hasQueried = true;
-
-					if (processedGroups.length === 0) {
-						uni.showToast({
-							title: '未发现违规注册',
-							icon: 'success'
-						});
-					} else {
-						uni.showToast({
-							title: `发现${this.statisticsData.totalViolationUsers}个违规用户`,
-							icon: 'none'
-						});
-					}
-
+					this.statusVersion++
+					this.setTask(`检测完成：${result.groups.length} 个注册 IP 有多个账号，其中中高风险 ${this.summary.high.groupCount + this.summary.medium.groupCount} 个`, {
+						metric: `${result.scannedCount} 个账号`
+					})
 				} catch (error) {
-					console.error('查询失败:', error);
-					uni.showToast({
-						title: '查询失败，请重试',
-						icon: 'none'
-					});
+					if (error && error.cancelled) return
+					console.error('违规注册检测失败:', error)
+					this.resetResults()
+					this.setTask(`检测失败，未展示部分结果：${getErrorMessage(error)}`, { error: true })
 				} finally {
-					this.loading = false;
-				}
-			},
-			
-			/**
-			 * 对违规IP分组进行排序
-			 * 排序规则：风险高且有邀请人 > 风险高无邀请人 > 风险中 > 风险低
-			 * @param { Array } groups - 违规IP分组数据
-			 * @return { Array } 排序后的分组数据
-			 */
-			sortViolationGroups(groups) {
-			  const riskLevelMap = {
-			    '高': 3,
-			    '中': 2,
-			    '低': 1
-			  };
-			
-			  return groups.sort((a, b) => {
-			    // 获取风险等级数值
-			    const riskA = riskLevelMap[a.ipRiskLevel] || 0;
-			    const riskB = riskLevelMap[b.ipRiskLevel] || 0;
-			
-			    // 获取邀请人状态（是否有邀请人）
-			    const hasInviterA = a.inviterInfo.some(inviter => inviter.inviteCode !== '无');
-			    const hasInviterB = b.inviterInfo.some(inviter => inviter.inviteCode !== '无');
-			
-			    // 风险等级不同时，按风险等级降序
-			    if (riskA !== riskB) {
-			      return riskB - riskA;
-			    }
-			
-			    // 风险等级相同时，有邀请人优先
-			    if (hasInviterA !== hasInviterB) {
-			      return hasInviterA ? -1 : 1;
-			    }
-			
-			    // 风险等级和邀请人状态都相同时，按用户数量降序
-			    return b.users.length - a.users.length;
-			  });
-			},
-
-			/**
-			 * 按IP地址分组用户
-			 * @param { Array } users - 用户列表
-			 * @return { Object } 按IP分组的用户对象
-			 */
-			groupUsersByIp(users) {
-				const ipGroups = {};
-				
-				users.forEach(user => {
-					const ip = user.register_ip;
-					if (!ipGroups[ip]) {
-						ipGroups[ip] = [];
+					if (isCancelled()) {
+						// 被取消或页面已卸载：丢弃本次全部数据，不展示部分结果
+						this.resetResults()
+						this.setTask('检测已取消，未保留部分结果')
 					}
-					ipGroups[ip].push(user);
-				});
-
-				return ipGroups;
-			},
-
-			/**
-			 * 处理违规分组数据
-			 * @param { Array } violationIpGroups - 违规IP分组数据
-			 * @return { Array } 处理后的分组数据，包含IP风险等级，用户按注册时间倒序排序
-			 */
-			async processViolationGroups(violationIpGroups) {
-				const processedGroups = [];
-
-				for (let [ip, users] of violationIpGroups) {
-					// 获取邀请人信息
-					const inviterInfo = await this.getInviterInfo(users);
-					
-					// 为每个用户添加邀请人邀请码信息，并按注册时间倒序排序
-					const usersWithInviterCode = users.map(user => {
-						const inviter = inviterInfo.find(inv => inv.inviterId === user.inviter_uid);
-						return {
-							...user,
-							inviterInviteCode: inviter ? inviter.inviteCode : '无'
-						};
-					}).sort((a, b) => b.register_date - a.register_date); // 按注册时间倒序
-					
-					// 计算IP风险等级
-					const ipRiskLevel = this.calculateRiskLevel(users.length);
-
-					processedGroups.push({
-						ip: ip,
-						users: usersWithInviterCode,
-						inviterInfo: inviterInfo,
-						ipRiskLevel: ipRiskLevel // 新增IP风险等级
-					});
+					this.scanning = false
+					this.cancelRequested = false
 				}
-
-				return processedGroups;
 			},
-
-			/**
-			 * 获取邀请人信息
-			 * @param { Array } users - 用户列表
-			 * @return { Array } 邀请人信息列表
-			 */
-			async getInviterInfo(users) {
-				// 收集所有邀请人ID，去除重复
-				const inviterIds = [...new Set(users.map(user => user.inviter_uid).filter(id => id))];
-				
-				if (inviterIds.length === 0) {
-					return [{ inviteCode: '无', count: users.length, riskLevel: '低', inviterId: null }];
+			cancelScan() {
+				if (!this.scanning || this.cancelRequested) return
+				this.cancelRequested = true
+				this.scanToken++
+				this.setTask('正在取消，等待当前请求结束…', { progress: this.task.progress, metric: this.task.metric })
+			},
+			setRiskFilter(value) {
+				this.riskFilter = value
+				this.groupPage = 1
+				this.collapseGroup()
+			},
+			changeGroupPage(event) {
+				this.groupPage = event.current
+				this.collapseGroup()
+			},
+			collapseGroup() {
+				this.expandedIp = ''
+				this.detailToken++
+				this.detailLoading = false
+				this.detailError = ''
+			},
+			toggleGroup(ip) {
+				if (this.expandedIp === ip) {
+					this.collapseGroup()
+					return
 				}
-
-				// 批量查询邀请人信息
-				const { result: { data: inviters } } = await userCollection.where({
-					_id: dbCmd.in(inviterIds)
-				}).field({
-					_id: true,
-					my_invite_code: true,
-					status: true
-				}).get();
-
-				// 统计每个邀请人邀请的用户数量
-				const inviterStats = {};
-				users.forEach(user => {
-					if (user.inviter_uid) {
-						inviterStats[user.inviter_uid] = (inviterStats[user.inviter_uid] || 0) + 1;
+				this.collapseGroup()
+				this.expandedIp = ip
+				this.accountPage = 1
+				this.inviterPage = 1
+				this.accountSortOrder = 'desc'
+				return this.loadVisibleDetails(false)
+			},
+			changeAccountPage(event) {
+				this.accountPage = event.current
+				return this.loadVisibleDetails(false)
+			},
+			changeInviterPage(event) {
+				this.inviterPage = event.current
+				return this.loadVisibleDetails(false)
+			},
+			changeAccountSort(event) {
+				// uni-th 取消排序时 order 为 null，此时回到默认的注册时间倒序
+				this.accountSortOrder = event && event.order === 'ascending' ? 'asc' : 'desc'
+				this.accountPage = 1
+				return this.loadVisibleDetails(false)
+			},
+			/**
+			 * 读取当前页账号、这些账号的邀请人以及当前页邀请人的详情。
+			 * @param {boolean} force - true 时重新读取全部可见账号；false 时只读取尚未读过的
+			 */
+			loadVisibleDetails(force) {
+				const ids = new Set(this.pagedAccountIds)
+				this.pagedAccountIds.forEach(id => {
+					const inviterId = this.accountIndex.get(id).inviterId
+					if (inviterId) ids.add(inviterId)
+				})
+				this.pagedInviters.forEach(entry => ids.add(entry.inviterId))
+				const targetIds = Array.from(ids).filter(id => force || !this.detailById.has(id))
+				return this.loadDetails(targetIds)
+			},
+			/**
+			 * 读取指定账号的详情并更新状态表。
+			 * 封禁、解封写入期间不发起读取（返回 false），由写入结束后统一补读，
+			 * 避免写入前读到的旧状态在写入后才返回，把刚确认的新状态覆盖掉。
+			 * @returns {Promise<boolean>} 是否已读取并应用
+			 */
+			async loadDetails(ids) {
+				if (!ids.length) return true
+				if (this.acting) return false
+				const token = ++this.detailToken
+				this.detailLoading = true
+				this.detailError = ''
+				try {
+					const rows = await readAccountsByIds(dbContext, ids, DETAIL_FIELDS)
+					if (token !== this.detailToken) return false
+					ids.forEach(id => {
+						const row = rows.get(id)
+						if (row) {
+							this.detailById.set(id, row)
+							this.statusById.set(id, Number(row.status))
+						} else {
+							this.detailById.set(id, MISSING_ACCOUNT)
+							this.statusById.delete(id)
+						}
+					})
+					this.detailVersion++
+					this.statusVersion++
+					return true
+				} catch (error) {
+					if (token !== this.detailToken) return false
+					console.error('读取账号详情失败:', error)
+					this.detailError = getErrorMessage(error)
+					return false
+				} finally {
+					if (token === this.detailToken) this.detailLoading = false
+				}
+			},
+			confirmStatusChange(id, action, roleLabel) {
+				if (this.actionLocked) return
+				const config = STATUS_ACTIONS[action]
+				const status = this.statusById.get(id)
+				if (status !== config.from) {
+					uni.showToast({ title: `当前状态为“${getStatusText(status)}”，不能${config.label}`, icon: 'none' })
+					return
+				}
+				const detail = this.detailById.get(id)
+				const name = detail && !detail.missing && detail.nickname ? `${detail.nickname}（${id}）` : id
+				uni.showModal({
+					title: `确认${config.label}${roleLabel}`,
+					content: `将${config.label}${roleLabel} ${name}：${getStatusText(config.from)} → ${getStatusText(config.to)}。是否继续？`,
+					success: result => {
+						if (result && result.confirm) this.runStatusChange([id], action)
 					}
-				});
-
-				// 处理邀请人信息
-				const inviterInfo = inviters.map(inviter => {
-					const count = inviterStats[inviter._id] || 0;
-					return {
-						inviterId: inviter._id,
-						inviteCode: inviter.my_invite_code,
-						count: count,
-						riskLevel: this.calculateRiskLevel(count),
-						status: inviter.status // 新增状态字段
-					};
-				});
-
-				// 添加无邀请人的统计
-				const noInviterCount = users.filter(user => !user.inviter_uid).length;
-				if (noInviterCount > 0) {
-					inviterInfo.push({
-						inviterId: null,
-						inviteCode: '无',
-						count: noInviterCount,
-						riskLevel: '低',
-						status: 0
-					});
+				})
+			},
+			confirmBanGroup() {
+				const group = this.expandedGroup
+				if (!group || this.actionLocked) return
+				const ids = group.ids.filter(id => this.statusById.get(id) === STATUS_ACTIONS.ban.from)
+				if (!ids.length) {
+					uni.showToast({ title: '本组没有状态为“正常”的账号', icon: 'none' })
+					return
 				}
-
-				return inviterInfo;
+				uni.showModal({
+					title: '确认批量封禁',
+					content: `将封禁 IP ${group.ip} 下 ${ids.length} 个状态为“正常”的账号（本组共 ${group.count} 个，其它状态不处理）。操作立即生效，可在本页逐个解封。是否继续？`,
+					success: result => {
+						if (result && result.confirm) this.runStatusChange(ids, 'ban')
+					}
+				})
 			},
-
-			/**
-			 * 计算风险等级
-			 * @param { Number } count - 邀请用户数量
-			 * @return { String } 风险等级
-			 */
-			calculateRiskLevel(count) {
-				if (count >= 10) return '高';
-				if (count >= 5) return '中';
-				return '低';
-			},
-
-			/**
-			 * 计算统计数据
-			 * @param { Array } groups - 分组数据
-			 */
-			calculateStatistics(groups) {
-				let totalUsers = 0;
-				let suspiciousInviters = 0;
-
-				groups.forEach(group => {
-					totalUsers += group.users.length;
-					
-					// 统计可疑邀请人（中高风险等级的邀请人）
-					group.inviterInfo.forEach(inviter => {
-						if (inviter.riskLevel === '中' || inviter.riskLevel === '高') {
-							suspiciousInviters++;
-						}
-					});
-				});
-
-				this.statisticsData = {
-					totalViolationUsers: totalUsers,
-					violationIpCount: groups.length,
-					suspiciousInviters: suspiciousInviters
-				};
-			},
-
-			/**
-			 * 获取用户状态文本
-			 * @param { Number } status - 用户状态
-			 * @return { String } 状态文本
-			 */
-			getStatusText(status) {
-				const statusMap = {
-					0: '正常',
-					1: '禁止购买会员',
-					2: '审核中',
-					3: '已被封禁'
-				};
-				return statusMap[status] || '未知';
-			},
-
-			/**
-			 * 获取用户状态样式类
-			 * @param { Number } status - 用户状态
-			 * @return { String } 样式类名
-			 */
-			getStatusClass(status) {
-				if (status === 0) return 'status-normal';
-				if (status === 1) return 'status-restricted';
-				if (status === 3) return 'status-banned';
-				return 'status-default';
-			},
-
-			/**
-			 * 获取风险等级样式类
-			 * @param { String } riskLevel - 风险等级
-			 * @return { String } 样式类名
-			 */
-			getRiskLevelClass(riskLevel) {
-				if (riskLevel === '高') return 'risk-high';
-				if (riskLevel === '中') return 'risk-medium';
-				return 'risk-low';
-			},
-
-			/**
-			 * 封禁用户
-			 * @param { String } userId - 用户ID
-			 * @param { Number } userIndex - 用户在列表中的索引
-			 * @param { Number } groupIndex - 分组索引
-			 */
-			async banUser(userId, userIndex, groupIndex) {
+			async runStatusChange(ids, action) {
+				if (this.actionLocked) {
+					uni.showToast({ title: '正在读取或处理数据，请稍后再试', icon: 'none' })
+					return
+				}
+				const config = STATUS_ACTIONS[action]
+				const isBatch = ids.length > 1
+				this.acting = true
+				this.setTask(`正在${config.label} ${ids.length} 个账号`, isBatch ? { progress: 0, metric: `0 / ${ids.length}` } : {})
+				let outcome
 				try {
-					uni.showModal({
-						title: '确认封禁',
-						content: '确定要封禁该用户吗？',
-						success: async (res) => {
-							if (res.confirm) {
-								uni.showLoading({
-									title: '处理中...',
-									mask: true
-								});
-
-								// 更新用户状态为已被封禁
-								const { result: { updated } } = await userCollection.doc(userId).update({
-									status: 3
-								});
-
-								if (updated > 0) {
-									// 更新本地数据
-									this.violationGroups[groupIndex].users[userIndex].status = 3;
-									
-									uni.hideLoading();
-									uni.showToast({
-										title: '封禁成功',
-										icon: 'success'
-									});
-								} else {
-									uni.hideLoading();
-									uni.showToast({
-										title: '封禁失败',
-										icon: 'none'
-									});
-								}
-							}
+					outcome = await changeAccountStatus(dbContext, ids, action, {
+						onChunk: (done, total) => {
+							if (isBatch) this.setTask(`正在${config.label} ${total} 个账号`, { progress: Math.floor(done / total * 100), metric: `${done} / ${total}` })
 						}
-					});
+					})
 				} catch (error) {
-					console.error('封禁用户失败:', error);
-					uni.hideLoading();
-					uni.showToast({
-						title: '封禁失败，请重试',
-						icon: 'none'
-					});
+					console.error(`${config.label}失败:`, error)
+					this.setTask(`${config.label}失败：${getErrorMessage(error)}`, { error: true })
+					uni.showToast({ title: `${config.label}失败`, icon: 'none' })
+					return
+				} finally {
+					this.acting = false
 				}
+				this.applyStatusOutcome(outcome)
+				this.reportStatusOutcome(outcome, config, isBatch)
+				// 补读写入期间被推迟的详情，以及结果待确认、需要重新核对的账号
+				this.loadVisibleDetails(false)
 			},
-
-			/**
-			 * 封禁邀请人
-			 * @param { String } inviteCode - 邀请码
-			 * @param { String } inviterId - 邀请人ID
-			 */
-			async banInviter(inviteCode, inviterId) {
-				if (!inviterId) {
-					uni.showToast({
-						title: '无效的邀请人',
-						icon: 'none'
-					});
-					return;
-				}
-
-				try {
-					uni.showModal({
-						title: '确认封禁邀请人',
-						content: `确定要封禁邀请码为 ${inviteCode} 的邀请人吗？`,
-						success: async (res) => {
-							if (res.confirm) {
-								uni.showLoading({
-									title: '处理中...',
-									mask: true
-								});
-
-								// 更新邀请人状态为已被封禁
-								const { result: { updated } } = await userCollection.doc(inviterId).update({
-									status: 3
-								});
-
-								if (updated > 0) {
-									uni.hideLoading();
-									uni.showToast({
-										title: '邀请人封禁成功',
-										icon: 'success'
-									});
-									
-									// 重新查询数据以更新页面
-									await this.queryViolationUsers();
-								} else {
-									uni.hideLoading();
-									uni.showToast({
-										title: '封禁失败',
-										icon: 'none'
-									});
-								}
-							}
+			/** 把回读结果写回状态表：已确认的状态直接更新；结果待确认的账号清掉缓存，强制下次显示时重新读取。 */
+			applyStatusOutcome(outcome) {
+				;['success', 'failed', 'skipped'].forEach(type => {
+					outcome[type].forEach(item => {
+						if (item.status === null) {
+							this.statusById.delete(item.id)
+							this.detailById.set(item.id, MISSING_ACCOUNT)
+						} else {
+							this.statusById.set(item.id, item.status)
 						}
-					});
-				} catch (error) {
-					console.error('封禁邀请人失败:', error);
-					uni.hideLoading();
-					uni.showToast({
-						title: '封禁失败，请重试',
-						icon: 'none'
-					});
+					})
+				})
+				outcome.uncertain.forEach(item => {
+					this.statusById.delete(item.id)
+					this.detailById.delete(item.id)
+				})
+				this.statusVersion++
+				this.detailVersion++
+			},
+			reportStatusOutcome(outcome, config, isBatch) {
+				const counts = `成功 ${outcome.success.length}，跳过 ${outcome.skipped.length}，失败 ${outcome.failed.length}，待确认 ${outcome.uncertain.length}`
+				const problems = outcome.failed.concat(outcome.uncertain, outcome.skipped)
+				const hasError = Boolean(outcome.failed.length || outcome.uncertain.length)
+				this.setTask(`${config.label}完成：${counts}`, { error: hasError })
+				if (!isBatch && outcome.success.length) {
+					uni.showToast({ title: `${config.label}成功`, icon: 'success' })
+					return
 				}
+				if (!isBatch && outcome.skipped.length && !hasError) {
+					uni.showToast({ title: outcome.skipped[0].reason, icon: 'none' })
+					return
+				}
+				const details = problems.slice(0, 3).map(item => `${item.id}：${item.reason}`).join('\n')
+				const uncertainTip = outcome.uncertain.length ? '\n结果待确认的账号请稍后点击“刷新本页数据”核对，不要立即重复操作。' : ''
+				uni.showModal({
+					title: `${config.label}结果`,
+					content: `${counts}${details ? '\n' + details : ''}${problems.length > 3 ? '\n……' : ''}${uncertainTip}`,
+					showCancel: false
+				})
 			},
-			
-			/**
-			 * 延时函数，用于控制请求频率
-			 * @param {Number} ms - 延时毫秒数
-			 * @return {Promise} 延时Promise
-			 */
-			sleep(ms) {
-				return new Promise(resolve => setTimeout(resolve, ms))
-			},
-			
-			/**
-			 * 表格排序条件变化处理
-			 * @param { Object } event - 排序事件对象
-			 * @param { String } field - 排序字段（invite_time, login_date, register_date）
-			 * @param { Number } groupIndex - IP分组索引
-			 */
-			sortChange(event, field, groupIndex) {
-			  const group = this.violationGroups[groupIndex];
-			  if (!this.sortConfig[group.ip]) {
-			    this.$set(this.sortConfig, group.ip, { key: '', order: '' });
-			  }
-			
-			  if (this.sortConfig[group.ip].key === field) {
-			    // 切换排序顺序
-			    this.sortConfig[group.ip].order = event.order === 'ascending' ? 'asc' : 'desc';
-			  } else {
-			    // 新字段排序，默认升序
-			    this.sortConfig[group.ip].key = field;
-			    this.sortConfig[group.ip].order = event.order === 'ascending' ? 'asc' : 'desc';
-			  }
-			
-			  this.applyFilters(groupIndex);
-			},
-			
-			/**
-			 * 应用过滤和排序条件
-			 * @param { Number } groupIndex - IP分组索引
-			 */
-			applyFilters(groupIndex) {
-			  const group = this.violationGroups[groupIndex];
-			  const sortConfig = this.sortConfig[group.ip] || { key: 'register_date', order: 'desc' };
-			
-			  // 复制用户列表以避免直接修改原始数据
-			  const users = [...group.users];
-			
-			  // 按指定字段和顺序排序
-			  group.users = users.sort((a, b) => {
-			    const valueA = a[sortConfig.key] || 0; // 无值时用0
-			    const valueB = b[sortConfig.key] || 0;
-			    return sortConfig.order === 'asc' ? valueA - valueB : valueB - valueA;
-			  });
-			
-			  // 触发视图更新
-			  this.$set(this.violationGroups, groupIndex, group);
-			},
-
-			/**
-			 * 编辑用户数据
-			 * @param { String } userId - 用户ID
-			 */
-			editUser(userId) {
+			editAccount(id) {
 				uni.navigateTo({
-					url: `/pages/member/users/edit?id=${userId}`
-				});
+					url: `/pages/member/users/edit?id=${encodeURIComponent(id)}`,
+					events: {
+						// 用户编辑页保存成功后会触发 refreshData，此时重新读取该账号的状态与详情
+						refreshData: () => {
+							this.loadDetails([id]).then(ok => {
+								if (!ok) uni.showToast({ title: '账号已修改，但刷新失败，请点击“刷新本页数据”', icon: 'none' })
+							})
+						}
+					}
+				})
 			},
-			
-			/**
-			 * 跳转到检测违规邀请页面
-			 * @param { String } inviteCode - 邀请人邀请码
-			 */
-			checkViolationInvitation(inviteCode) {
-			  uni.navigateTo({
-			    url: `/pages/other/violation-invitation-v2/violation-invitation-v2?inviteCode=${encodeURIComponent(String(inviteCode || ''))}`
-			  });
+			openInvitationCheck(inviteCode) {
+				uni.navigateTo({
+					url: `/pages/other/violation-invitation-v2/violation-invitation-v2?inviteCode=${encodeURIComponent(inviteCode)}`
+				})
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	.container {
-		padding: 10px;
+	.page-container {
+		padding: 12px;
 	}
 
-	.card {
-		background-color: #333;
+	.page-heading,
+	.section-heading {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
 	}
 
-	.uni-card-txt {
-		color: #fff;
-		font-size: 14px;
-		line-height: 1.5;
+	.page-title {
+		display: block;
+		font-size: 18px;
+		font-weight: 700;
+		color: #303133;
 	}
 
-	.query-section {
-		padding: 10px 0;
+	.page-subtitle,
+	.section-subtitle {
+		display: block;
+		margin-top: 4px;
+		font-size: 13px;
+		color: #909399;
+	}
+
+	.thresholds {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 6px;
+	}
+
+	.threshold-label,
+	.filter-label {
+		font-size: 13px;
+		color: #606266;
 	}
 
 	.section-title {
-		font-size: 16px;
-		font-weight: bold;
-		color: #333;
-		margin-bottom: 10px;
 		display: block;
+		font-size: 15px;
+		font-weight: 700;
+		color: #303133;
 	}
 
-	.uni-forms-item {
-		margin-bottom: 15px;
-		align-items: center;
+	.sub-title {
+		display: block;
+		margin: 14px 0 8px;
+		font-size: 14px;
+		font-weight: 700;
+		color: #303133;
 	}
 
-	.time-picker-display {
-		width: 100%;
+	.task-panel {
+		margin-top: 14px;
+		padding: 10px 12px;
+		border-radius: 6px;
+		background: #ecf5ff;
+		color: #409eff;
 	}
 
-	.time-buttons {
+	.task-panel.error {
+		background: #fef0f0;
+		color: #f56c6c;
+	}
+
+	.task-row {
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 8px;
+		font-size: 13px;
+	}
+
+	.task-metric {
+		font-weight: 700;
+		white-space: nowrap;
+	}
+
+	.progress-track {
+		height: 6px;
+		margin-top: 8px;
+		overflow: hidden;
+		border-radius: 3px;
+		background: rgba(64, 158, 255, 0.2);
+	}
+
+	.progress-value {
+		height: 100%;
+		background: currentColor;
+		transition: width 0.2s ease;
+	}
+
+	.option-row,
+	.button-row,
+	.condition-row,
+	.action-buttons {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
 		gap: 8px;
 	}
 
-	.time-button {
-		padding: 5px 12px;
-		border: 1px solid #e5e5e5;
-		border-radius: 4px;
-		background-color: white;
-		font-size: 12px;
-		color: #666;
-	}
-
-	.time-button.selected {
-		border-color: #007aff;
-		background-color: #007aff;
-		color: white;
-	}
-	
-	.custom-days-input {
-	  display: flex;
-	  align-items: center;
-	  gap: 8px;
-	  margin-top: 10px;
-	}
-	
-	.days-input {
-	  width: 100px;
-	}
-
-	.query-actions {
-		margin-top: 15px;
-		text-align: center;
-	}
-
-	.statistics-section {
-		padding: 10px 0;
-	}
-
-	.statistics-grid {
-		display: flex;
-		justify-content: space-around;
+	.option-row {
 		margin-top: 10px;
 	}
 
-	.stat-item {
-		text-align: center;
-		flex: 1;
+	.option-button {
+		margin: 0;
+		border: 1px solid #dcdfe6;
+		background: #fff;
+		color: #606266;
 	}
+
+	.option-button.active {
+		border-color: #409eff;
+		background: #409eff;
+		color: #fff;
+	}
+
+	.condition-row {
+		margin-top: 10px;
+		font-size: 13px;
+		color: #606266;
+	}
+
+	.days-input {
+		width: 140px;
+		flex: none;
+	}
+
+	.range-preview {
+		display: block;
+		margin-top: 10px;
+		font-size: 13px;
+		color: #303133;
+	}
+
+	.range-preview.error {
+		color: #f56c6c;
+	}
+
+	.inline-note {
+		display: block;
+		margin-top: 6px;
+		font-size: 12px;
+		line-height: 1.6;
+		color: #909399;
+	}
+
+	.button-row {
+		margin-top: 12px;
+	}
+
+	.action-buttons button,
+	.button-row button {
+		margin: 0;
+	}
+
+	.stat-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+		gap: 10px;
+		margin-top: 12px;
+	}
+
+	.stat-item {
+		padding: 10px 12px;
+		border-radius: 6px;
+		background: #f4f4f5;
+	}
+
+	.stat-item.high { background: #fef0f0; color: #f56c6c; }
+	.stat-item.medium { background: #fdf6ec; color: #e6a23c; }
+	.stat-item.normal { background: #f0f9eb; color: #67c23a; }
 
 	.stat-number {
 		display: block;
-		font-size: 24px;
-		font-weight: bold;
-		color: #007aff;
-		margin-bottom: 5px;
+		font-size: 22px;
+		font-weight: 700;
 	}
 
 	.stat-label {
+		display: block;
+		margin-top: 2px;
 		font-size: 12px;
-		color: #666;
+		color: #606266;
 	}
+
+	.load-warning {
+		margin-top: 10px;
+		padding: 8px 12px;
+		border-radius: 6px;
+		background: #fdf6ec;
+		font-size: 13px;
+		color: #b88230;
+	}
+
+	.detail-error {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		background: #fef0f0;
+		color: #f56c6c;
+	}
+
+	.filter-row {
+		margin: 14px 0 10px;
+	}
+
+	.empty-state {
+		padding: 24px 0;
+		text-align: center;
+		font-size: 13px;
+		color: #909399;
+	}
+
+	.empty-state.small {
+		padding: 10px 0;
+	}
+
+	.risk-pill {
+		display: inline-block;
+		padding: 2px 8px;
+		border-radius: 10px;
+		font-size: 12px;
+		white-space: nowrap;
+	}
+
+	.risk-pill.high { background: #fef0f0; color: #f56c6c; }
+	.risk-pill.medium { background: #fdf6ec; color: #e6a23c; }
+	.risk-pill.normal { background: #f0f9eb; color: #67c23a; }
+
+	.ip-group {
+		margin-bottom: 8px;
+		border: 1px solid #ebeef5;
+		border-left-width: 4px;
+		border-radius: 6px;
+		background: #fff;
+	}
+
+	.ip-group.high { border-left-color: #f56c6c; }
+	.ip-group.medium { border-left-color: #e6a23c; }
+	.ip-group.normal { border-left-color: #67c23a; }
+	.ip-group.expanded { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); }
 
 	.ip-group-header {
-		padding: 15px;
-		background-color: #f8f8f8;
-		border-bottom: 1px solid #eee;
-		margin-bottom: 10px;
-	}
-
-	.ip-info {
 		display: flex;
-		justify-content: space-between;
+		flex-wrap: wrap;
 		align-items: center;
-		margin-bottom: 10px;
+		justify-content: space-between;
+		gap: 8px;
+		padding: 10px 12px;
+		cursor: pointer;
 	}
 
-	.ip-address {
-		font-size: 16px;
-		font-weight: bold;
-		color: #333;
+	.ip-group-title,
+	.ip-group-meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 10px;
 	}
 
-	.user-count {
-		font-size: 14px;
-		color: #666;
+	.ip-text {
+		font-size: 15px;
+		font-weight: 700;
+		color: #303133;
+		word-break: break-all;
 	}
 
-	.inviter-info {
-		border-top: 1px solid #eee;
+	.ip-group-meta {
+		font-size: 13px;
+		color: #606266;
+	}
+
+	.banned-count {
+		color: #f56c6c;
+	}
+
+	.expand-hint {
+		color: #409eff;
+	}
+
+	.ip-group-body {
+		padding: 0 12px 12px;
+		border-top: 1px solid #ebeef5;
+	}
+
+	.group-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
 		padding-top: 10px;
 	}
 
-	.inviter-label {
-		font-size: 14px;
-		font-weight: bold;
-		color: #333;
+	.group-actions .inline-note {
+		flex: 1;
+		min-width: 240px;
+		margin-top: 0;
+	}
+
+	.cell-main {
 		display: block;
-		margin-bottom: 8px;
+		color: #303133;
 	}
 
-	.inviter-item {
-		display: flex;
-		align-items: center;
-		gap: 15px;
-		margin-bottom: 8px;
-		padding: 8px;
-		background-color: white;
+	.cell-sub {
+		display: block;
+		font-size: 12px;
+		color: #909399;
+		word-break: break-all;
+	}
+
+	.tag {
+		display: inline-block;
+		margin-top: 4px;
+		padding: 1px 6px;
 		border-radius: 4px;
-		border: 1px solid #eee;
-	}
-
-	.inviter-code, .inviter-count {
 		font-size: 12px;
-		color: #666;
 	}
 
-	.risk-level {
-		font-size: 12px;
-		padding: 2px 6px;
-		border-radius: 3px;
-		color: white;
+	.tag.danger {
+		background: #fef0f0;
+		color: #f56c6c;
 	}
 
-	.risk-high {
-		background-color: #ff4d4f;
-	}
+	.status-text.normal { color: #67c23a; }
+	.status-text.restricted { color: #e6a23c; }
+	.status-text.reviewing { color: #409eff; }
+	.status-text.banned { color: #f56c6c; font-weight: 700; }
+	.status-text.unknown { color: #909399; }
 
-	.risk-medium {
-	  background-color: #faad14;
+	.pagination-row {
+		display: flex;
+		justify-content: center;
+		margin-top: 12px;
 	}
-	
-	// 其他样式还没写
-	
 </style>
