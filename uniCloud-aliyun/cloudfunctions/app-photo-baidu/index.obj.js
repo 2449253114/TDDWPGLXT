@@ -33,7 +33,6 @@ const gayComics = comicModule['gay-comics']
 const {
 	streaming,
 	getDownload,
-	getPlayUrlMP4,
 	//getPlayUrlM3U8,
 	getPlayUrlM3U8New,
 	getPlayUrlM3U8NewTest,
@@ -183,17 +182,13 @@ module.exports = {
 	
 	
 	/**
-	 * 获取MP4视频播放地址 (仅用于APP端，因为需要请求头播放)
-	 * @tutorial https://fc-mp-9909fa0f-9b68-46fb-afbb-997488dc33b3.next.bspapp.com/app-photo-baidu/getPlayUrl
-	 * @param {Object}  params
-	 * @param {String}  params.user_id       		用户ID
-	 * @param {String}   params.album_id       	  	相册ID
-	 * @param {String}   params.uk       	  		uk
-	 * @param {String}   params.tid       	  		tid
-	 * @param {String}   params.fsid       	  		文件ID
-	 * @returns
+	 * 获取MP4视频播放地址：已停用，固定返回失败，不查库、不生成播放地址
+	 * 当前 App 只走 play-url-m3u8 播放。原实现（module/streaming/get-play-url-mp4.js）不检查账号封禁状态，
+	 * 被封账号或脚本仍能用它取播放地址。保留路由只为给可能还在调用的旧版客户端一个明确提示
 	 */
-	'play-url-mp4': getPlayUrlMP4,
+	'play-url-mp4': function () {
+		return createResponse(STATE_CODE.FAIL, "该播放方式已停用，请更新到最新版本后观看");
+	},
 	
 	
 	/**
