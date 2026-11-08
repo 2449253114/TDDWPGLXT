@@ -9,15 +9,17 @@ const {
 
 const {
 	checkVipStatus,
-	updateUserLastOnline
+	updateUserLastOnline,
+	maskDeviceOaid
 } = require('../../common/fun')
 
 /**
- * 获取用户信息（参数：_id和my_invite_code二选一）
+ * 获取用户信息（按 _id 查询），返回的 device_oaid 已打码
+ * 原先还支持按 my_invite_code 查询，并返回未打码的整份资料。邀请码本身是公开分享的，
+ * 拿到别人的邀请码就能拿到对方的登录凭证 device_oaid。App 只按 _id 查询，所以去掉了这种查询方式
  * @tutorial https://fc-mp-9909fa0f-9b68-46fb-afbb-997488dc33b3.next.bspapp.com/app-user-auth/getUserInfo
  * @param {Object}  params
  * @param {String}  params._id       用户ID
- * @param {String}  params.my_invite_code		用户自己的邀请码
  * @returns
  */
 module.exports = async function () {
@@ -28,26 +30,20 @@ module.exports = async function () {
 		body = Buffer.from(body, 'base64').toString()
 	}
 
-	let _id, my_invite_code;
+	let _id;
 	try {
 		({
-			_id,
-			my_invite_code
+			_id
 		} = JSON.parse(body));
 	} catch (error) {
 		return createResponse(STATE_CODE.FAIL, "无效的请求数据");
 	}
-	
-	// 获取用户信息
-	let queryUserResult;
-	if (_id) {
-		queryUserResult = await userCollection.where({ _id: _id }).get()
-	} else if (my_invite_code) {
-		//return createResponse(STATE_CODE.FAIL, `my_invite_code == ${my_invite_code}`);
-		queryUserResult = await userCollection.where({ my_invite_code: my_invite_code }).get()
-	} else {
+
+	// 获取用户信息。_id 必须是字符串，防止传入对象被当成查询条件
+	if (!_id || typeof _id !== 'string') {
 		return createResponse(STATE_CODE.FAIL, "缺少用户标识信息");
 	}
+	const queryUserResult = await userCollection.where({ _id: _id }).get()
 
 	// 没有此用户
 	if (queryUserResult.data.length == 0) {
@@ -67,7 +63,7 @@ module.exports = async function () {
 		last_online_time: updateUserLastOnline() // 使用当前时间戳作为最后在线时间
 	})
 	
-	const data = updateUserResult['doc']
-	
+	const data = maskDeviceOaid(updateUserResult['doc'])
+
 	return createResponse(STATE_CODE.SUCCESS, "获取用户信息成功", data)
 }

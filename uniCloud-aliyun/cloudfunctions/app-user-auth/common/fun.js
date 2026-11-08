@@ -208,8 +208,24 @@ async function reserveInviteCode(inviteCodeCollection, userCollection) {
 }
 
 
+/**
+ * 返回 device_oaid 打码后的用户文档副本，格式为“前 3 位 + **** + 后 4 位”，与登录接口一致。
+ * device_oaid 是一键登录的唯一凭证，拿到完整值就能登录该账号，所以接口返回给客户端之前必须打码。
+ * 长度不超过 7 位时前后两段会重叠，等于暴露全部内容，这种情况只返回 ****。
+ * @param {Object|null} user 用户文档
+ * @returns {Object|null} 打码后的新对象，不修改入参；入参为空或没有 device_oaid 时原样返回
+ */
+function maskDeviceOaid(user) {
+	if (!user || !user.device_oaid) return user;
+	const oaid = String(user.device_oaid);
+	const masked = oaid.length > 7 ? `${oaid.substring(0, 3)}****${oaid.substring(oaid.length - 4)}` : '****';
+	return { ...user, device_oaid: masked };
+}
+
+
 module.exports = {
 	checkVipStatus,
+	maskDeviceOaid,
 	sendSystemNotice,
 	extendUserVipExpiration,
 	addVipChangeRecord,
