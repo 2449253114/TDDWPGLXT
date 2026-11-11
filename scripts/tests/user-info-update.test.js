@@ -4,7 +4,7 @@
  *
  * 用内存假库模拟这两个接口用到的 uniCloud.database() 子集：where / get / updateAndReturn。
  * 重点验证：返回给客户端的 device_oaid 一律打码；update 只能改资料字段，不能改会员、邀请、封禁相关字段；
- * info 不能再按邀请码查询他人资料。
+ * info 仍支持网页版客服入口按邀请码查询。
  */
 'use strict'
 
@@ -83,19 +83,36 @@ test('info：按 _id 返回本人信息，device_oaid 打码，其余字段原�
 	assert.strictEqual(findUser('u1').device_oaid, OAID, '打码只影响返回值，不能改库里的值')
 })
 
-test('info：只传邀请码不再返回他人资料，也不写库', async () => {
-	fake.reset([user('u1')])
-	const before = JSON.stringify(fake.state.store)
-	const res = await call(getUserInfo, { my_invite_code: 'CODE01' })
-	assert.strictEqual(res.code, 1005, JSON.stringify(res))
-	assert.strictEqual(res.data, null)
-	assert.strictEqual(JSON.stringify(fake.state.store), before)
+test('info：网页版客服只传邀请码时，返回该邀请码对应账号的 _id 与 status，device_oaid 打码', async () => {
+	fake.reset([user('u1'), user('u2', { my_invite_code: 'CODE02', status: 3 })])
+	const res = await call(getUserInfo, { my_invite_code: 'CODE02' })
+	assert.strictEqual(res.code, 200, JSON.stringify(res))
+	assert.strictEqual(res.data._id, 'u2')
+	assert.strictEqual(res.data.my_invite_code, 'CODE02')
+	assert.strictEqual(res.data.status, 3, '客服页靠 status 拦截已封禁账号')
+	assert.strictEqual(res.data.device_oaid, MASKED)
+	assert.strictEqual(findUser('u2').device_oaid, OAID)
 })
 
-test('info：_id 缺失或不是字符串时拒绝且不写库', async () => {
+test('info：同时传 _id 和邀请码时按 _id 查询', async () => {
+	fake.reset([user('u1'), user('u2', { my_invite_code: 'CODE02' })])
+	const res = await call(getUserInfo, { _id: 'u1', my_invite_code: 'CODE02' })
+	assert.strictEqual(res.code, 200, JSON.stringify(res))
+	assert.strictEqual(res.data._id, 'u1')
+})
+
+test('info：邀请码不存在时返回失败', async () => {
+	fake.reset([user('u1')])
+	const res = await call(getUserInfo, { my_invite_code: 'NOPE00' })
+	assert.strictEqual(res.code, 1005)
+	assert.match(res.message, /用户不存在/)
+})
+
+test('info：_id 或邀请码缺失、为空或不是字符串时拒绝且不写库', async () => {
 	fake.reset([user('u1')])
 	const before = JSON.stringify(fake.state.store)
-	for (const params of [{}, { _id: { $ne: null } }, { _id: 123 }]) {
+	for (const params of [{}, { _id: { $ne: null } }, { _id: 123 }, { my_invite_code: '' }, { my_invite_code: { $ne: null } },
+		{ my_invite_code: 123 }, { _id: { $ne: null }, my_invite_code: 'CODE01' }]) {
 		const res = await call(getUserInfo, params)
 		assert.strictEqual(res.code, 1005, JSON.stringify(params))
 		assert.match(res.message, /缺少用户标识信息/)

@@ -14,12 +14,14 @@ const {
 } = require('../../common/fun')
 
 /**
- * 获取用户信息（按 _id 查询），返回的 device_oaid 已打码
- * 原先还支持按 my_invite_code 查询，并返回未打码的整份资料。邀请码本身是公开分享的，
- * 拿到别人的邀请码就能拿到对方的登录凭证 device_oaid。App 只按 _id 查询，所以去掉了这种查询方式
+ * 获取用户信息（_id 和 my_invite_code 二选一，同时传时按 _id 查），返回的 device_oaid 已打码
+ * App 按 _id 查询；网页版客服入口（uni-im-web-load/pages/index/index.vue）只有用户输入或 App 传入的邀请码，
+ * 按 my_invite_code 查询，用返回的 _id 登录客服、用 status 判断是否封禁。
+ * 邀请码是公开分享的，按邀请码能查到任何人的资料，所以 device_oaid（登录凭证）必须打码
  * @tutorial https://fc-mp-9909fa0f-9b68-46fb-afbb-997488dc33b3.next.bspapp.com/app-user-auth/getUserInfo
  * @param {Object}  params
- * @param {String}  params._id       用户ID
+ * @param {String}  params._id       			用户ID
+ * @param {String}  params.my_invite_code		用户自己的邀请码
  * @returns
  */
 module.exports = async function () {
@@ -30,20 +32,23 @@ module.exports = async function () {
 		body = Buffer.from(body, 'base64').toString()
 	}
 
-	let _id;
+	let _id, my_invite_code;
 	try {
 		({
-			_id
+			_id,
+			my_invite_code
 		} = JSON.parse(body));
 	} catch (error) {
 		return createResponse(STATE_CODE.FAIL, "无效的请求数据");
 	}
 
-	// 获取用户信息。_id 必须是字符串，防止传入对象被当成查询条件
-	if (!_id || typeof _id !== 'string') {
+	// 获取用户信息。查询值必须是非空字符串，防止传入对象被当成查询条件
+	const where = _id ? { _id } : { my_invite_code }
+	const value = _id || my_invite_code
+	if (!value || typeof value !== 'string') {
 		return createResponse(STATE_CODE.FAIL, "缺少用户标识信息");
 	}
-	const queryUserResult = await userCollection.where({ _id: _id }).get()
+	const queryUserResult = await userCollection.where(where).get()
 
 	// 没有此用户
 	if (queryUserResult.data.length == 0) {
